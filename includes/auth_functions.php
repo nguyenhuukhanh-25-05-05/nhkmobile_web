@@ -4,6 +4,9 @@
  */
 
 if (session_status() === PHP_SESSION_NONE) {
+    // Cấu hình Session sống lâu hơn (7 ngày)
+    ini_set('session.gc_maxlifetime', 604800);
+    session_set_cookie_params(604800);
     session_start();
 }
 

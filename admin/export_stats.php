@@ -34,12 +34,21 @@ fputcsv($output, ['Mã Đơn', 'Khách hàng', 'Số Điện Thoại', 'Tổng T
 
 $stmtOrders = $pdo->query("SELECT id, customer_name, customer_phone, total_price, status, created_at FROM orders ORDER BY created_at DESC LIMIT 100");
 while($row = $stmtOrders->fetch(PDO::FETCH_ASSOC)) {
+    // Chuyển đổi status sang tiếng Việt dễ đọc hơn
+    $statusText = $row['status'];
+    switch (mb_strtolower($row['status'], 'UTF-8')) {
+        case 'đã duyệt': $statusText = 'Đã Duyệt'; break;
+        case 'chờ duyệt': $statusText = 'Chờ Duyệt'; break;
+        case 'hoàn thành': case 'completed': $statusText = 'Hoàn Thành'; break;
+        case 'đã hủy': case 'cancelled': $statusText = 'Đã Hủy'; break;
+    }
+
     fputcsv($output, [
         '#ORD-'.$row['id'],
         $row['customer_name'],
         $row['customer_phone'],
-        $row['total_price'],
-        $row['status'],
+        number_format($row['total_price'], 0, ',', '.') . ' VNĐ',
+        $statusText,
         date('d/m/Y H:i', strtotime($row['created_at']))
     ]);
 }
