@@ -135,6 +135,9 @@ include 'includes/header.php';
                                             <div class="col-md-6 text-md-end mt-2 mt-md-0">
                                                 <small class="text-muted d-block">Phương thức:</small>
                                                 <span class="badge bg-light text-dark border"><?php echo htmlspecialchars($order['payment_method'] ?? 'Thanh toán trực tiếp'); ?></span>
+                                                <?php if(isset($order['is_installment']) && $order['is_installment']): ?>
+                                                    <span class="badge bg-primary text-white border-0 fw-bold px-2 py-1 ms-1" style="font-size: 0.75rem;">TRẢ GÓP 0%</span>
+                                                <?php endif; ?>
                                             </div>
                                         </div>
                                         

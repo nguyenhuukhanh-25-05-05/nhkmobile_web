@@ -120,7 +120,12 @@ $basePath = "../";
                                  </div>
                             </td>
                             <td class="fw-bold text-primary"><?php echo number_format($o['total_price'], 0, ',', '.'); ?>₫</td>
-                            <td><span class="badge bg-light text-dark border fw-normal px-2"><?php echo $o['payment_method']; ?></span></td>
+                            <td>
+                                <span class="badge bg-light text-dark border fw-normal px-2"><?php echo $o['payment_method']; ?></span>
+                                <?php if(isset($o['is_installment']) && $o['is_installment']): ?>
+                                    <div class="mt-1"><span class="badge bg-primary-subtle text-primary border-0 fw-bold px-2 py-1" style="font-size: 0.65rem;">TRẢ GÓP 0%</span></div>
+                                <?php endif; ?>
+                            </td>
                             <td>
                                 <!-- Màu sắc hiển thị badge theo trạng thái -->
                                 <?php 

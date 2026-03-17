@@ -15,6 +15,7 @@ if (isset($_GET['add'])) {
     require_login();
     
     $productId = (int)$_GET['add'];
+    $installment = isset($_GET['installment']) ? (int)$_GET['installment'] : 0;
     
     // Lấy thông tin sản phẩm từ CSDL để chắc chắn ID tồn tại
     $stmt = $pdo->prepare("SELECT * FROM products WHERE id = ?");
@@ -22,6 +23,15 @@ if (isset($_GET['add'])) {
     $product = $stmt->fetch();
 
     if ($product) {
+        // Nếu mua TRẢ GÓP: Xóa sạch giỏ cũ và bật flag trả góp
+        if ($installment === 1) {
+            $_SESSION['cart'] = [];
+            $_SESSION['is_installment'] = true;
+        } else {
+            // Nếu mua THƯỜNG: Tắt flag trả góp
+            $_SESSION['is_installment'] = false;
+        }
+
         // Nếu chưa có giỏ hàng, khởi tạo mảng trống
         if (!isset($_SESSION['cart'])) $_SESSION['cart'] = [];
         
@@ -40,8 +50,14 @@ if (isset($_GET['add'])) {
         // Gọi hàm đồng bộ ngay lập tức để lưu DB
         syncCartWithDatabase($pdo);
     }
-    // Quay lại trang giỏ hàng để hiển thị
-    header("Location: cart.php");
+
+    // Nếu là trả góp, đi thẳng đến trang thanh toán
+    if ($installment === 1) {
+        header("Location: checkout.php");
+    } else {
+        // Quay lại trang giỏ hàng để hiển thị
+        header("Location: cart.php");
+    }
     exit;
 }
 

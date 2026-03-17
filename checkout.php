@@ -35,11 +35,12 @@ if (isset($_POST['place_order'])) {
     $phone = $_POST['phone'];
     $payment = $_POST['payment_method'];
     $userId = get_logged_in_user_id(); // Lấy ID người dùng đang đăng nhập
+    $isInstallment = isset($_SESSION['is_installment']) && $_SESSION['is_installment'] ? 'true' : 'false';
 
     // Thực hiện chèn đơn hàng vào bảng orders trong Postgres
-    $sqlOrder = "INSERT INTO orders (customer_name, customer_phone, total_price, status, payment_method, user_id) VALUES (?, ?, ?, 'Chờ duyệt', ?, ?) RETURNING id";
+    $sqlOrder = "INSERT INTO orders (customer_name, customer_phone, total_price, status, payment_method, user_id, is_installment) VALUES (?, ?, ?, 'Chờ duyệt', ?, ?, ?) RETURNING id";
     $stmtOrder = $pdo->prepare($sqlOrder);
-    $stmtOrder->execute([$name, $phone, $total, $payment, $userId]);
+    $stmtOrder->execute([$name, $phone, $total, $payment, $userId, $isInstallment]);
     $orderId = $stmtOrder->fetchColumn(); // Lấy ID vừa chèn (Postgres dùng RETURNING)
 
     // Lưu từng sản phẩm trong giỏ vào bảng order_items
@@ -51,6 +52,7 @@ if (isset($_POST['place_order'])) {
     
     // Sau khi lưu đơn thành công, xóa sạch giỏ hàng trong Session và Database
     unset($_SESSION['cart']);
+    unset($_SESSION['is_installment']); // Xóa flag trả góp sau khi đặt hàng
     
     $stmtClearCart = $pdo->prepare("DELETE FROM cart_items WHERE session_id = ?");
     $stmtClearCart->execute([session_id()]);

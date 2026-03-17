@@ -20,7 +20,9 @@ CREATE TABLE IF NOT EXISTS orders (
     customer_phone VARCHAR(20),
     total_price DECIMAL(15, 2) NOT NULL,
     status VARCHAR(50) DEFAULT 'Pending', -- Pending, Processing, Completed, Cancelled
-    payment_method VARCHAR(50),
+    payment_method VARCHAR(50) DEFAULT 'COD',
+    is_installment BOOLEAN DEFAULT FALSE,
+    user_id INT REFERENCES users(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -75,6 +77,9 @@ ALTER TABLE products ADD COLUMN IF NOT EXISTS is_featured BOOLEAN DEFAULT FALSE;
 
 -- Migration: Thêm cột status vào bảng users nếu chưa có
 ALTER TABLE users ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT 'active';
+
+-- Migration: Thêm cột is_installment vào bảng orders nếu chưa có
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS is_installment BOOLEAN DEFAULT FALSE;
 
 -- Tạo bảng news để lưu bài viết công nghệ
 CREATE TABLE IF NOT EXISTS news (

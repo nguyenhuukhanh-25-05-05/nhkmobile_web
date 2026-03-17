@@ -49,7 +49,7 @@ include 'includes/header.php';
 
                         <div class="d-grid gap-3">
                             <a href="cart.php?add=<?php echo $product['id']; ?>" class="btn btn-dark btn-lg rounded-pill py-3 fw-bold text-center text-white">Thêm vào giỏ hàng</a>
-                            <a href="#" class="btn btn-outline-dark btn-lg rounded-pill py-3 fw-bold text-center">Mua trả góp 0%</a>
+                            <a href="cart.php?add=<?php echo $product['id']; ?>&installment=1" class="btn btn-outline-dark btn-lg rounded-pill py-3 fw-bold text-center">Mua trả góp 0%</a>
                         </div>
                     </div>
                 </div>

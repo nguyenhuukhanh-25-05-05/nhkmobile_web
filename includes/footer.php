@@ -105,12 +105,91 @@
                 <img src="<?php echo isset($basePath) ? $basePath : ''; ?>assets/images/zalo.jpg" alt="Zalo" class="widget-img" style="width: 30px; object-fit: contain;">
                 <span>Zalo</span>
             </a>
-            <a href="#" class="widget-item ai" title="AI Chat" onclick="alert('Tính năng AI Chat đang được phát triển!')">
+            <a href="javascript:void(0)" class="widget-item ai" title="AI Chat" id="aiChatToggle">
                 <i class="bi bi-robot fs-3 text-primary"></i>
                 <span class="text-primary">AI Chat</span>
             </a>
         </div>
     </div>
+
+    <!-- AI Chat Window -->
+    <div class="ai-chat-window shadow-lg border-0 rounded-4 overflow-hidden" id="aiChatWindow">
+        <div class="ai-chat-header d-flex justify-content-between align-items-center p-3 text-white">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-robot fs-4"></i>
+                <span class="fw-bold">Trợ lý ảo NHK Mobile</span>
+            </div>
+            <button class="btn-close btn-close-white" id="aiChatClose"></button>
+        </div>
+        <div class="ai-chat-body p-3" id="aiChatBody">
+            <div class="ai-message bg-light p-2 rounded-3 mb-2 small">
+                Chào bạn! Tôi là trợ lý ảo của NHK Mobile. Tôi có thể giúp gì cho bạn về các sản phẩm Apple, Samsung hay chương trình trả góp 0% không?
+            </div>
+        </div>
+        <div class="ai-chat-footer p-2 border-top bg-white">
+            <div class="input-group">
+                <input type="text" id="aiChatInput" class="form-control border-0 shadow-none" placeholder="Nhập câu hỏi...">
+                <button class="btn btn-primary rounded-circle ms-2" id="aiChatSend">
+                    <i class="bi bi-send-fill"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+    .ai-chat-window {
+        position: fixed;
+        bottom: 100px;
+        right: 80px;
+        width: 350px;
+        height: 500px;
+        background: #fff;
+        z-index: 10000;
+        display: none;
+        flex-direction: column;
+        transition: all 0.3s ease;
+    }
+    @media (max-width: 768px) {
+        .ai-chat-window {
+            width: calc(100% - 40px);
+            right: 20px;
+            bottom: 160px;
+            height: 400px;
+        }
+    }
+    .ai-chat-header {
+        background: #1d1d1f;
+    }
+    .ai-chat-body {
+        flex-grow: 1;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+    }
+    .ai-message {
+        align-self: flex-start;
+        max-width: 85%;
+    }
+    .user-message {
+        align-self: flex-end;
+        background: #0071e3;
+        color: #fff;
+        max-width: 85%;
+    }
+    .ai-chat-window.active {
+        display: flex;
+        animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+    </style>
+
+    <script>
+        const AI_CHAT_API_URL = "<?php echo isset($basePath) ? $basePath : ''; ?>php/api/ai-chat.php";
+    </script>
+    <script src="<?php echo isset($basePath) ? $basePath : ''; ?>assets/js/ai-chat.js"></script>
 
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
