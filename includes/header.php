@@ -23,7 +23,7 @@
                     <img src="<?php echo $basePath; ?>assets/images/logo-k.svg" alt="NHK Mobile">
                 </a>
 
-                <main class="min-vh-100 d-flex align-items-center justify-content-center bg-dark-deep py-huge">
+                <div class="d-none d-md-flex navbar-nav-centered">
                     <a class="nav-link" href="<?php echo $basePath; ?>product.php">Điện thoại</a>
                     <a class="nav-link" href="<?php echo $basePath; ?>warranty.php">Bảo hành</a>
                     <a class="nav-link" href="<?php echo $basePath; ?>news.php">Tin tức</a>

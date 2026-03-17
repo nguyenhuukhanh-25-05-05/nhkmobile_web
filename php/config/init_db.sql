@@ -79,11 +79,11 @@ CREATE TABLE IF NOT EXISTS news (
 -- Cập nhật cấu trúc Cart Items (Cho phép liên kết với user_id thay vì chỉ session_id)
 ALTER TABLE cart_items ADD COLUMN IF NOT EXISTS user_id INT REFERENCES users(id);
 
--- Dữ liệu mẫu Admin (Mật khẩu đã được hash: 'nhk@2026' -> '$2y$10$...')
+-- Dữ liệu mẫu Admin (Mật khẩu sẽ được hash bởi init-db.php)
 -- Tài khoản mặc định: nhk_admin / nhk@2026
-INSERT INTO admins (username, password) VALUES ('nhk_admin', '$2y$10$wWv6mYI.P/vW9V1iE/8XbeX7Nq7jD6y8w8x3G2j1.Yf7Y9X1mG1yG') ON CONFLICT (username) DO NOTHING;
+INSERT INTO admins (username, password) VALUES ('nhk_admin', 'nhk@2026') ON CONFLICT (username) DO NOTHING;
 -- Tài khoản phụ: admin / admin123
-INSERT INTO admins (username, password) VALUES ('admin', '$2y$10$k1r6X1u1R1/V1.1iE/8XbeX7Nq7jD6y8w8x3G2j1.Yf7Y9X1mG1yG') ON CONFLICT (username) DO NOTHING;
+INSERT INTO admins (username, password) VALUES ('admin', 'admin123') ON CONFLICT (username) DO NOTHING;
 
 -- Dữ liệu mẫu Sản phẩm (Sửa tên tệp ảnh có dấu cách)
 INSERT INTO products (name, category, price, stock, image, description) VALUES 

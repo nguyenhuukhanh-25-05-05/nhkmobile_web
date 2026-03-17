@@ -63,10 +63,10 @@ include 'includes/header.php';
             <div class="container px-xl-5">
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-5 gap-4">
                     <div class="animate-reveal">
-                        <h2 class="display-4 fw-bold text-white mb-2">Đỉnh phẩm công nghệ.</h2>
-                        <p class="text-secondary-light h5 fw-light">Những thiết bị mạnh mẽ nhất vừa cập bến NHK Mobile.</p>
+                        <h2 class="display-4 fw-bold text-dark mb-2">Đỉnh phẩm công nghệ.</h2>
+                        <p class="text-secondary h5 fw-light">Những thiết bị mạnh mẽ nhất vừa cập bến NHK Mobile.</p>
                     </div>
-                    <a href="product.php" class="btn-explore text-white">Xem tất cả <i class="bi bi-chevron-right ms-2 fs-small"></i></a>
+                    <a href="product.php" class="btn-explore text-dark">Xem tất cả <i class="bi bi-chevron-right ms-2 fs-small"></i></a>
                 </div>
 
                 <div class="row g-4 pt-4">
@@ -88,7 +88,7 @@ include 'includes/header.php';
                                     </div>
                                     <div class="card-content-premium">
                                         <span class="category-tag mb-2 d-inline-block"><?php echo $p['category']; ?></span>
-                                        <h5 class="fw-bold text-white mb-2 text-truncate-2"><?php echo $p['name']; ?></h5>
+                                        <h5 class="fw-bold text-dark mb-2 text-truncate-2"><?php echo $p['name']; ?></h5>
                                         <div class="d-flex align-items-center justify-content-between mt-3">
                                             <span class="price-premium"><?php echo number_format($p['price'], 0, ',', '.'); ?>₫</span>
                                             <div class="btn-buy-mini shadow-sm"><i class="bi bi-plus-lg"></i></div>
