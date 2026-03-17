@@ -66,9 +66,32 @@
                     </div>
                     
                     <button class="navbar-toggler border-0 ms-2 d-md-none shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                        <span class="navbar-toggler-icon" style="width: 24px;"></span>
+                        <span class="navbar-toggler-icon" style="width: 20px;"></span>
                     </button>
                 </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu Collapse -->
+        <div class="collapse navbar-collapse d-md-none bg-white border-bottom" id="navbarNav">
+            <div class="container py-3">
+                <ul class="navbar-nav gap-2">
+                    <li class="nav-item">
+                        <a class="nav-link py-2 fs-6 fw-bold border-bottom" href="<?php echo $basePath; ?>product.php">
+                            <i class="bi bi-phone me-2"></i> Điện thoại
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link py-2 fs-6 fw-bold border-bottom" href="<?php echo $basePath; ?>warranty.php">
+                            <i class="bi bi-shield-check me-2"></i> Bảo hành
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link py-2 fs-6 fw-bold" href="<?php echo $basePath; ?>news.php">
+                            <i class="bi bi-newspaper me-2"></i> Tin tức
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>

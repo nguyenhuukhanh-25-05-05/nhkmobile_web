@@ -951,3 +951,94 @@ body {
     from { opacity: 0; transform: translateY(50px) scale(0.95); }
     to { opacity: 1; transform: translateY(0) scale(1); }
 }
+
+/* --- RESPONSIVE FIXES --- */
+
+/* Mobile & Tablet Fixes */
+@media (max-width: 768px) {
+    /* Navbar Mobile */
+    .navbar-premium {
+        height: auto;
+        padding: 10px 0;
+    }
+    .navbar-unified-container {
+        gap: 15px;
+        justify-content: space-between;
+        padding: 0 15px;
+    }
+    .navbar-icons-group {
+        gap: 15px;
+    }
+    .navbar-icons-group i {
+        font-size: 20px;
+    }
+    
+    /* Hero Mobile */
+    .hero-premium {
+        padding-top: 80px;
+        min-height: auto;
+        text-align: center;
+    }
+    .hero-premium .display-1 {
+        font-size: 3rem !important;
+    }
+    .hero-premium .h4 {
+        font-size: 1.1rem !important;
+    }
+    .hero-image-main {
+        max-width: 80%;
+        margin-top: 30px;
+    }
+    
+    /* Grid & Cards Mobile */
+    .py-huge {
+        padding: 60px 0;
+    }
+    .card-glass-product {
+        padding: 15px !important;
+        border-radius: 20px;
+    }
+    .img-wrapper-premium {
+        padding: 15px;
+        min-height: 150px;
+        border-radius: 15px;
+    }
+    .price-premium {
+        font-size: 1.1rem;
+    }
+    .btn-buy-mini {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+    }
+    
+    /* Sections Mobile */
+    .display-4 {
+        font-size: 2.2rem !important;
+    }
+    .glass-panel {
+        padding: 30px !important;
+        border-radius: 25px;
+    }
+    .display-3 {
+        font-size: 2.5rem !important;
+    }
+}
+
+/* Small Mobile Fixes */
+@media (max-width: 480px) {
+    .navbar-brand img {
+        height: 22px;
+    }
+    .hero-premium .display-1 {
+        font-size: 2.5rem !important;
+    }
+    .col-6 {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+    .container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
