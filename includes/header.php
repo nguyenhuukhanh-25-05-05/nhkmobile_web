@@ -23,19 +23,16 @@
                     <img src="<?php echo $basePath; ?>assets/images/logo-k.svg" alt="NHK Mobile">
                 </a>
 
-                <div class="d-none d-md-flex navbar-nav-centered">
+                <main class="min-vh-100 d-flex align-items-center justify-content-center bg-dark-deep py-huge">
                     <a class="nav-link" href="<?php echo $basePath; ?>product.php">Điện thoại</a>
                     <a class="nav-link" href="<?php echo $basePath; ?>warranty.php">Bảo hành</a>
                     <a class="nav-link" href="<?php echo $basePath; ?>news.php">Tin tức</a>
                 </div>
 
                 <div class="navbar-icons-group gap-3">
-                    <form action="<?php echo $basePath; ?>product.php" method="GET" class="d-none d-lg-flex position-relative">
-                        <input type="text" name="q" placeholder="Tìm tên máy..." class="form-control form-control-sm rounded-pill border-0 bg-light ps-3 pe-5" style="width: 180px;">
-                        <button type="submit" class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-secondary p-0 me-3">
-                            <i class="bi bi-search py-1"></i>
-                        </button>
-                    </form>
+                    <a href="#" id="searchTrigger" class="search-trigger-btn">
+                        <i class="bi bi-search"></i>
+                    </a>
                     <a href="<?php echo $basePath; ?>cart.php" class="position-relative">
                         <i class="bi bi-bag"></i>
                         <?php if(isset($_SESSION['cart']) && count($_SESSION['cart']) > 0): ?>
@@ -75,3 +72,9 @@
             </button>
         </div>
     </nav>
+
+    <!-- Search Overlay -->
+    <?php include 'search_overlay.php'; ?>
+    
+    <!-- Scripts specific to search -->
+    <script src="<?php echo $basePath; ?>assets/js/search-overlay.js"></script>

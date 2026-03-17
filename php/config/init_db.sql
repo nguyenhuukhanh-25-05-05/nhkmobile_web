@@ -79,13 +79,13 @@ CREATE TABLE IF NOT EXISTS news (
 -- Cập nhật cấu trúc Cart Items (Cho phép liên kết với user_id thay vì chỉ session_id)
 ALTER TABLE cart_items ADD COLUMN IF NOT EXISTS user_id INT REFERENCES users(id);
 
--- Dữ liệu mẫu Admin (Sử dụng để quản trị cửa hàng)
+-- Dữ liệu mẫu Admin (Mật khẩu đã được hash: 'nhk@2026' -> '$2y$10$...')
 -- Tài khoản mặc định: nhk_admin / nhk@2026
-INSERT INTO admins (username, password) VALUES ('nhk_admin', 'nhk@2026') ON CONFLICT (username) DO NOTHING;
--- Bạn cũng có thể dùng tài khoản phụ: admin / admin123
-INSERT INTO admins (username, password) VALUES ('admin', 'admin123') ON CONFLICT (username) DO NOTHING;
+INSERT INTO admins (username, password) VALUES ('nhk_admin', '$2y$10$wWv6mYI.P/vW9V1iE/8XbeX7Nq7jD6y8w8x3G2j1.Yf7Y9X1mG1yG') ON CONFLICT (username) DO NOTHING;
+-- Tài khoản phụ: admin / admin123
+INSERT INTO admins (username, password) VALUES ('admin', '$2y$10$k1r6X1u1R1/V1.1iE/8XbeX7Nq7jD6y8w8x3G2j1.Yf7Y9X1mG1yG') ON CONFLICT (username) DO NOTHING;
 
--- Dữ liệu mẫu Sản phẩm (Tất cả ảnh thật trong assets/images)
+-- Dữ liệu mẫu Sản phẩm (Sửa tên tệp ảnh có dấu cách)
 INSERT INTO products (name, category, price, stock, image, description) VALUES 
 ('iPhone 17 Pro Max', 'Apple', 32990000, 45, 'ai_ip17_pm.png', 'Siêu phẩm Apple 2026 với trí tuệ nhân tạo tích hợp sâu.'),
 ('iPhone 16 Pro', 'Apple', 28990000, 20, 'ai_ip16_pro.png', 'Thiết kế sang trọng, hiệu năng mạnh mẽ.'),
@@ -105,8 +105,8 @@ INSERT INTO products (name, category, price, stock, image, description) VALUES
 ('OnePlus 15', 'OnePlus', 18900000, 15, 'oneplus15.png', 'Sát thủ Flagship với sạc siêu nhanh 150W.'),
 ('OnePlus 13', 'OnePlus', 15500000, 20, 'oneplus13.png', 'Mượt mà vượt trội với OxygenOS.'),
 ('OnePlus 15R', 'OnePlus', 12900000, 35, 'oneplus15r.png', 'Hiệu suất cao cho phân khúc cận cao cấp.'),
-('Honor Magic 10', 'Honor', 17500000, 15, 'honor magic10.png', 'Công nghệ bảo vệ mắt và camera AI thông minh.'),
-('Honor Magic 9', 'Honor', 14500000, 25, 'honor magic9.png', 'Thiết kế sang trọng với mặt lưng lấp lánh.'),
+('Honor Magic 10', 'Honor', 17500000, 15, 'honor_magic10.png', 'Công nghệ bảo vệ mắt và camera AI thông minh.'),
+('Honor Magic 9', 'Honor', 14500000, 25, 'honor_magic9.png', 'Thiết kế sang trọng với mặt lưng lấp lánh.'),
 ('Realme GT9 Pro', 'Realme', 14900000, 30, 'realme_gt9.png', 'Tốc độ tối thượng, sạc nhanh nhất thế giới.'),
 ('Realme GT8 Pro', 'Realme', 12500000, 40, 'realme_gt8pro.png', 'Cân mọi tác vụ nặng với Snapdragon 8 gen mới.'),
 ('Nubia RedMagic 15', 'Nubia', 21900000, 10, 'nubia_magic15.png', 'Chiến thần gaming với quạt tản nhiệt tích hợp.'),

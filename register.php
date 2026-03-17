@@ -39,7 +39,7 @@ $pageTitle = "Đăng ký tài khoản | NHK Mobile";
 include 'includes/header.php';
 ?>
 
-<main class="py-5 bg-dark-deep min-vh-100 d-flex align-items-center">
+<main class="min-vh-100 d-flex align-items-center justify-content-center bg-dark-deep py-huge">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6 col-lg-5 animate-reveal">
