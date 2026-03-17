@@ -6,12 +6,25 @@
  */
 
 // Lấy thông tin kết nối từ biến môi trường (Nếu có), nếu không thì dùng giá trị mặc định Localhost
-// Lấy thông tin kết nối từ biến môi trường (Ưu tiên dùng $_ENV hoặc $_SERVER)
-$host = $_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? getenv('DB_HOST') ?: 'localhost';
-$port = $_ENV['DB_PORT'] ?? $_SERVER['DB_PORT'] ?? getenv('DB_PORT') ?: '5432';
-$db   = $_ENV['DB_NAME'] ?? $_SERVER['DB_NAME'] ?? getenv('DB_NAME') ?: 'web_ban_dien_thoai';
-$user = $_ENV['DB_USER'] ?? $_SERVER['DB_USER'] ?? getenv('DB_USER') ?: 'postgres';
-$pass = $_ENV['DB_PASS'] ?? $_SERVER['DB_PASS'] ?? getenv('DB_PASS') ?: '123456';
+// Kiểm tra nếu có chuỗi kết nối duy nhất (thường dùng trên Render/Heroku)
+$databaseUrl = $_ENV['DATABASE_URL'] ?? $_SERVER['DATABASE_URL'] ?? getenv('DATABASE_URL');
+
+if ($databaseUrl) {
+    // Nếu có DATABASE_URL, tách các thành phần ra
+    $dbParts = parse_url($databaseUrl);
+    $host = $dbParts['host'];
+    $port = $dbParts['port'] ?? '5432';
+    $db   = ltrim($dbParts['path'], '/');
+    $user = $dbParts['user'];
+    $pass = $dbParts['pass'];
+} else {
+    // Nếu không có, dùng các biến đơn lẻ hoặc mặc định Localhost
+    $host = $_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? getenv('DB_HOST') ?: 'localhost';
+    $port = $_ENV['DB_PORT'] ?? $_SERVER['DB_PORT'] ?? getenv('DB_PORT') ?: '5432';
+    $db   = $_ENV['DB_NAME'] ?? $_SERVER['DB_NAME'] ?? getenv('DB_NAME') ?: 'web_ban_dien_thoai';
+    $user = $_ENV['DB_USER'] ?? $_SERVER['DB_USER'] ?? getenv('DB_USER') ?: 'postgres';
+    $pass = $_ENV['DB_PASS'] ?? $_SERVER['DB_PASS'] ?? getenv('DB_PASS') ?: '123456';
+}
 
 // Chuỗi kết nối DSN
 $dsn = "pgsql:host=$host;port=$port;dbname=$db";
