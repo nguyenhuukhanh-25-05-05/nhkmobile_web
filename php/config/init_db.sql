@@ -72,6 +72,10 @@ ALTER TABLE orders ADD COLUMN IF NOT EXISTS payment_method VARCHAR(50);
 
 -- Migration: Thêm cột is_featured vào bảng products nếu chưa có
 ALTER TABLE products ADD COLUMN IF NOT EXISTS is_featured BOOLEAN DEFAULT FALSE;
+
+-- Migration: Thêm cột status vào bảng users nếu chưa có
+ALTER TABLE users ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT 'active';
+
 -- Tạo bảng news để lưu bài viết công nghệ
 CREATE TABLE IF NOT EXISTS news (
     id SERIAL PRIMARY KEY,
