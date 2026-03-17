@@ -19,21 +19,22 @@
     <nav class="navbar navbar-expand-md navbar-light fixed-top navbar-premium">
         <div class="container-fluid">
             <div class="navbar-centered-wrapper">
-                <!-- 1. Logo -->
-                <a class="navbar-brand m-0" href="<?php echo $basePath; ?>index.php">
+                <!-- 1. Logo (Leftmost of the center block) -->
+                <a class="navbar-brand" href="<?php echo $basePath; ?>index.php">
                     <img src="<?php echo $basePath; ?>assets/images/logo-k.svg" height="18" alt="Logo">
                 </a>
 
-                <!-- 2. Menu chính & Icons (Tất cả là con trực tiếp để gap chia đều) -->
+                <!-- 2. Main Menu Links (Direct children for even spacing) -->
                 <a class="nav-link d-none d-md-block" href="<?php echo $basePath; ?>product.php">Điện thoại</a>
                 <a class="nav-link d-none d-md-block" href="<?php echo $basePath; ?>warranty.php">Bảo hành</a>
                 <a class="nav-link d-none d-md-block" href="<?php echo $basePath; ?>news.php">Tin tức</a>
 
-                <a href="#" id="searchTrigger" class="search-trigger-btn">
+                <!-- 3. Icon Actions (Direct children for even spacing) -->
+                <a href="#" id="searchTrigger" class="icon-link">
                     <i class="bi bi-search"></i>
                 </a>
                 
-                <a href="<?php echo $basePath; ?>cart.php" class="position-relative">
+                <a href="<?php echo $basePath; ?>cart.php" class="icon-link position-relative">
                     <i class="bi bi-bag"></i>
                     <?php if(isset($_SESSION['cart']) && count($_SESSION['cart']) > 0): ?>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm" style="font-size: 0.6rem;">
@@ -65,31 +66,34 @@
                     </ul>
                 </div>
 
-                <!-- 4. Nút Hamburger (Chỉ hiện trên Mobile) -->
+                <!-- Hamburger Button (Only Mobile) -->
                 <button class="navbar-toggler border-0 shadow-none d-md-none p-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
             </div>
         </div>
         
-        <!-- Mobile Menu Collapse (Ẩn hoàn toàn trên PC) -->
+        <!-- Mobile Menu Collapse (Only visible on mobile when toggled) -->
         <div class="collapse navbar-collapse d-md-none" id="navbarNav">
-            <div class="bg-white border-bottom w-100">
+            <div class="bg-white border-bottom w-100 shadow-sm">
                 <div class="container py-3">
                     <ul class="navbar-nav gap-2">
                         <li class="nav-item">
-                            <a class="nav-link py-2 fs-6 fw-bold border-bottom" href="<?php echo $basePath; ?>product.php">
-                                <i class="bi bi-phone me-2"></i> Điện thoại
+                            <a class="nav-link py-3 fs-6 fw-bold border-bottom d-flex align-items-center justify-content-between" href="<?php echo $basePath; ?>product.php">
+                                <span><i class="bi bi-phone me-2"></i> Điện thoại</span>
+                                <i class="bi bi-chevron-right small opacity-50"></i>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link py-2 fs-6 fw-bold border-bottom" href="<?php echo $basePath; ?>warranty.php">
-                                <i class="bi bi-shield-check me-2"></i> Bảo hành
+                            <a class="nav-link py-3 fs-6 fw-bold border-bottom d-flex align-items-center justify-content-between" href="<?php echo $basePath; ?>warranty.php">
+                                <span><i class="bi bi-shield-check me-2"></i> Bảo hành</span>
+                                <i class="bi bi-chevron-right small opacity-50"></i>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link py-2 fs-6 fw-bold" href="<?php echo $basePath; ?>news.php">
-                                <i class="bi bi-newspaper me-2"></i> Tin tức
+                            <a class="nav-link py-3 fs-6 fw-bold d-flex align-items-center justify-content-between" href="<?php echo $basePath; ?>news.php">
+                                <span><i class="bi bi-newspaper me-2"></i> Tin tức</span>
+                                <i class="bi bi-chevron-right small opacity-50"></i>
                             </a>
                         </li>
                     </ul>

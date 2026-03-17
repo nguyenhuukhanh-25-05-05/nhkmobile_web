@@ -50,11 +50,11 @@ img {
 
 /* --- NAVBAR PREMIUM --- */
 .navbar-premium {
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    height: 64px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    height: 54px; /* Shorter, modern navbar like Apple */
     padding: 0;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1000;
@@ -65,14 +65,17 @@ img {
 .navbar-centered-wrapper {
     display: flex;
     align-items: center;
-    justify-content: center; /* LUÔN CĂN GIỮA */
-    gap: 30px; /* KHOẢNG CÁCH ĐỀU NHAU GIỮA TẤT CẢ PHẦN TỬ */
+    justify-content: center; /* TẤT CẢ CĂN GIỮA */
+    gap: 40px; /* KHOẢNG CÁCH CÁCH ĐỀU NHAU GIỮA TẤT CẢ PHẦN TỬ */
     width: 100%;
+    max-width: none;
     margin: 0 auto;
+    padding: 0 20px;
 }
 
-.navbar-centered-wrapper .nav-link {
-    font-size: 13px;
+.navbar-centered-wrapper .nav-link,
+.navbar-centered-wrapper .icon-link {
+    font-size: 13px; /* Đưa về size nhỏ gọn cho navigation */
     font-weight: 500;
     color: #1d1d1f;
     opacity: 0.8;
@@ -80,10 +83,14 @@ img {
     transition: opacity 0.2s;
     text-decoration: none;
     white-space: nowrap;
+    display: flex;
+    align-items: center;
 }
 
-.navbar-centered-wrapper .nav-link:hover {
+.navbar-centered-wrapper .nav-link:hover,
+.navbar-centered-wrapper .icon-link:hover {
     opacity: 1;
+    color: #000;
 }
 
 .navbar-centered-wrapper i {
@@ -121,16 +128,7 @@ img {
     display: inline-flex !important;
     align-items: center;
     justify-content: center;
-    appearance: none !important;
-    -webkit-appearance: none !important;
-    -moz-appearance: none !important;
-}
-
-/* Xóa spinner nếu trình duyệt hiểu nhầm là input number */
-.dropdown-toggle::-webkit-inner-spin-button,
-.dropdown-toggle::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+    cursor: pointer;
 }
 
 /* Responsive Navbar */
@@ -164,11 +162,14 @@ img {
     }
 }
 
-@media (min-width: 769px) {
+@media (min-width: 768px) {
     .navbar-toggler {
         display: none !important;
     }
-    .navbar-collapse {
+    .navbar-collapse.collapse {
+        display: none !important; /* Đảm bảo menu mobile KHÔNG hiện trên PC */
+    }
+    .navbar-collapse.collapsing {
         display: none !important;
     }
 }
@@ -1055,7 +1056,7 @@ img {
         right: 0;
         left: auto;
     }
-    .navbar-unified-container {
+    .navbar-centered-wrapper {
         gap: 15px;
         justify-content: space-between;
         padding: 0 15px;
@@ -1074,10 +1075,18 @@ img {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-width: 40px;
-        min-height: 40px;
+        min-width: 32px;
+        min-height: 32px;
         position: relative;
-        z-index: 1070;
+    }
+    
+    .navbar-collapse {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #fff;
+        z-index: 1000;
     }
     
     /* Hero Mobile */
