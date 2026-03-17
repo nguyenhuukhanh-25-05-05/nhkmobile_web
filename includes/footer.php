@@ -92,7 +92,7 @@
     </style>
 
     <!-- Floating Contact Widget -->
-    <div class="floating-widget active" id="contactWidget">
+    <div class="floating-widget" id="contactWidget">
         <button class="widget-toggle" aria-label="Toggle Menu" onclick="document.getElementById('contactWidget').classList.toggle('active')">
             <span class="toggle-icon">‹</span>
         </button>
@@ -102,7 +102,7 @@
                 <span>Vị trí</span>
             </a>
             <a href="https://zalo.me/0333427187" target="_blank" class="widget-item zalo" title="Zalo Chat">
-                <img src="<?php echo isset($basePath) ? $basePath : ''; ?>assets/images/zalo.png" alt="Zalo" class="widget-img" style="width: 30px; object-fit: contain;">
+                <img src="<?php echo isset($basePath) ? $basePath : ''; ?>assets/images/zalo.jpg" alt="Zalo" class="widget-img" style="width: 30px; object-fit: contain;">
                 <span>Zalo</span>
             </a>
             <a href="#" class="widget-item ai" title="AI Chat" onclick="alert('Tính năng AI Chat đang được phát triển!')">
