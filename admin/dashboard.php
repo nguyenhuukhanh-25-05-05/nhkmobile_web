@@ -42,10 +42,24 @@ $basePath = "../";
 </head>
 <body>
 
+    <!-- MOBILE HEADER -->
+    <div class="mobile-header d-lg-none">
+        <button class="btn btn-light border-0 me-3" id="sidebarToggle">
+            <i class="bi bi-list fs-3"></i>
+        </button>
+        <img src="../assets/images/logo-k.svg" height="15" alt="Logo">
+    </div>
+
+    <!-- SIDEBAR OVERLAY -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <!-- SIDEBAR QUẢN TRỊ -->
-    <aside class="sidebar text-white d-none d-lg-block">
-        <div class="mb-5 px-3">
+    <aside class="sidebar text-white" id="sidebarMenu">
+        <div class="mb-5 px-3 d-flex justify-content-between align-items-center">
              <img src="../assets/images/logo-k.svg" height="20" alt="Logo" class="brightness-0 invert opacity-75">
+             <button class="btn btn-link text-white d-lg-none p-0" id="sidebarClose">
+                <i class="bi bi-x-lg fs-4"></i>
+             </button>
         </div>
         <nav>
             <a href="dashboard.php" class="nav-link-admin active"><i class="bi bi-speedometer2"></i> Tổng quan</a>
@@ -147,5 +161,22 @@ $basePath = "../";
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sidebar Toggle for Mobile
+        const sidebarMenu = document.getElementById('sidebarMenu');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const sidebarClose = document.getElementById('sidebarClose');
+
+        function toggleSidebar() {
+            sidebarMenu.classList.toggle('show');
+            sidebarOverlay.classList.toggle('show');
+            document.body.classList.toggle('overflow-hidden');
+        }
+
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', toggleSidebar);
+        sidebarClose.addEventListener('click', toggleSidebar);
+    </script>
 </body>
 </html>
