@@ -1,6 +1,7 @@
 <?php
 require_once 'includes/db.php';
 require_once 'includes/cart_functions.php';
+require_once 'includes/auth_functions.php';
 
 // Thực hiện đồng bộ giỏ hàng ngay khi bắt đầu
 syncCartWithDatabase($pdo);

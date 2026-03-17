@@ -50,6 +50,15 @@ if (isset($_GET['delete'])) {
     exit;
 }
 
+// C. TOGGLE SẢN PHẨM NỔI BẬT
+if (isset($_GET['toggle_featured'])) {
+    $id = $_GET['toggle_featured'];
+    $stmt = $pdo->prepare("UPDATE products SET is_featured = NOT is_featured WHERE id = ?");
+    $stmt->execute([$id]);
+    header("Location: products.php?msg=success");
+    exit;
+}
+
 /**
  * 2. LẤY DỮ LIỆU HIỂN THỊ
  */
@@ -88,6 +97,9 @@ if (isset($_GET['edit'])) {
             <a href="dashboard.php" class="nav-link-admin"><i class="bi bi-speedometer2"></i> Tổng quan</a>
             <a href="products.php" class="nav-link-admin active"><i class="bi bi-box-seam"></i> Sản phẩm</a>
             <a href="orders.php" class="nav-link-admin"><i class="bi bi-receipt"></i> Đơn hàng</a>
+            <a href="users.php" class="nav-link-admin"><i class="bi bi-people"></i> Khách hàng</a>
+            <a href="warranties.php" class="nav-link-admin"><i class="bi bi-shield-check"></i> Bảo hành IMEI</a>
+            <a href="news.php" class="nav-link-admin"><i class="bi bi-newspaper"></i> Tin tức & Tech</a>
             
             <div class="mt-5 pt-5 border-top border-secondary mx-3">
                  <a href="../index.php" class="nav-link-admin text-info ps-0 mb-2"><i class="bi bi-box-arrow-left"></i> Xem Website</a>
@@ -138,13 +150,24 @@ if (isset($_GET['edit'])) {
                             <td>
                                 <img src="../assets/images/<?php echo $p['image']; ?>" class="product-img-admin rounded-3" onerror="this.src='https://placehold.co/60'">
                             </td>
-                            <td><div class="fw-bold"><?php echo $p['name']; ?></div></td>
+                            <td>
+                                <div class="fw-bold d-flex align-items-center gap-2">
+                                    <?php echo $p['name']; ?>
+                                    <?php if($p['is_featured']): ?>
+                                        <i class="bi bi-star-fill text-warning" title="Nổi bật (Hiện trên trang chủ)"></i>
+                                    <?php endif; ?>
+                                </div>
+                            </td>
                             <td><span class="badge bg-light text-dark border fw-normal"><?php echo $p['category']; ?></span></td>
                             <td class="fw-bold text-primary"><?php echo number_format($p['price'], 0, ',', '.'); ?>₫</td>
                             <td><span class="text-secondary"><?php echo $p['stock']; ?> chiếc</span></td>
                             <td class="text-end">
+                                <!-- Nút Đánh dấu / Gỡ bỏ Nổi bật -->
+                                <a href="products.php?toggle_featured=<?php echo $p['id']; ?>" class="btn btn-sm border p-2 <?php echo $p['is_featured'] ? 'btn-warning text-white' : 'btn-light text-warning'; ?>" title="Ghim lên đầu trang chủ">
+                                    <i class="bi bi-star<?php echo $p['is_featured'] ? '-fill' : ''; ?>"></i>
+                                </a>
                                 <!-- Nút Sửa: Truyền ID qua biến GET 'edit' -->
-                                <a href="products.php?edit=<?php echo $p['id']; ?>" class="btn btn-sm btn-light border p-2"><i class="bi bi-pencil text-primary"></i></a>
+                                <a href="products.php?edit=<?php echo $p['id']; ?>" class="btn btn-sm btn-light border p-2 ms-1"><i class="bi bi-pencil text-primary"></i></a>
                                 <!-- Nút Xóa: Truyền ID qua biến GET 'delete' kèm confirm -->
                                 <a href="products.php?delete=<?php echo $p['id']; ?>" class="btn btn-sm btn-light border p-2 text-danger ms-1" onclick="return confirm('Toàn bộ thông tin máy sẽ bị xóa, bạn chắc chứ?')"><i class="bi bi-trash"></i></a>
                             </td>

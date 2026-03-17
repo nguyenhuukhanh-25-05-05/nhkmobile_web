@@ -51,6 +51,9 @@ $basePath = "../";
             <a href="dashboard.php" class="nav-link-admin active"><i class="bi bi-speedometer2"></i> Tổng quan</a>
             <a href="products.php" class="nav-link-admin"><i class="bi bi-box-seam"></i> Sản phẩm</a>
             <a href="orders.php" class="nav-link-admin"><i class="bi bi-receipt"></i> Đơn hàng</a>
+            <a href="users.php" class="nav-link-admin"><i class="bi bi-people"></i> Khách hàng</a>
+            <a href="warranties.php" class="nav-link-admin"><i class="bi bi-shield-check"></i> Bảo hành IMEI</a>
+            <a href="news.php" class="nav-link-admin"><i class="bi bi-newspaper"></i> Tin tức & Tech</a>
             
             <div class="mt-5 pt-5 border-top border-secondary mx-3">
                  <a href="../index.php" class="nav-link-admin text-info ps-0 mb-2"><i class="bi bi-box-arrow-left"></i> Xem Website</a>
@@ -104,7 +107,10 @@ $basePath = "../";
         <div class="stat-card shadow-sm border-0 rounded-4 p-4 bg-white">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h5 class="fw-bold mb-0">Đơn đặt hàng gần đây</h5>
-                <a href="orders.php" class="btn btn-sm btn-light border px-3 rounded-pill fw-bold">Xem tất cả</a>
+                <div>
+                    <a href="export_stats.php" class="btn btn-sm btn-success border px-3 rounded-pill fw-bold shadow-sm me-2"><i class="bi bi-file-earmark-excel me-1"></i> Xuất CSV</a>
+                    <a href="orders.php" class="btn btn-sm btn-light border px-3 rounded-pill fw-bold">Xem tất cả</a>
+                </div>
             </div>
             
             <div class="table-responsive">

@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS products (
     stock INT DEFAULT 0,
     image VARCHAR(255),
     description TEXT,
+    is_featured BOOLEAN DEFAULT FALSE, -- Thêm cờ sản phẩm nổi bật
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -51,6 +52,7 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255) NOT NULL,
     phone VARCHAR(20),
     address TEXT,
+    status VARCHAR(20) DEFAULT 'active', -- Thêm trạng thái: active, banned
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -79,11 +81,33 @@ CREATE TABLE IF NOT EXISTS news (
 -- Cập nhật cấu trúc Cart Items (Cho phép liên kết với user_id thay vì chỉ session_id)
 ALTER TABLE cart_items ADD COLUMN IF NOT EXISTS user_id INT REFERENCES users(id);
 
+-- Thêm bảng Bảo hành (Warranties)
+CREATE TABLE warranties (
+    id SERIAL PRIMARY KEY,
+    imei VARCHAR(50) UNIQUE NOT NULL,
+    product_id INT REFERENCES products(id),
+    order_id INT REFERENCES orders(id),
+    status VARCHAR(50) DEFAULT 'Active', -- Active, Expired, Voided
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Thêm bảng Đăng ký nhận tin (Subscribers)
+CREATE TABLE subscribers (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Dữ liệu mẫu Admin (Mật khẩu sẽ được hash bởi init-db.php)
 -- Tài khoản mặc định: nhk_admin / nhk@2026
 INSERT INTO admins (username, password) VALUES ('nhk_admin', 'nhk@2026') ON CONFLICT (username) DO NOTHING;
 -- Tài khoản phụ: admin / admin123
 INSERT INTO admins (username, password) VALUES ('admin', 'admin123') ON CONFLICT (username) DO NOTHING;
+
+-- Dữ liệu mẫu Subscribers
+INSERT INTO subscribers (email) VALUES ('khachhang1@gmail.com') ON CONFLICT (email) DO NOTHING;
+INSERT INTO subscribers (email) VALUES ('nguoihammocongnghe@yahoo.com') ON CONFLICT (email) DO NOTHING;
 
 -- Dữ liệu mẫu Sản phẩm (Sửa tên tệp ảnh có dấu cách)
 INSERT INTO products (name, category, price, stock, image, description) VALUES 

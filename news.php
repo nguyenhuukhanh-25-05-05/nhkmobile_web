@@ -19,7 +19,7 @@ include 'includes/header.php';
 
 <main>
     <!-- HERO SECTION: Premium Dark -->
-    <section class="hero-premium position-relative overflow-hidden d-flex align-items-center" style="min-height: 50vh;">
+    <section class="hero-premium position-relative overflow-hidden d-flex align-items-center pt-5 mt-5" style="min-height: 50vh;">
         <div class="hero-bg-gradient"></div>
         <div class="container position-relative z-2 text-center text-lg-start animate-fade-in">
             <div class="glass-badge d-inline-block px-4 py-2 mb-4 rounded-pill">
@@ -89,14 +89,58 @@ include 'includes/header.php';
                 <div class="position-relative z-2">
                     <h2 class="display-5 fw-bold mb-4" style="color: #ffffff !important;">Đừng bỏ lỡ bất kỳ nhịp đập nào.</h2>
                     <p class="h5 mb-5 fw-light" style="color: rgba(255,255,255,0.7) !important;">Đăng ký để nhận tin tức công nghệ mới nhất qua Email hàng tuần.</p>
-                    <form class="newsletter-form-premium d-flex flex-column flex-md-row gap-3 max-w-500 mx-auto" onsubmit="event.preventDefault(); alert('Cảm ơn bạn đã đăng ký! Tính năng nhận bản tin đang được hoàn thiện.');">
-                        <input type="email" class="form-control form-control-lg rounded-pill px-4" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #ffffff !important;" placeholder="Địa chỉ email của bạn..." required>
-                        <button type="submit" class="btn btn-primary btn-lg px-5 rounded-pill shadow-lg fw-bold" style="background: #0071e3; border: none; color: #fff !important;">Đăng ký</button>
+                    <form id="newsletterForm" class="newsletter-form-premium d-flex flex-column flex-md-row gap-3 max-w-500 mx-auto">
+                        <input type="email" id="newsletterEmail" class="form-control form-control-lg rounded-pill px-4" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #ffffff !important;" placeholder="Địa chỉ email của bạn..." required>
+                        <button type="submit" id="btnSubscribe" class="btn btn-primary btn-lg px-5 rounded-pill shadow-lg fw-bold" style="background: #0071e3; border: none; color: #fff !important;">Đăng ký</button>
                     </form>
+                    <div id="newsletterMsg" class="mt-3 small" style="display: none;"></div>
                 </div>
             </div>
         </div>
     </section>
 </main>
+
+<script>
+document.getElementById('newsletterForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const emailInput = document.getElementById('newsletterEmail');
+    const btnSubscribe = document.getElementById('btnSubscribe');
+    const msgDiv = document.getElementById('newsletterMsg');
+    
+    const email = emailInput.value.trim();
+    if(!email) return;
+
+    btnSubscribe.disabled = true;
+    btnSubscribe.textContent = 'Đang gửi...';
+    msgDiv.style.display = 'none';
+
+    fetch('subscribe.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: email })
+    })
+    .then(res => res.json())
+    .then(data => {
+        btnSubscribe.disabled = false;
+        btnSubscribe.textContent = 'Đăng ký';
+        msgDiv.style.display = 'block';
+        
+        if(data.status === 'success') {
+            msgDiv.innerHTML = `<span class="text-success"><i class="bi bi-check-circle-fill me-1"></i> ${data.message}</span>`;
+            emailInput.value = ''; // Reset form
+        } else {
+            msgDiv.innerHTML = `<span class="text-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i> ${data.message}</span>`;
+        }
+    })
+    .catch(err => {
+        btnSubscribe.disabled = false;
+        btnSubscribe.textContent = 'Đăng ký';
+        msgDiv.style.display = 'block';
+        msgDiv.innerHTML = `<span class="text-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i> Lỗi kết nối máy chủ!</span>`;
+    });
+});
+</script>
 
 <?php include 'includes/footer.php'; ?>

@@ -52,9 +52,36 @@ $products = $stmt->fetchAll();
 $pageTitle = $search ? "Kết quả tìm kiếm: $search" : ($category ? "Điện thoại $category" : "Tất cả điện thoại");
 $basePath = "";
 
-// Nhúng phần đầu trang (Header)
-include 'includes/header.php';
-?>
+<?php include 'includes/header.php'; ?>
+
+<style>
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+.btn-premium-glass { 
+    background: rgba(255,255,255,0.8); 
+    border: 1px solid rgba(0,0,0,0.1); 
+    color: #1d1d1f; 
+    border-radius: 980px; 
+    transition: all 0.3s ease; 
+    font-weight: 500; 
+    text-decoration: none;
+}
+.btn-premium-glass:hover { 
+    background: #fff; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
+    transform: translateY(-2px); 
+    color: #1d1d1f;
+}
+.btn-premium-glass.active, .btn-premium-glass.active:hover { 
+    background: #1d1d1f; 
+    color: #ffffff; 
+    border-color: #1d1d1f; 
+}
+.filter-brands-scroll {
+    padding: 10px 0;
+    margin-bottom: -10px; /* offset padding */
+}
+</style>
 
     <main class="bg-premium-light min-vh-100">
         <section class="py-huge mt-5">

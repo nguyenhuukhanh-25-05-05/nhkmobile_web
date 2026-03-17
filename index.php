@@ -9,8 +9,8 @@ require_once 'includes/db.php';
  * TRUY VẤN DỮ LIỆU ĐỂ HIỂN THỊ LÊN TRANG CHỦ
  */
 
-// 1. Lấy danh sách 8 sản phẩm tiêu biểu (Sản phẩm mới nhất)
-$stmt = $pdo->query("SELECT * FROM products ORDER BY created_at DESC LIMIT 8");
+// 1. Lấy danh sách 8 sản phẩm tiêu biểu (Ưu tiên nổi bật trước, sau đó mới đến mới nhất)
+$stmt = $pdo->query("SELECT * FROM products ORDER BY is_featured DESC, created_at DESC LIMIT 8");
 $featuredProducts = $stmt->fetchAll();
 
 // 2. Lấy danh sách sản phẩm Apple nổi bật

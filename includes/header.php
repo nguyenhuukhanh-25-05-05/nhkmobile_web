@@ -50,7 +50,7 @@
                             <?php if (isset($_SESSION['user_id'])): ?>
                                 <li><div class="dropdown-header text-dark small fw-bold">Chào, <?php echo $_SESSION['user_fullname']; ?></div></li>
                                 <li><a class="dropdown-item rounded-3 small" href="#"><i class="bi bi-person-badge me-2"></i>Tài khoản</a></li>
-                                <li><a class="dropdown-item rounded-3 small" href="#"><i class="bi bi-clock-history me-2"></i>Lịch sử mua hàng</a></li>
+                                <li><a class="dropdown-item rounded-3 small" href="<?php echo $basePath; ?>order_history.php"><i class="bi bi-clock-history me-2"></i>Lịch sử mua hàng</a></li>
                                 <li><hr class="dropdown-divider opacity-50"></li>
                                 <li><a class="dropdown-item rounded-3 small text-danger" href="<?php echo $basePath; ?>logout.php"><i class="bi bi-box-arrow-right me-2"></i>Đăng xuất</a></li>
                             <?php elseif (isset($_SESSION['admin_id'])): ?>
@@ -64,11 +64,11 @@
                             <?php endif; ?>
                         </ul>
                     </div>
+                    
+                    <button class="navbar-toggler border-0 ms-2 d-md-none shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-icon" style="width: 24px;"></span>
+                    </button>
                 </div>
             </div>
-            
-            <button class="navbar-toggler border-0 ms-2 d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon" style="width: 18px;"></span>
-            </button>
         </div>
     </nav>

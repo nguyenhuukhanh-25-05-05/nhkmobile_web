@@ -13,15 +13,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Vui lòng nhập đầy đủ tài khoản và mật khẩu.";
     } else {
         // 1. Thử đăng nhập User (Email)
-        $stmt = $pdo->prepare("SELECT id, fullname, password FROM users WHERE email = ?");
+        $stmt = $pdo->prepare("SELECT id, fullname, password, status FROM users WHERE email = ?");
         $stmt->execute([$email_or_user]);
         $user = $stmt->fetch();
 
         if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_fullname'] = $user['fullname'];
-            header("Location: " . $redirect);
-            exit;
+            if ($user['status'] === 'banned') {
+                $error = "Tài khoản của bạn đã bị khóa do vi phạm chính sách.";
+            } else {
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['user_fullname'] = $user['fullname'];
+                header("Location: " . $redirect);
+                exit;
+            }
         }
 
         // 2. Thử đăng nhập Admin (Username)

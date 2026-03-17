@@ -54,6 +54,9 @@ $basePath = "../";
             <a href="dashboard.php" class="nav-link-admin"><i class="bi bi-speedometer2"></i> Tổng quan</a>
             <a href="products.php" class="nav-link-admin"><i class="bi bi-box-seam"></i> Sản phẩm</a>
             <a href="orders.php" class="nav-link-admin active"><i class="bi bi-receipt"></i> Đơn hàng</a>
+            <a href="users.php" class="nav-link-admin"><i class="bi bi-people"></i> Khách hàng</a>
+            <a href="warranties.php" class="nav-link-admin"><i class="bi bi-shield-check"></i> Bảo hành IMEI</a>
+            <a href="news.php" class="nav-link-admin"><i class="bi bi-newspaper"></i> Tin tức & Tech</a>
             
             <div class="mt-5 pt-5 border-top border-secondary mx-3">
                  <a href="../index.php" class="nav-link-admin text-info ps-0 mb-2"><i class="bi bi-box-arrow-left"></i> Xem Website</a>
@@ -129,6 +132,11 @@ $basePath = "../";
                                 </span>
                             </td>
                             <td class="text-end">
+                                <!-- Nút In Hóa Đơn -->
+                                <a href="invoice.php?order_id=<?php echo $o['id']; ?>" target="_blank" class="btn btn-sm btn-light border p-2 text-primary shadow-sm me-1" title="In Hóa Đơn (PDF)">
+                                    <i class="bi bi-printer"></i>
+                                </a>
+                                
                                 <!-- FORM PHP: Gửi trạng thái mới lên server -->
                                 <form action="orders.php" method="POST" style="display: inline-block;">
                                     <input type="hidden" name="id" value="<?php echo $o['id']; ?>">
