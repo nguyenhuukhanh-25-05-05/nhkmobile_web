@@ -663,6 +663,7 @@ body {
     height: 120%;
     background: radial-gradient(circle at center, rgba(0, 113, 227, 0.15) 0%, transparent 70%);
     z-index: 1;
+    pointer-events: none;
 }
 
 .hero-title-main {
@@ -734,6 +735,7 @@ body {
     filter: blur(150px);
     opacity: 0.3;
     z-index: 0;
+    pointer-events: none;
 }
 
 /* --- Scroll Indicator --- */
@@ -743,6 +745,7 @@ body {
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
+    pointer-events: none;
 }
 
 .mouse {
@@ -960,6 +963,7 @@ body {
     .navbar-premium {
         height: auto;
         padding: 10px 0;
+        z-index: 1050 !important;
     }
     .navbar-unified-container {
         gap: 15px;
