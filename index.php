@@ -58,8 +58,8 @@ include 'includes/header.php';
             </div>
         </section>
 
-        <!-- PHẦN SẢN PHẨM MỚI NHẤT: Glass Grid -->
-        <section class="py-huge bg-dark-deep">
+        <!-- PHẦN SẢN PHẨM MỚI NHẤT: White Section Transition -->
+        <section class="py-huge bg-premium-light">
             <div class="container px-xl-5">
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-5 gap-4">
                     <div class="animate-reveal">
@@ -103,8 +103,8 @@ include 'includes/header.php';
             </div>
         </section>
 
-        <!-- PHẦN TRẢI NGHIỆM: Immersive Glass Section -->
-        <section class="py-huge position-relative">
+        <!-- PHẦN TRẢI NGHIỆM: Immersive Light Section -->
+        <section class="py-huge position-relative bg-premium-light">
              <div class="bg-blur-blob blob-1"></div>
              <div class="bg-blur-blob blob-2"></div>
              <div class="container position-relative z-1">

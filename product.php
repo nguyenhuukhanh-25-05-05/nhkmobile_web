@@ -40,54 +40,59 @@ $basePath = "";
 include 'includes/header.php';
 ?>
 
-    <main class="py-5 mt-5">
-        <div class="container px-xl-5">
-            <!-- Phần tiêu đề trang -->
-            <header class="mb-5 d-flex justify-content-between align-items-end">
-                <div>
-                    <h1 class="display-5 fw-bold mb-0">
-                        <?php echo $search ? "Tìm kiếm: '$search'" : ($category ? $category : "Sản phẩm."); ?>
-                    </h1>
-                    <p class="text-secondary mt-2">Tìm thấy <?php echo count($products); ?> thiết bị phù hợp.</p>
-                </div>
-                <!-- Bộ lọc nhanh danh mục -->
-                <div class="d-none d-md-flex gap-2">
-                    <a href="product.php" class="btn btn-sm <?php echo !$category ? 'btn-dark' : 'btn-outline-dark'; ?> rounded-pill px-3">Tất cả</a>
-                    <a href="product.php?category=Apple" class="btn btn-sm <?php echo $category == 'Apple' ? 'btn-dark' : 'btn-outline-dark'; ?> rounded-pill px-3">Apple</a>
-                    <a href="product.php?category=Samsung" class="btn btn-sm <?php echo $category == 'Samsung' ? 'btn-dark' : 'btn-outline-dark'; ?> rounded-pill px-3">Samsung</a>
-                </div>
-            </header>
-
-            <!-- Danh sách sản phẩm -->
-            <div class="row g-4">
-                <?php if (empty($products)): ?>
-                    <div class="col-12 text-center py-5">
-                        <p class="text-secondary h5">Không tìm thấy sản phẩm nào khớp với yêu cầu của bạn.</p>
+    <main class="bg-premium-light min-vh-100">
+        <section class="py-huge mt-5">
+            <div class="container px-xl-5">
+                <!-- Phần tiêu đề trang -->
+                <header class="mb-5 d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3 animate-fade-in">
+                    <div>
+                        <h1 class="display-3 fw-800 mb-0 tracking-tight">
+                            <?php echo $search ? "Kết quả cho <span class='text-primary'>'$search'</span>" : ($category ? $category : "Tất cả sản phẩm."); ?>
+                        </h1>
+                        <p class="text-secondary h5 fw-light mt-3">Khám phá <?php echo count($products); ?> siêu phẩm công nghệ bậc nhất.</p>
                     </div>
-                <?php else: ?>
-                    <?php foreach ($products as $p): ?>
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <div class="card h-100 border-0 product-card-hover bg-white p-3 rounded-4 shadow-sm">
+                    <!-- Bộ lọc nhanh danh mục -->
+                    <div class="d-flex gap-2">
+                        <a href="product.php" class="btn btn-premium-glass <?php echo !$category ? 'active' : ''; ?> px-4 text-dark border-dark">Tất cả</a>
+                        <a href="product.php?category=Apple" class="btn btn-premium-glass <?php echo $category == 'Apple' ? 'active' : ''; ?> px-4 text-dark border-dark">Apple</a>
+                        <a href="product.php?category=Samsung" class="btn btn-premium-glass <?php echo $category == 'Samsung' ? 'active' : ''; ?> px-4 text-dark border-dark">Samsung</a>
+                    </div>
+                </header>
+
+                <!-- Danh sách sản phẩm -->
+                <div class="row g-4 pt-4">
+                    <?php if (empty($products)): ?>
+                        <div class="col-12 text-center py-5">
+                            <div class="glass-card p-5 rounded-5 border-dashed">
+                                <i class="bi bi-search display-1 mb-4 opacity-10"></i>
+                                <p class="text-secondary h5">Rất tiếc, không tìm thấy sản phẩm nào khớp với yêu cầu của bạn.</p>
+                                <a href="product.php" class="btn btn-premium-dark mt-4">Quay lại cửa hàng</a>
+                            </div>
+                        </div>
+                    <?php else: ?>
+                        <?php foreach ($products as $index => $p): ?>
+                        <div class="col-6 col-md-4 col-lg-3 animate-reveal" style="animation-delay: <?php echo $index * 0.05; ?>s">
                             <a href="product-detail.php?id=<?php echo $p['id']; ?>" class="text-decoration-none">
-                                <div class="text-center mb-3 p-3">
-                                    <img src="assets/images/<?php echo $p['image']; ?>" class="img-fluid" alt="<?php echo $p['name']; ?>" style="max-height: 180px;" onerror="this.src='https://placehold.co/200x250?text=Phone'">
-                                </div>
-                                <div class="card-body p-0">
-                                    <h6 class="fw-bold text-dark mb-1"><?php echo $p['name']; ?></h6>
-                                    <p class="card-text text-secondary small mb-3 text-truncate"><?php echo $p['description']; ?></p>
-                                    <p class="text-primary fw-bold mb-0"><?php echo number_format($p['price'], 0, ',', '.'); ?>₫</p>
-                                    <div class="mt-3">
-                                        <!-- Nút thêm vào giỏ hàng truyền ID qua GET -->
-                                        <a href="cart.php?add=<?php echo $p['id']; ?>" class="btn btn-dark btn-sm rounded-pill px-4 w-100">Mua ngay</a>
+                                <div class="card-glass-product h-100 p-4 transition-all">
+                                    <div class="img-wrapper-premium mb-4 rounded-4 overflow-hidden shadow-inner">
+                                        <img src="assets/images/<?php echo $p['image']; ?>" class="img-fluid" alt="<?php echo $p['name']; ?>" style="max-height: 220px;" onerror="this.src='https://placehold.co/300x400/f5f5f7/1d1d1f?text=Phone'">
+                                    </div>
+                                    <div class="card-content-premium">
+                                        <span class="category-tag mb-2 d-inline-block"><?php echo $p['category']; ?></span>
+                                        <h6 class="fw-bold text-dark mb-2 text-truncate-2"><?php echo $p['name']; ?></h6>
+                                        <div class="d-flex align-items-center justify-content-between mt-3">
+                                            <span class="price-premium"><?php echo number_format($p['price'], 0, ',', '.'); ?>₫</span>
+                                            <div class="btn-buy-mini shadow-sm"><i class="bi bi-plus-lg"></i></div>
+                                        </div>
                                     </div>
                                 </div>
                             </a>
                         </div>
-                    </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
             </div>
-        </div>
+        </section>
     </main>
 
 <?php 

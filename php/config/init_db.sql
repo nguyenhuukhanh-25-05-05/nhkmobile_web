@@ -73,14 +73,15 @@ ALTER TABLE cart_items ADD COLUMN IF NOT EXISTS user_id INT REFERENCES users(id)
 -- Lưu ý: Thực tế nên dùng password_hash, đây là bản demo
 INSERT INTO admins (username, password) VALUES ('admin', 'admin123') ON CONFLICT (username) DO NOTHING;
 
--- Dữ liệu mẫu Sản phẩm (Seed data cực kỳ đầy đủ)
+-- Dữ liệu mẫu Sản phẩm (Sử dụng ảnh thật trong assets/images)
 INSERT INTO products (name, category, price, stock, image, description) VALUES 
 ('iPhone 17 Pro Max', 'Apple', 32990000, 45, 'ai_ip17_pm.png', 'Siêu phẩm Apple 2026 với trí tuệ nhân tạo tích hợp sâu.'),
-('iPhone 16 Pro', 'Apple', 28990000, 20, 'ip16_pro.png', 'Thiết kế sang trọng, hiệu năng mạnh mẽ.'),
-('Samsung Galaxy S25 Ultra', 'Samsung', 29490000, 30, 's25_ultra.png', 'Đỉnh cao công nghệ màn hình và camera từ Samsung.'),
-('Samsung Galaxy Z Fold 7', 'Samsung', 41000000, 10, 'zfold7.png', 'Điện thoại màn hình gập thế hệ mới nhất.'),
-('Xiaomi 15 Pro', 'Xiaomi', 18500000, 50, 'xiaomi15.png', 'Flagship Xiaomi với sạc siêu nhanh và camera Leica.'),
-('Oppo Find X8', 'Oppo', 17900000, 15, 'oppo_x8.png', 'Nghệ thuật nhiếp ảnh di động.'),
-('iPad Pro M4', 'Tablet', 25500000, 25, 'ipad_m4.png', 'Máy tính bảng mạnh nhất thế giới hiện nay.'),
-('AirPods Pro 3', 'Accessory', 5900000, 100, 'airpods3.png', 'Âm thanh không dây trung thực.'),
-('Apple Watch Ultra 3', 'Watch', 21000000, 12, 'aw_ultra3.png', 'Đồng hồ thông minh dành cho người thích thám hiểm.');
+('iPhone 16 Pro', 'Apple', 28990000, 20, 'ai_ip16_pro.png', 'Thiết kế sang trọng, hiệu năng mạnh mẽ.'),
+('Samsung Galaxy S25 Ultra', 'Samsung', 29490000, 30, 'ai_s25_ultra.png', 'Đỉnh cao công nghệ màn hình và camera từ Samsung.'),
+('Samsung Galaxy S24 Ultra', 'Samsung', 24990000, 15, 'ai_s24_ultra.png', 'Siêu phẩm Galaxy với AI kiến tạo trải nghiệm mới.'),
+('Xiaomi 15 Pro', 'Xiaomi', 18500000, 50, 'ai_mi15t.png', 'Flagship Xiaomi với sạc siêu nhanh và camera Leica.'),
+('Xiaomi Mix Flip', 'Xiaomi', 21500000, 10, 'ai_mi_flip.png', 'Điện thoại gập thời thượng từ nhà Xiaomi.'),
+('Oppo Find X10', 'Oppo', 19900000, 15, 'oppo_findx10.png', 'Nghệ thuật nhiếp ảnh di động với cảm biến lớn nhất.'),
+('Vivo X200 Pro', 'Vivo', 17900000, 25, 'ai_vivo_x200_black.png', 'Đỉnh cao nhiếp ảnh chân dung và thiết kế tối giản.'),
+('Honor Magic 10', 'Honor', 16500000, 20, 'honor magic10.png', 'Công nghệ pin và màn hình vượt thời đại.'),
+('OnePlus 15', 'OnePlus', 15900000, 30, 'oneplus15.png', 'Sát thủ flagship với hiệu năng cực đại.');
