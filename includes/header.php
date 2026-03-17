@@ -44,11 +44,29 @@
                             </span>
                         <?php endif; ?>
                     </a>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                    </a>
+
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-toggle no-caret" data-bs-toggle="dropdown">
+                            <i class="bi bi-person fs-5"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end glass-card border-light shadow-lg rounded-4 p-2 mt-3">
+                            <?php if (isset($_SESSION['user_id'])): ?>
+                                <li><div class="dropdown-header text-dark small fw-bold">Chào, <?php echo $_SESSION['user_fullname']; ?></div></li>
+                                <li><a class="dropdown-item rounded-3 small" href="#"><i class="bi bi-person-badge me-2"></i>Tài khoản</a></li>
+                                <li><a class="dropdown-item rounded-3 small" href="#"><i class="bi bi-clock-history me-2"></i>Lịch sử mua hàng</a></li>
+                                <li><hr class="dropdown-divider opacity-50"></li>
+                                <li><a class="dropdown-item rounded-3 small text-danger" href="<?php echo $basePath; ?>logout.php"><i class="bi bi-box-arrow-right me-2"></i>Đăng xuất</a></li>
+                            <?php elseif (isset($_SESSION['admin_id'])): ?>
+                                <li><div class="dropdown-header text-primary small fw-bold">Quản trị viên</div></li>
+                                <li><a class="dropdown-item rounded-3 small" href="<?php echo $basePath; ?>admin/dashboard.php"><i class="bi bi-speedometer2 me-2"></i>Bảng điều khiển</a></li>
+                                <li><hr class="dropdown-divider opacity-50"></li>
+                                <li><a class="dropdown-item rounded-3 small text-danger" href="<?php echo $basePath; ?>logout.php"><i class="bi bi-box-arrow-right me-2"></i>Đăng xuất</a></li>
+                            <?php else: ?>
+                                <li><a class="dropdown-item rounded-3 small" href="<?php echo $basePath; ?>login.php"><i class="bi bi-box-arrow-in-right me-2"></i>Đăng nhập</a></li>
+                                <li><a class="dropdown-item rounded-3 small" href="<?php echo $basePath; ?>register.php"><i class="bi bi-person-plus me-2"></i>Đăng ký</a></li>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
                 </div>
             </div>
             

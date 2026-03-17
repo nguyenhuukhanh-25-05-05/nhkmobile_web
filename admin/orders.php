@@ -1,14 +1,6 @@
 <?php
 // Bắt đầu phiên làm việc
-session_start();
-
-/**
- * KIỂM TRA ĐĂNG NHẬP ADMIN
- */
-if (!isset($_SESSION['admin_logged_in'])) {
-    header("Location: login.php");
-    exit;
-}
+require_once 'admin_auth.php';
 
 // Nhúng file kết nối CSDL Postgres
 require_once '../includes/db.php';

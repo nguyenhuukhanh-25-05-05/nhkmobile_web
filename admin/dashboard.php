@@ -1,17 +1,5 @@
 <?php
-// Bắt đầu phiên làm việc
-session_start();
-
-/**
- * KIỂM TRA QUYỀN TRUY CẬP
- * Nếu chưa đăng nhập Admin thì đẩy về trang login.php
- */
-if (!isset($_SESSION['admin_logged_in'])) {
-    header("Location: login.php");
-    exit;
-}
-
-// Nhúng file kết nối CSDL và xử lý các hàm chung
+require_once 'admin_auth.php';
 require_once '../includes/db.php';
 
 /**
@@ -26,11 +14,15 @@ $totalRevenue = $stmtRevenue->fetchColumn() ?: 0;
 $stmtOrders = $pdo->query("SELECT COUNT(*) FROM orders WHERE status = 'Pending'");
 $newOrdersCount = $stmtOrders->fetchColumn();
 
-// 3. Đếm tổng số lượng máy đang có trong kho
+// 3. Lấy tổng số Khách hàng (Users)
+$stmtUsers = $pdo->query("SELECT COUNT(*) FROM users");
+$totalUsers = $stmtUsers->fetchColumn();
+
+// 4. Đếm tổng số lượng máy đang có trong kho
 $stmtProducts = $pdo->query("SELECT COUNT(*) FROM products");
 $totalProducts = $stmtProducts->fetchColumn();
 
-// 4. Lấy danh sách 6 đơn hàng vừa đặt mới nhất để hiện bảng
+// 5. Lấy danh sách 6 đơn hàng vừa đặt mới nhất để hiện bảng
 $stmtRecent = $pdo->query("SELECT * FROM orders ORDER BY created_at DESC LIMIT 6");
 $recentOrders = $stmtRecent->fetchAll();
 
@@ -90,6 +82,13 @@ $basePath = "../";
                     <h6 class="text-secondary small mb-2 text-uppercase fw-bold">Đơn hàng mới</h6>
                     <h3 class="fw-bold mb-0 h2"><?php echo $newOrdersCount; ?></h3>
                     <div class="text-secondary small mt-2">Cần duyệt ngay</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card border-0 shadow-sm p-4 rounded-4 bg-white">
+                    <h6 class="text-secondary small mb-2 text-uppercase fw-bold">Tổng khách hàng</h6>
+                    <h3 class="fw-bold mb-0 h2"><?php echo $totalUsers; ?></h3>
+                    <div class="text-secondary small mt-2">Thành viên hiện có</div>
                 </div>
             </div>
             <div class="col-md-4">

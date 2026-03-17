@@ -1,8 +1,4 @@
 <?php
-/**
- * TRÌNH KHỞI TẠO CƠ SỞ DỮ LIỆU (DATABASE INITIALIZER) - PHIÊN BẢN NÂNG CẤP
- */
-
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 

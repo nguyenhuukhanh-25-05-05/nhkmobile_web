@@ -5,8 +5,12 @@ session_start();
 // Nhúng file kết nối CSDL
 require_once 'includes/db.php';
 require_once 'includes/cart_functions.php';
+require_once 'includes/auth_functions.php';
 
-// Đồng bộ trước khi kiểm tra
+// YÊU CẦU ĐĂNG NHẬP MỚI CHO THANH TOÁN
+require_login();
+
+// Thực hiện đồng bộ giỏ hàng ngay khi bắt đầu
 syncCartWithDatabase($pdo);
 
 // Kiểm tra giỏ hàng có đồ không, nếu không quay lại trang chủ
@@ -30,11 +34,12 @@ if (isset($_POST['place_order'])) {
     $name = $_POST['full_name'];
     $phone = $_POST['phone'];
     $payment = $_POST['payment_method'];
+    $userId = get_logged_in_user_id(); // Lấy ID người dùng đang đăng nhập
 
     // Thực hiện chèn đơn hàng vào bảng orders trong Postgres
-    $sqlOrder = "INSERT INTO orders (customer_name, customer_phone, total_price, status, payment_method) VALUES (?, ?, ?, 'Pending', ?) RETURNING id";
+    $sqlOrder = "INSERT INTO orders (customer_name, customer_phone, total_price, status, payment_method, user_id) VALUES (?, ?, ?, 'Pending', ?, ?) RETURNING id";
     $stmtOrder = $pdo->prepare($sqlOrder);
-    $stmtOrder->execute([$name, $phone, $total, $payment]);
+    $stmtOrder->execute([$name, $phone, $total, $payment, $userId]);
     $orderId = $stmtOrder->fetchColumn(); // Lấy ID vừa chèn (Postgres dùng RETURNING)
 
     // Lưu từng sản phẩm trong giỏ vào bảng order_items

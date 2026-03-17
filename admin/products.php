@@ -1,16 +1,5 @@
 <?php
-// Khởi tạo phiên làm việc (Session)
-session_start();
-
-/**
- * KIỂM TRA ĐĂNG NHẬP
- * Nếu chưa đăng nhập (Session admin_logged_in không tồn tại),
- * thì đá người dùng về trang login.php
- */
-if (!isset($_SESSION['admin_logged_in'])) {
-    header("Location: login.php");
-    exit;
-}
+require_once 'admin_auth.php';
 
 // Nhúng file kết nối cơ sở dữ liệu Postgres
 require_once '../includes/db.php';

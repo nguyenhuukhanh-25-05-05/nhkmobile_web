@@ -10,11 +10,14 @@ syncCartWithDatabase($pdo);
  * Nhận ID từ URL (VD: cart.php?add=5)
  */
 if (isset($_GET['add'])) {
-    $id = $_GET['add'];
+    // YÊU CẦU ĐĂNG NHẬP MỚI CHO MUA HÀNG
+    require_login();
+    
+    $productId = (int)$_GET['add'];
     
     // Lấy thông tin sản phẩm từ CSDL để chắc chắn ID tồn tại
     $stmt = $pdo->prepare("SELECT * FROM products WHERE id = ?");
-    $stmt->execute([$id]);
+    $stmt->execute([$productId]);
     $product = $stmt->fetch();
 
     if ($product) {

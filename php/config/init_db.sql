@@ -43,7 +43,18 @@ CREATE TABLE IF NOT EXISTS cart_items (
     UNIQUE(session_id, product_id)
 );
 
--- 5. Bảng Admin (Lưu trữ tài khoản quản trị)
+-- 5. Bảng User (Khách hàng)
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    fullname VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    phone VARCHAR(20),
+    address TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 6. Bảng Admin (Lưu trữ tài khoản quản trị)
 CREATE TABLE IF NOT EXISTS admins (
     id SERIAL PRIMARY KEY,
     username VARCHAR(100) UNIQUE NOT NULL,
@@ -52,7 +63,14 @@ CREATE TABLE IF NOT EXISTS admins (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Dữ liệu mẫu Admin (Mặc định: admin / admin123 - Lưu ý nên băm password nếu dùng thật)
+-- Cập nhật cấu trúc Orders (Thêm user_id để theo dõi lịch sử)
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS user_id INT REFERENCES users(id);
+
+-- Cập nhật cấu trúc Cart Items (Cho phép liên kết với user_id thay vì chỉ session_id)
+ALTER TABLE cart_items ADD COLUMN IF NOT EXISTS user_id INT REFERENCES users(id);
+
+-- Dữ liệu mẫu Admin (Mặc định: admin / admin123)
+-- Lưu ý: Thực tế nên dùng password_hash, đây là bản demo
 INSERT INTO admins (username, password) VALUES ('admin', 'admin123') ON CONFLICT (username) DO NOTHING;
 
 -- Dữ liệu mẫu Sản phẩm (Seed data cực kỳ đầy đủ)
