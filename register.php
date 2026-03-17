@@ -64,23 +64,23 @@ include 'includes/header.php';
                     <form action="register.php" method="POST">
                         <div class="mb-4">
                             <label class="form-label text-white small fw-bold">Họ và tên *</label>
-                            <input type="text" name="fullname" class="form-control btn-premium-glass py-3 px-4" placeholder="Nguyễn Văn A" required>
+                            <input type="text" name="fullname" class="form-control btn-premium-glass py-3 px-4" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #ffffff !important;" placeholder="Nguyễn Văn A" required>
                         </div>
                         <div class="mb-4">
                             <label class="form-label text-white small fw-bold">Email *</label>
-                            <input type="email" name="email" class="form-control btn-premium-glass py-3 px-4" placeholder="email@vi-du.com" required>
+                            <input type="email" name="email" class="form-control btn-premium-glass py-3 px-4" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #ffffff !important;" placeholder="email@vi-du.com" required>
                         </div>
                         <div class="mb-4">
                             <label class="form-label text-white small fw-bold">Mật khẩu *</label>
-                            <input type="password" name="password" class="form-control btn-premium-glass py-3 px-4" placeholder="••••••••" required>
+                            <input type="password" name="password" class="form-control btn-premium-glass py-3 px-4" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #ffffff !important; letter-spacing: 2px;" placeholder="••••••••" required>
                         </div>
                         <div class="mb-4">
                             <label class="form-label text-white small fw-bold">Số điện thoại</label>
-                            <input type="text" name="phone" class="form-control btn-premium-glass py-3 px-4" placeholder="09xx xxx xxx">
+                            <input type="text" name="phone" class="form-control btn-premium-glass py-3 px-4" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #ffffff !important;" placeholder="09xx xxx xxx">
                         </div>
                         <div class="mb-5">
                             <label class="form-label text-white small fw-bold">Địa chỉ giao hàng</label>
-                            <textarea name="address" class="form-control btn-premium-glass py-3 px-4" rows="2" placeholder="Số nhà, tên đường, phường/xã..."></textarea>
+                            <textarea name="address" class="form-control btn-premium-glass py-3 px-4" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #ffffff !important;" rows="2" placeholder="Số nhà, tên đường, phường/xã..."></textarea>
                         </div>
                         <button type="submit" class="btn btn-premium-dark w-100 py-3 fw-bold shadow-lg mb-4">Đăng ký ngay</button>
                         <div class="text-center">

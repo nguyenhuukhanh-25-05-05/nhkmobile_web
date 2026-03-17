@@ -69,14 +69,14 @@ include 'includes/header.php';
                     <form action="login.php?redirect=<?php echo urlencode($redirect); ?>" method="POST">
                         <div class="mb-4">
                             <label class="form-label text-white small fw-bold">Email hoặc Username *</label>
-                            <input type="text" name="email_or_user" class="form-control btn-premium-glass py-3 px-4" placeholder="Nhập email hoăc admin" required>
+                            <input type="text" name="email_or_user" class="form-control btn-premium-glass py-3 px-4" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #ffffff !important;" placeholder="Nhập email hoặc admin" required>
                         </div>
                         <div class="mb-5">
                             <label class="form-label text-white small fw-bold d-flex justify-content-between">
                                 Mật khẩu *
-                                <a href="#" class="text-secondary x-small">Quên mật khẩu?</a>
+                                <a href="#" class="text-secondary-light x-small text-decoration-none">Quên mật khẩu?</a>
                             </label>
-                            <input type="password" name="password" class="form-control btn-premium-glass py-3 px-4" placeholder="••••••••" required>
+                            <input type="password" name="password" class="form-control btn-premium-glass py-3 px-4" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #ffffff !important; letter-spacing: 2px;" placeholder="••••••••" required>
                         </div>
                         <button type="submit" class="btn btn-premium-dark w-100 py-3 fw-bold shadow-lg mb-4">Đăng nhập</button>
                         <div class="text-center">
