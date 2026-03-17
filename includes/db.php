@@ -1,3 +1,4 @@
+<?php
 // 1. Tìm DATABASE_URL (Cách phổ biến nhất trên Render/Heroku)
 $databaseUrl = getenv('DATABASE_URL');
 if (!$databaseUrl) $databaseUrl = $_ENV['DATABASE_URL'] ?? $_SERVER['DATABASE_URL'] ?? null;

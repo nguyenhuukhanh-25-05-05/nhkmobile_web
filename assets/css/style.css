@@ -627,3 +627,279 @@ body {
 /* 
    TRANG CHI TIẾT SẢN PHẨM (PRODUCT DETAIL)
 */
+
+/* 
+   PREMIUM UI ENHANCEMENTS (Glassmorphism & Immersive Design)
+*/
+
+/* --- Tokens & Utilities --- */
+:root {
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-blur: blur(20px);
+    --primary-gradient: linear-gradient(135deg, #0071e3, #6da3ff);
+    --dark-deep: #000000;
+}
+
+.fw-800 { font-weight: 800; }
+.tracking-tight { letter-spacing: -0.03em; }
+.leading-relaxed { line-height: 1.6; }
+.py-huge { padding: 120px 0; }
+.rounded-max { border-radius: 40px; }
+.shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+
+/* --- Hero Premium --- */
+.hero-premium {
+    background-color: #000;
+    color: #fff;
+    min-height: 100vh;
+}
+
+.hero-bg-gradient {
+    position: absolute;
+    top: -20%;
+    right: -10%;
+    width: 80%;
+    height: 120%;
+    background: radial-gradient(circle at center, rgba(0, 113, 227, 0.15) 0%, transparent 70%);
+    z-index: 1;
+}
+
+.hero-title-main {
+    line-height: 1.1;
+    color: #fff;
+}
+
+.text-gradient {
+    background: linear-gradient(to right, #fff, #86868b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.text-primary-gradient {
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.glass-badge {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+}
+
+.btn-premium-dark {
+    background: #fff;
+    color: #000;
+    border-radius: 980px;
+    border: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-premium-dark:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(255, 255, 255, 0.1);
+}
+
+.btn-premium-glass {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: var(--glass-blur);
+    color: #fff;
+    border: 1px solid var(--glass-border);
+    border-radius: 980px;
+}
+
+.btn-premium-glass:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+}
+
+.hero-image-main {
+    z-index: 2;
+    filter: drop-shadow(0 0 50px rgba(0, 113, 227, 0.2));
+}
+
+.hero-image-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+    background: #0071e3;
+    filter: blur(150px);
+    opacity: 0.3;
+    z-index: 0;
+}
+
+/* --- Scroll Indicator --- */
+.scroll-indicator {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+.mouse {
+    width: 24px;
+    height: 40px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    position: relative;
+    margin: 0 auto;
+}
+
+.mouse::after {
+    content: '';
+    width: 4px;
+    height: 8px;
+    background: #fff;
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px;
+    animation: mouse-scroll 1.5s infinite;
+}
+
+@keyframes mouse-scroll {
+    0% { transform: translate(-50%, 0); opacity: 1; }
+    100% { transform: translate(-50%, 15px); opacity: 0; }
+}
+
+/* --- Product Glass Grid --- */
+.bg-dark-deep { background-color: #0a0a0a; }
+
+.card-glass-product {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: var(--glass-blur);
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-glass-product:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(0, 113, 227, 0.3);
+    transform: translateY(-10px);
+}
+
+.img-wrapper-premium {
+    background: #000;
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 250px;
+}
+
+.category-tag {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #86868b;
+}
+
+.price-premium {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.btn-buy-mini {
+    width: 36px;
+    height: 36px;
+    background: #fff;
+    color: #000;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+/* --- Immersive Section --- */
+.bg-blur-blob {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    filter: blur(120px);
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.blob-1 { top: 0; right: -200px; background: #0071e3; }
+.blob-2 { bottom: 0; left: -200px; background: #60a5fa; }
+
+.glass-panel {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.icon-circle {
+    width: 50px;
+    height: 50px;
+    background: #fff;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #0071e3;
+}
+
+.play-button-glass {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 32px;
+}
+
+/* --- Animations --- */
+.animate-fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fade-in 1s forwards;
+}
+
+.animate-float {
+    animation: float 6s ease-in-out infinite;
+}
+
+.animate-reveal {
+    opacity: 0;
+    animation: reveal 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fade-in {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+@keyframes reveal {
+    from { opacity: 0; transform: translateY(50px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
