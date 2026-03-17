@@ -27,6 +27,19 @@ $options = [
 
 try {
      $pdo = new PDO($dsn, $user, $pass, $options);
+
+     // TỰ ĐỘNG TẠO BẢNG (Giống Migration trong C#)
+     // Kiểm tra xem bảng 'products' đã tồn tại chưa
+     $tableCheck = $pdo->query("SELECT 1 FROM information_schema.tables WHERE table_name = 'products'");
+     if (!$tableCheck->fetch()) {
+         // Nếu chưa có bảng, tự động chạy file init_db.sql
+         $sqlFile = __DIR__ . '/../php/config/init_db.sql';
+         if (file_exists($sqlFile)) {
+             $sql = file_get_contents($sqlFile);
+             $pdo->exec($sql);
+         }
+     }
+
 } catch (\PDOException $e) {
      die("Lỗi kết nối CSDL: " . $e->getMessage());
 }
