@@ -2,7 +2,9 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="NHK Mobile - Chuyên cung cấp các dòng iPhone, Samsung, Xiaomi chính hãng với giá tốt nhất và hỗ trợ trả góp 0%.">
+    <meta name="keywords" content="nhk mobile, điện thoại giá rẻ, iphone 15, samsung s24, trả góp 0%">
     <title><?php echo isset($pageTitle) ? $pageTitle : 'NHK Mobile'; ?></title>
     
     <!-- Bootstrap 5 CSS -->
