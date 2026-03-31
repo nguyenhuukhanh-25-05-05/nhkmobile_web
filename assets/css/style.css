@@ -1,103 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap');
+
 /* 
-   TOKENS & BIẾN SỐ CHÍNH
-   Định nghĩa các màu sắc và font chữ chuẩn theo phong cách Apple
+   NHK MOBILE V2.0 - DESIGN SYSTEM RENAISSANCE
+   A clean, modern, and high-performance design language.
 */
 :root {
-    --bs-body-font-family: 'Inter', sans-serif;
+    /* TYPOGRAPHY */
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --bs-body-font-family: var(--font-body);
+
+    /* COLORS (HSL for precision) */
+    --accent-blue: #0071e3;
+    --accent-blue-hover: #0077ed;
     --primary-black: #1d1d1f;
-    --apple-gray: #f5f5f7;
-    --apple-blue: #0071e3;
-    --apple-silver: #d2d2d7;
+    --apple-bg: #fbfbfd;
+    --pure-white: #ffffff;
+    
+    /* GLASSMORPHISM 2.0 TOKENS */
+    --glass-bg: rgba(255, 255, 255, 0.72);
+    --glass-border: rgba(255, 255, 255, 0.4);
+    --glass-shadow: rgba(0, 0, 0, 0.04);
+    --glass-blur: 20px;
+    --glass-blur-heavy: 45px;
+    
+    /* SPACING & RADIUS */
+    --radius-standard: 12px;
+    --radius-premium: 22px;
+    --section-gap: 80px;
 }
 
 * {
     box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 html, body {
-    background-color: #fff;
+    background-color: var(--apple-bg);
     color: var(--primary-black);
-    overflow-x: hidden !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    position: relative;
-    max-width: 100%;
-}
-
-/* Triệt tiêu hoàn toàn khả năng tràn lề ngang */
-main, section, div, header, footer {
-    max-width: 100%;
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.5;
     overflow-x: hidden;
+    width: 100%;
 }
 
-/* Reset Bootstrap negative margins on mobile to prevent overflow */
-@media (max-width: 576px) {
-    .row {
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-    }
-    .container, .container-fluid {
-        padding-left: 15px !important;
-        padding-right: 15px !important;
-    }
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    letter-spacing: -0.02em;
 }
 
-img {
-    max-width: 100%;
-    height: auto;
-}
-
-/* --- NAVBAR PREMIUM --- */
+/* --- V2.0 NAVBAR (APPLE INSPIRED) --- */
 .navbar-premium {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-    height: 54px; /* Shorter, modern navbar like Apple */
-    padding: 0;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 1000;
-    display: flex;
-    align-items: center;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    height: 48px; /* Slimmer, cleaner like Apple's main nav */
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 2000;
 }
 
 .navbar-centered-wrapper {
     display: flex;
     align-items: center;
-    justify-content: center; /* TẤT CẢ CĂN GIỮA */
-    gap: 40px; /* KHOẢNG CÁCH CÁCH ĐỀU NHAU GIỮA TẤT CẢ PHẦN TỬ */
+    justify-content: center;
     width: 100%;
-    max-width: none;
+    max-width: 1024px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 22px;
 }
 
-.navbar-centered-wrapper .nav-link,
-.navbar-centered-wrapper .icon-link {
-    font-size: 13px; /* Đưa về size nhỏ gọn cho navigation */
-    font-weight: 500;
-    color: #1d1d1f;
-    opacity: 0.8;
-    padding: 0;
-    transition: opacity 0.2s;
+.nav-link, .icon-link {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--primary-black);
+    opacity: 0.72;
+    transition: opacity 0.3s;
     text-decoration: none;
-    white-space: nowrap;
+    padding: 0 16px;
+    height: 48px;
     display: flex;
     align-items: center;
 }
 
-.navbar-centered-wrapper .nav-link:hover,
-.navbar-centered-wrapper .icon-link:hover {
+.nav-link:hover, .icon-link:hover {
     opacity: 1;
     color: #000;
-}
-
-.navbar-centered-wrapper i {
-    font-size: 18px;
-    color: #1d1d1f;
-    line-height: 1;
-    display: block;
 }
 
 .navbar-brand {
@@ -152,29 +143,34 @@ img {
         height: 54px;
     }
     .navbar-centered-wrapper {
-        gap: 0; 
-        justify-content: space-between; /* Đẩy logo và icon ra 2 đầu hoặc giãn đều */
-        padding: 0 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         width: 100%;
+        padding: 0 16px;
+        gap: 0;
     }
-    .navbar-centered-wrapper i {
-        font-size: 18px;
-        padding: 5px;
-    }
-    .navbar-brand img {
-        height: 22px; /* Logo mobile vừa phải */
+    /* Đảm bảo 3 phần tử chiếm không gian bằng nhau để Logo ở giữa */
+    .navbar-toggler, 
+    .navbar-brand, 
+    .icon-link {
+        flex: 1;
+        display: flex;
+        justify-content: center;
     }
     .navbar-toggler {
-        display: block !important;
+        justify-content: flex-start;
+    }
+    .icon-link {
+        justify-content: flex-end;
+    }
+    .navbar-brand img {
+        height: 20px;
+    }
+    .navbar-toggler {
         border: none !important;
         outline: none !important;
-        box-shadow: none !important;
-        padding: 0 !important;
-    }
-    .navbar-toggler-icon {
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.7%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
-        width: 20px !important;
-        height: 20px !important;
+        background: transparent;
     }
 }
 
@@ -190,91 +186,107 @@ img {
     }
 }
 
-/* 
-   HERO SECTION - PHẦN ĐẦU TRANG CHỦ (GIAO DIỆN CHIA ĐÔI)
-*/
-.hero-split {
+/* --- HERO V2.0 --- */
+.hero-premium {
+    background-color: var(--apple-bg);
     padding: 120px 0;
-    background-image: url('../images/hero.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    position: relative;
-    width: 100%;
+    z-index: 1;
 }
 
-/* Lớp phủ để làm chữ dễ đọc hơn nếu ảnh quá sáng/tối */
-.hero-split::before {
-    content: '';
+.hero-bg-gradient {
     position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(255, 255, 255, 0.1); /* Lớp phủ nhẹ */
+    top: -20%;
+    right: -10%;
+    width: 60%;
+    height: 80%;
+    background: radial-gradient(circle at center, rgba(0, 113, 227, 0.08) 0%, rgba(0, 113, 227, 0) 70%);
+    filter: blur(var(--glass-blur-heavy));
+    z-index: -1;
     pointer-events: none;
 }
 
-.hero-product-info {
-    max-width: 400px;
-    z-index: 2;
+.hero-title-main {
+    font-size: clamp(2.5rem, 8vw, 5.5rem);
+    line-height: 1.05;
+    margin-bottom: 24px;
 }
 
-.hero-title-split {
-    font-size: 4rem;
+/* --- GLASS PRODUCT CARDS V2.0 --- */
+.card-glass-product {
+    background: var(--pure-white);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    border-radius: var(--radius-premium);
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    box-shadow: 0 4px 12px var(--glass-shadow);
+}
+
+.card-glass-product:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 113, 227, 0.1);
+}
+
+.img-wrapper-premium {
+    position: relative;
+    background: #f5f5f7;
+    margin: 8px;
+    border-radius: calc(var(--radius-premium) - 8px);
+    aspect-ratio: 4/5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.6s cubic-bezier(0.2, 1, 0.2, 1);
+}
+
+.card-glass-product:hover .img-wrapper-premium img {
+    transform: scale(1.05);
+}
+
+.category-tag {
+    font-size: 11px;
     font-weight: 600;
-    letter-spacing: -0.01em;
-    margin-bottom: 0.5rem;
+    color: var(--accent-blue);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
 }
 
-.hero-price-split {
-    font-size: 1.5rem;
-    font-weight: 400;
-    margin-bottom: 1rem;
+.price-premium {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 600;
 }
 
-.hero-desc-split {
-    font-size: 1rem;
-    color: #1d1d1f;
-    line-height: 1.5;
-    margin-bottom: 2rem;
-    max-width: 300px;
+.btn-buy-mini {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--primary-black);
+    color: var(--pure-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
 }
 
-.hero-center-image {
-    max-width: 100%;
-    height: auto;
-    z-index: 1;
+.btn-buy-mini:hover {
+    background: var(--accent-blue);
     transform: scale(1.1);
 }
 
-/* Tùy chỉnh nút trong Hero */
-.btn-hero-black {
-    background: #000;
-    color: #fff;
-    padding: 12px 28px;
-    border-radius: 980px;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 14px;
-    transition: all 0.2s;
+/* --- GLASS PANELS & UTILITIES --- */
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-premium);
+    box-shadow: 0 20px 60px var(--glass-shadow);
 }
 
-.btn-hero-black:hover {
-    background: #333;
-    color: #fff;
-}
+.rounded-max { border-radius: 36px; }
 
-.btn-hero-link {
-    color: #0066cc;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.btn-hero-link:hover {
-    text-decoration: underline;
-}
+.py-huge { padding: 120px 0; }
 
 /* 
    NÚT BẤM PHONG CÁCH APPLE 
@@ -1216,4 +1228,69 @@ img {
         padding-left: 20px;
         padding-right: 20px;
     }
+}
+
+/* 
+   EFFECTS & ANIMATIONS 
+*/
+.glass-panel {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+}
+
+.text-primary-gradient {
+    background: linear-gradient(135deg, #0071e3, #40a9ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+[class*="animate-"] {
+    opacity: 0;
+    animation-fill-mode: forwards;
+}
+
+.animate-reveal {
+    animation: reveal-up 1.2s cubic-bezier(0.2, 1, 0.2, 1) forwards;
+}
+
+.animate-float {
+    animation: float 6s ease-in-out infinite, fade-in 1.5s ease-out forwards;
+}
+
+@keyframes reveal-up {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+@keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Scroll indicator animation */
+.scroll-indicator .mouse {
+    width: 2px;
+    height: 15px;
+    background: #000;
+    animation: scroll-ping 2s infinite;
+}
+
+@keyframes scroll-ping {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(20px); opacity: 0; }
 }

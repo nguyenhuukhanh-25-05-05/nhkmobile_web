@@ -1,4 +1,4 @@
 <?php
-echo "PHP is working correctly on Render.";
-phpinfo();
+// PHP is working correctly on Render.
+// This file can be safely deleted.
 ?>

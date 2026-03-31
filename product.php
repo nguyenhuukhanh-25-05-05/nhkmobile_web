@@ -124,30 +124,32 @@ include 'includes/header.php';
                     </div>
                 </header>
 
-                <!-- Danh sách sản phẩm -->
+                <!-- Danh sách sản phẩm V2.0 -->
                 <div class="row g-4 pt-4">
                     <?php if (empty($products)): ?>
                         <div class="col-12 text-center py-5">
-                            <div class="glass-card p-5 rounded-5 border-dashed">
+                            <div class="glass-panel p-5 rounded-max border-dashed">
                                 <i class="bi bi-search display-1 mb-4 opacity-10"></i>
                                 <p class="text-secondary h5">Rất tiếc, không tìm thấy sản phẩm nào khớp với yêu cầu của bạn.</p>
-                                <a href="product.php" class="btn btn-premium-dark mt-4">Quay lại cửa hàng</a>
+                                <a href="product.php" class="btn btn-dark rounded-pill px-5 py-2 mt-4">Quay lại cửa hàng</a>
                             </div>
                         </div>
                     <?php else: ?>
                         <?php foreach ($products as $index => $p): ?>
                         <div class="col-6 col-md-4 col-lg-3 animate-reveal" style="animation-delay: <?php echo $index * 0.05; ?>s">
                             <a href="product-detail.php?id=<?php echo e($p['id']); ?>" class="text-decoration-none">
-                                <div class="card-glass-product h-100 p-4 transition-all">
-                                    <div class="img-wrapper-premium mb-4 rounded-4 overflow-hidden shadow-inner">
-                                        <img src="assets/images/<?php echo e($p['image']); ?>" class="img-fluid" alt="<?php echo e($p['name']); ?>" style="max-height: 220px;" onerror="this.src='https://placehold.co/300x400/f5f5f7/1d1d1f?text=Phone'">
+                                <div class="card-glass-product h-100">
+                                    <div class="img-wrapper-premium">
+                                        <img src="assets/images/<?php echo e($p['image']); ?>" class="img-fluid" alt="<?php echo e($p['name']); ?>" onerror="this.src='https://placehold.co/300x400/f5f5f7/1d1d1f?text=Phone'">
                                     </div>
-                                    <div class="card-content-premium">
-                                        <span class="category-tag mb-2 d-inline-block"><?php echo e($p['category']); ?></span>
-                                        <h6 class="fw-bold text-dark mb-2 text-truncate-2"><?php echo e($p['name']); ?></h6>
+                                    <div class="p-4 pt-2">
+                                        <span class="category-tag mb-1 d-inline-block"><?php echo e($p['category']); ?></span>
+                                        <h6 class="fw-bold text-dark mb-2 text-truncate"><?php echo e($p['name']); ?></h6>
                                         <div class="d-flex align-items-center justify-content-between mt-3">
                                             <span class="price-premium"><?php echo number_format($p['price'], 0, ',', '.'); ?>₫</span>
-                                            <div class="btn-buy-mini shadow-sm btn-add-to-cart-ajax" data-product-id="<?php echo e($p['id']); ?>" style="cursor: pointer;"><i class="bi bi-plus-lg"></i></div>
+                                            <div class="btn-buy-mini btn-add-to-cart-ajax" data-product-id="<?php echo e($p['id']); ?>">
+                                                <i class="bi bi-plus-lg"></i>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

@@ -28,21 +28,27 @@
     <nav class="navbar navbar-expand-md navbar-light fixed-top navbar-premium">
         <div class="container-fluid">
             <div class="navbar-centered-wrapper">
-                <!-- 1. Logo (Leftmost of the center block) -->
+                <!-- 1. Hamburger Button (Dành cho Mobile - Chuyển sang bên trái) -->
+                <button class="navbar-toggler border-0 shadow-none d-md-none p-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- 2. Logo (Cố định ở giữa trên di động, bên trái trên desktop) -->
                 <a class="navbar-brand" href="<?php echo $basePath; ?>index.php">
                     <img src="<?php echo $basePath; ?>assets/images/logo-k.svg" height="28" alt="Logo">
                 </a>
 
-                <!-- 2. Main Menu Links (Direct children for even spacing) -->
+                <!-- 3. Link menu chính (Chỉ hiện trên PC) -->
                 <a class="nav-link d-none d-md-block" href="<?php echo $basePath; ?>product.php">Điện thoại</a>
                 <a class="nav-link d-none d-md-block" href="<?php echo $basePath; ?>warranty.php">Bảo hành</a>
                 <a class="nav-link d-none d-md-block" href="<?php echo $basePath; ?>news.php">Tin tức</a>
 
-                <!-- 3. Icon Actions (Direct children for even spacing) -->
-                <a href="#" id="searchTrigger" class="icon-link">
+                <!-- 4. Icon tìm kiếm (Ẩn trên di động) -->
+                <a href="#" id="searchTrigger" class="icon-link d-none d-md-flex">
                     <i class="bi bi-search"></i>
                 </a>
                 
+                <!-- 5. Giỏ hàng (Luôn hiện) -->
                 <a href="<?php echo $basePath; ?>cart.php" class="icon-link position-relative">
                     <i class="bi bi-bag"></i>
                     <?php 
@@ -56,20 +62,16 @@
                     </span>
                 </a>
 
+                <!-- 6. Tài khoản (Ẩn trên di động, dùng menu Offcanvas trên PC) -->
                 <?php if (isset($_SESSION['user_id']) || isset($_SESSION['admin_id'])): ?>
-                    <a href="#accountOffcanvas" role="button" class="icon-link text-dark" data-bs-toggle="offcanvas" aria-controls="accountOffcanvas">
+                    <a href="#accountOffcanvas" role="button" class="icon-link text-dark d-none d-md-flex" data-bs-toggle="offcanvas" aria-controls="accountOffcanvas">
                         <i class="bi bi-person fs-5"></i>
                     </a>
                 <?php else: ?>
-                    <a href="<?php echo $basePath; ?>login.php" class="icon-link text-dark">
+                    <a href="<?php echo $basePath; ?>login.php" class="icon-link text-dark d-none d-md-flex">
                         <i class="bi bi-person fs-5"></i>
                     </a>
                 <?php endif; ?>
-
-                <!-- Hamburger Button (Only Mobile) -->
-                <button class="navbar-toggler border-0 shadow-none d-md-none p-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
             </div>
         </div>
         

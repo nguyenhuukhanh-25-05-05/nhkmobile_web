@@ -106,69 +106,73 @@ $total = 0;
 $cartItems = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
 ?>
 
-    <main class="py-5 mt-5">
-        <div class="container px-xl-5">
-            <h1 class="display-5 fw-bold mb-5 italic">Giỏ hàng của bạn.</h1>
+    <main class="py-huge">
+        <div class="container">
+            <h1 class="display-3 fw-bold mb-5 animate-reveal">Giỏ hàng của bạn.</h1>
 
-            <!-- Nếu giỏ hàng trống -->
             <?php if (empty($cartItems)): ?>
-                <div class="text-center py-5">
-                    <i class="bi bi-cart-x display-1 text-secondary mb-4"></i>
-                    <h3>Giỏ hàng đang trống</h3>
-                    <p class="text-secondary">Hãy quay lại sắm cho mình một chiếc điện thoại mới nhé!</p>
-                    <a href="product.php" class="btn btn-dark rounded-pill px-5 mt-3">Tiếp tục mua sắm</a>
+                <div class="glass-panel p-5 text-center animate-reveal">
+                    <div class="mb-4 opacity-25">
+                        <i class="bi bi-cart-x" style="font-size: 80px;"></i>
+                    </div>
+                    <h3 class="fw-bold">Giỏ hàng còn trống.</h3>
+                    <p class="text-secondary mb-4">Hãy chọn cho mình những siêu phẩm công nghệ mới nhất nhé!</p>
+                    <a href="product.php" class="btn btn-dark rounded-pill px-5 py-3 fw-bold">Tiếp tục mua sắm</a>
                 </div>
             <?php else: ?>
-                <!-- Form gửi dữ liệu bằng POST để cập nhật giỏ hàng -->
                 <form action="cart.php" method="POST">
                     <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
                     <div class="row g-5">
-                        <div class="col-lg-8">
+                        <div class="col-lg-8 animate-reveal">
                             <?php foreach ($cartItems as $id => $item): 
-                                $subtotal = $item['price'] * $item['qty']; // Tính thành tiền cho từng sản phẩm
-                                $total += $subtotal; // Cộng dồn vào tổng tiền cuối cùng
+                                $subtotal = $item['price'] * $item['qty'];
+                                $total += $subtotal;
                             ?>
-                                <div id="cart-row-<?php echo (int)$id; ?>" class="border-bottom pb-4 mb-4 d-flex align-items-center justify-content-between">
-                                     <div class="d-flex align-items-center gap-4">
-                                          <div class="bg-light rounded-4 p-3" style="width: 100px;">
-                                               <img src="assets/images/<?php echo e($item['image']); ?>" class="img-fluid" onerror="this.src='https://via.placeholder.com/100'">
-                                          </div>
-                                          <div>
-                                               <h5 class="fw-bold mb-1"><?php echo e($item['name']); ?></h5>
-                                               <p class="text-primary fw-bold mb-0"><?php echo number_format($item['price'], 0, ',', '.'); ?>₫</p>
-                                          </div>
-                                     </div>
-                                     <div class="text-end">
-                                          <div class="d-flex align-items-center gap-3">
-                                               <!-- Input nhập số lượng -->
-                                               <input type="number" name="qty[<?php echo (int)$id; ?>]" value="<?php echo (int)$item['qty']; ?>" class="form-control text-center rounded-pill cart-qty-input" data-product-id="<?php echo (int)$id; ?>" style="width: 70px;">
-                                               <a href="cart.php?remove=<?php echo (int)$id; ?>" class="text-danger" onclick="return confirm('Xóa khỏi giỏ hàng?')"><i class="bi bi-trash"></i></a>
-                                          </div>
-                                          <div id="subtotal-<?php echo (int)$id; ?>" class="mt-2 small fw-bold">Thành tiền: <?php echo number_format($subtotal, 0, ',', '.'); ?>₫</div>
-                                     </div>
+                                <div id="cart-row-<?php echo (int)$id; ?>" class="glass-panel p-4 mb-4 d-flex align-items-center justify-content-between border-light">
+                                    <div class="d-flex align-items-center gap-4">
+                                        <div class="bg-light rounded-4 overflow-hidden" style="width: 100px; aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center;">
+                                            <img src="assets/images/<?php echo e($item['image']); ?>" class="img-fluid" style="max-height: 80%;" onerror="this.src='https://via.placeholder.com/100'">
+                                        </div>
+                                        <div>
+                                            <h5 class="fw-bold mb-1"><?php echo e($item['name']); ?></h5>
+                                            <p class="price-premium text-primary mb-0"><?php echo number_format($item['price'], 0, ',', '.'); ?>₫</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <input type="number" name="qty[<?php echo (int)$id; ?>]" value="<?php echo (int)$item['qty']; ?>" class="form-control text-center rounded-pill border-light bg-light cart-qty-input" data-product-id="<?php echo (int)$id; ?>" style="width: 70px; height: 40px;">
+                                            <a href="cart.php?remove=<?php echo (int)$id; ?>" class="btn btn-light rounded-circle shadow-sm" onclick="return confirm('Xóa khỏi giỏ hàng?')">
+                                                <i class="bi bi-trash text-danger"></i>
+                                            </a>
+                                        </div>
+                                        <div id="subtotal-<?php echo (int)$id; ?>" class="mt-2 small fw-bold text-secondary">
+                                            Tổng: <?php echo number_format($subtotal, 0, ',', '.'); ?>₫
+                                        </div>
+                                    </div>
                                 </div>
                             <?php endforeach; ?>
-                            
-                            <button type="submit" name="update_cart" class="btn btn-outline-dark rounded-pill px-4 d-none">Cập nhật giỏ hàng</button>
                         </div>
 
-                        <!-- Cột tính tổng tiền -->
-                        <div class="col-lg-4">
-                            <div class="bg-light rounded-5 p-5 position-sticky" style="top: 100px;">
-                                <h4 class="fw-bold mb-4">Tổng cộng</h4>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span class="text-secondary">Tạm tính</span>
+                        <!-- TOTAL SUMMARY V2.0 -->
+                        <div class="col-lg-4 animate-reveal" style="animation-delay: 0.2s">
+                            <div class="glass-panel p-5 sticky-top" style="top: 100px; border-width: 2px;">
+                                <h4 class="fw-bold mb-4">Tóm tắt đơn hàng</h4>
+                                <div class="d-flex justify-content-between mb-3 text-secondary">
+                                    <span>Tạm tính</span>
                                     <span class="cart-total-value"><?php echo number_format($total, 0, ',', '.'); ?>₫</span>
                                 </div>
-                                <div class="d-flex justify-content-between mb-4 border-bottom pb-3">
-                                    <span class="text-secondary">Giao hàng</span>
+                                <div class="d-flex justify-content-between mb-4 border-bottom pb-3 text-secondary">
+                                    <span>Giao hàng</span>
                                     <span class="text-success fw-bold">Miễn phí</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-5">
-                                    <h4 class="fw-bold">Tổng tiền</h4>
-                                    <h4 class="fw-bold text-primary cart-total-value"><?php echo number_format($total, 0, ',', '.'); ?>₫</h4>
+                                    <h4 class="fw-bold">Tổng cộng</h4>
+                                    <h4 class="price-premium text-primary cart-total-value" style="font-size: 1.8rem;">
+                                        <?php echo number_format($total, 0, ',', '.'); ?>₫
+                                    </h4>
                                 </div>
-                                <a href="checkout.php" class="btn btn-dark btn-lg w-100 rounded-pill py-3 fw-bold">Tiến hành đặt hàng</a>
+                                <a href="checkout.php" class="btn btn-dark btn-lg w-100 rounded-pill py-3 fw-bold shadow-lg">Thanh toán ngay</a>
+                                <p class="text-center mt-3 mb-0 small text-secondary">An toàn & Bảo mật 100%</p>
                             </div>
                         </div>
                     </div>

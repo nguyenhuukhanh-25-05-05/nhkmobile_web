@@ -24,8 +24,8 @@ include 'includes/header.php';
         <div class="container px-xl-5">
             <div class="row g-5">
                 <div class="col-lg-6">
-                    <div class="product-detail-img-wrapper bg-white p-5 rounded-4 shadow-sm text-center">
-                        <img src="assets/images/<?php echo e($product['image']); ?>" class="img-fluid" alt="<?php echo e($product['name']); ?>" onerror="this.src='https://via.placeholder.com/600x700?text=Phone'">
+                    <div class="glass-panel p-5 text-center animate-reveal">
+                        <img src="assets/images/<?php echo e($product['image']); ?>" class="img-fluid animate-float" alt="<?php echo e($product['name']); ?>" style="max-height: 500px;" onerror="this.src='https://via.placeholder.com/600x700?text=Phone'">
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -69,43 +69,41 @@ include 'includes/header.php';
                             </div>
                         </div>
                         
-                        <!-- Form Add Review -->
-                        <div class="card bg-light border-0 mb-5 rounded-4">
-                            <div class="card-body p-4 p-md-5">
-                                <h5 class="fw-bold mb-3">Viết đánh giá của bạn</h5>
-                                <form id="review-form">
-                                    <input type="hidden" id="product_id" value="<?php echo $product['id']; ?>">
-                                    <div class="mb-3">
-                                        <label class="form-label text-secondary fw-semibold">Đánh giá sao</label>
-                                        <div class="rating-select text-warning fs-4" style="cursor: pointer;">
-                                            <i class="bi bi-star rating-star" data-value="1"></i>
-                                            <i class="bi bi-star rating-star" data-value="2"></i>
-                                            <i class="bi bi-star rating-star" data-value="3"></i>
-                                            <i class="bi bi-star rating-star" data-value="4"></i>
-                                            <i class="bi bi-star rating-star" data-value="5"></i>
-                                        </div>
-                                        <input type="hidden" id="rating_val" value="5">
+                        <!-- Form Add Review V2.0 -->
+                        <div class="glass-panel p-4 p-md-5 mb-5 animate-reveal border-0">
+                            <h5 class="fw-bold mb-4">Viết đánh giá của bạn.</h5>
+                            <form id="review-form">
+                                <input type="hidden" id="product_id" value="<?php echo $product['id']; ?>">
+                                <div class="mb-4">
+                                    <label class="form-label text-secondary small fw-bold text-uppercase">Mức độ hài lòng</label>
+                                    <div class="rating-select text-warning fs-4" style="cursor: pointer;">
+                                        <i class="bi bi-star rating-star" data-value="1"></i>
+                                        <i class="bi bi-star rating-star" data-value="2"></i>
+                                        <i class="bi bi-star rating-star" data-value="3"></i>
+                                        <i class="bi bi-star rating-star" data-value="4"></i>
+                                        <i class="bi bi-star rating-star" data-value="5"></i>
                                     </div>
-                                    <?php if(!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])): ?>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <input type="text" class="form-control" id="reviewer_name" placeholder="Tên của bạn *" required>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <input type="email" class="form-control" id="reviewer_email" placeholder="Email (không bắt buộc)">
-                                        </div>
+                                    <input type="hidden" id="rating_val" value="5">
+                                </div>
+                                <?php if(!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])): ?>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <input type="text" class="form-control rounded-pill border-light bg-light" id="reviewer_name" placeholder="Tên của bạn *" required>
                                     </div>
-                                    <?php endif; ?>
-                                    <div class="mb-3">
-                                        <input type="text" class="form-control" id="review_title" placeholder="Tiêu đề đánh giá (không bắt buộc)">
+                                    <div class="col-md-6 mb-3">
+                                        <input type="email" class="form-control rounded-pill border-light bg-light" id="reviewer_email" placeholder="Email (không bắt buộc)">
                                     </div>
-                                    <div class="mb-3">
-                                        <textarea class="form-control" id="review_content" rows="3" placeholder="Chia sẻ cảm nhận của bạn về sản phẩm *" required></textarea>
-                                    </div>
-                                    <button type="submit" class="btn btn-dark px-5 py-2 rounded-pill fw-medium">Gửi đánh giá</button>
-                                    <div id="review-msg" class="mt-3 fw-medium"></div>
-                                </form>
-                            </div>
+                                </div>
+                                <?php endif; ?>
+                                <div class="mb-3">
+                                    <input type="text" class="form-control rounded-pill border-light bg-light" id="review_title" placeholder="Tiêu đề đánh giá (không bắt buộc)">
+                                </div>
+                                <div class="mb-4">
+                                    <textarea class="form-control border-light bg-light rounded-4" id="review_content" rows="4" placeholder="Chia sẻ cảm nhận của bạn về sản phẩm *" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-dark px-5 py-3 rounded-pill fw-bold">Gửi đánh giá ngay</button>
+                                <div id="review-msg" class="mt-3 fw-medium"></div>
+                            </form>
                         </div>
 
                         <!-- List Reviews -->

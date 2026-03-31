@@ -27,81 +27,67 @@ include 'includes/header.php';
 ?>
 
     <main>
-        <!-- PHẦN HERO: Đỉnh cao công nghệ - Phong cách Glassmorphism -->
-        <section class="hero-premium position-relative overflow-hidden min-vh-100 d-flex align-items-center">
+        <!-- PHẦN HERO V2.0 -->
+        <section class="hero-premium position-relative overflow-hidden">
             <div class="hero-bg-gradient"></div>
-            <div class="container position-relative z-2">
+            <div class="container position-relative">
                 <div class="row align-items-center g-5">
-                    <div class="col-lg-6 text-center text-lg-start animate-fade-in">
+                    <div class="col-lg-7 text-center text-lg-start animate-reveal">
                         <div class="glass-badge d-inline-block px-4 py-2 mb-4 rounded-pill">
-                            <span class="text-primary-gradient fw-bold">Thế hệ AI mới nhất 2026</span>
+                            <span class="text-primary-gradient fw-bold">Intelligence is here. 2026</span>
                         </div>
-                        <h1 class="display-1 fw-800 mb-4 tracking-tight hero-title-main">
+                        <h1 class="hero-title-main fw-bold">
                             iPhone 17 Pro.<br>
-                            <span class="text-gradient">Được tạo bởi Trí tuệ.</span>
+                            <span class="text-primary-gradient">Siêu trí tuệ. Siêu bứt phá.</span>
                         </h1>
-                        <p class="h4 text-secondary mb-5 fw-light leading-relaxed max-w-500">
-                            Sức mạnh vượt bậc từ chip A19 Pro. Trải nghiệm hệ sinh thái AI toàn cầu ngay trên tay bạn.
+                        <p class="h4 text-secondary mb-5 fw-light leading-relaxed" style="max-width: 550px;">
+                            Sức mạnh vô song từ chip A19 Pro. Trải nghiệm kỷ nguyên AI toàn cầu ngay trong lòng bàn tay.
                         </p>
                         <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-lg-start">
-                            <a href="product.php" class="btn btn-premium-dark btn-lg px-5 py-3 shadow-lg">Sở hữu ngay</a>
-                            <a href="product.php?category=Apple" class="btn btn-premium-glass btn-lg px-5 py-3">Khám phá công nghệ</a>
+                            <a href="product.php" class="btn btn-dark btn-lg px-5 py-3 rounded-pill fw-bold">Mua ngay</a>
+                            <a href="product.php?category=Apple" class="btn btn-outline-dark btn-lg px-5 py-3 rounded-pill">Xem thêm</a>
                         </div>
                     </div>
-                    <div class="col-lg-6 position-relative animate-float">
-                        <div class="hero-image-glow"></div>
-                        <img src="assets/images/ai_ip17_pm.png" alt="iPhone 17" class="img-fluid hero-image-main" onerror="this.src='https://placehold.co/800x1000/transparent/333?text=iPhone+17+Pro'">
+                    <div class="col-lg-5 position-relative animate-float">
+                        <img src="assets/images/ai_ip17_pm.png" alt="iPhone 17" class="img-fluid" onerror="this.src='https://placehold.co/800x1000/transparent/333?text=iPhone+17+Pro'">
                     </div>
                 </div>
-            </div>
-            <div class="scroll-indicator">
-                <div class="mouse"></div>
             </div>
         </section>
 
-        <!-- PHẦN SẢN PHẨM MỚI NHẤT: White Section Transition -->
-        <section class="py-huge bg-premium-light">
-            <div class="container px-xl-5">
+        <!-- PHẦN SẢN PHẨM V2.0 -->
+        <section class="py-huge">
+            <div class="container">
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-5 gap-4">
                     <div class="animate-reveal">
-                        <h2 class="display-4 fw-bold text-dark mb-2">Đỉnh phẩm công nghệ.</h2>
-                        <p class="text-secondary h5 fw-light">Những thiết bị mạnh mẽ nhất vừa cập bến NHK Mobile.</p>
+                        <h2 class="display-4 fw-bold mb-2">Tuyệt phẩm công nghệ.</h2>
+                        <p class="text-secondary h5 fw-light">Khám phá những thiết bị mạnh mẽ nhất tại NHK Mobile.</p>
                     </div>
-                    <a href="product.php" class="btn-explore text-dark">Xem tất cả <i class="bi bi-chevron-right ms-2 fs-small"></i></a>
+                    <a href="product.php" class="text-dark fw-bold text-decoration-none">Tất cả sản phẩm <i class="bi bi-arrow-right ms-1"></i></a>
                 </div>
 
-                <div class="row g-4 pt-4">
-                    <?php if (empty($featuredProducts)): ?>
-                        <div class="col-12 text-center py-5 text-secondary">
-                             <div class="glass-card p-5 rounded-5 border-dashed">
-                                  <i class="bi bi-box-seam display-1 mb-4 opacity-25"></i>
-                                  <h3>Dữ liệu đang được đồng bộ...</h3>
-                                  <p>Vui lòng F5 để web tự động khởi tạo dữ liệu mẫu.</p>
-                             </div>
-                        </div>
-                    <?php else: ?>
-                        <?php foreach ($featuredProducts as $index => $p): ?>
-                        <div class="col-6 col-md-4 col-lg-3 animate-reveal" style="animation-delay: <?php echo $index * 0.1; ?>s">
-                            <a href="product-detail.php?id=<?php echo e($p['id']); ?>" class="text-decoration-none">
-                                <div class="card-glass-product h-100 p-4 transition-all">
-                                    <div class="img-wrapper-premium mb-4 rounded-4 overflow-hidden shadow-inner">
-                                        <img src="assets/images/<?php echo e($p['image']); ?>" class="img-fluid" alt="<?php echo e($p['name']); ?>" onerror="this.src='https://placehold.co/300x400/111/fff?text=Phone'">
-                                    </div>
-                                    <div class="card-content-premium">
-                                        <span class="category-tag mb-2 d-inline-block"><?php echo e($p['category']); ?></span>
-                                        <h5 class="fw-bold text-dark mb-2 text-truncate-2"><?php echo e($p['name']); ?></h5>
-                                        <div class="d-flex align-items-center justify-content-between mt-3">
-                                            <span class="price-premium text-dark fw-bold"><?php echo number_format($p['price'], 0, ',', '.'); ?>₫</span>
-                                            <div class="btn-buy-mini shadow-sm btn-add-to-cart-ajax" data-product-id="<?php echo e($p['id']); ?>" style="cursor: pointer;">
-                                                <i class="bi bi-plus-lg"></i>
-                                            </div>
+                <div class="row g-4">
+                    <?php foreach ($featuredProducts as $index => $p): ?>
+                    <div class="col-6 col-md-4 col-lg-3 animate-reveal" style="animation-delay: <?php echo $index * 0.08; ?>s">
+                        <a href="product-detail.php?id=<?php echo e($p['id']); ?>" class="text-decoration-none">
+                            <div class="card-glass-product h-100">
+                                <div class="img-wrapper-premium">
+                                    <img src="assets/images/<?php echo e($p['image']); ?>" class="img-fluid" alt="<?php echo e($p['name']); ?>" onerror="this.src='https://placehold.co/300x400/f5f5f7/1d1d1f?text=Device'">
+                                </div>
+                                <div class="p-4 pt-2">
+                                    <span class="category-tag mb-1 d-inline-block"><?php echo e($p['category']); ?></span>
+                                    <h6 class="fw-bold text-dark mb-2 text-truncate"><?php echo e($p['name']); ?></h6>
+                                    <div class="d-flex align-items-center justify-content-between mt-3">
+                                        <span class="price-premium"><?php echo number_format($p['price'], 0, ',', '.'); ?>₫</span>
+                                        <div class="btn-buy-mini btn-add-to-cart-ajax" data-product-id="<?php echo e($p['id']); ?>">
+                                            <i class="bi bi-plus"></i>
                                         </div>
                                     </div>
                                 </div>
-                            </a>
-                        </div>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                            </div>
+                        </a>
+                    </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
         </section>
