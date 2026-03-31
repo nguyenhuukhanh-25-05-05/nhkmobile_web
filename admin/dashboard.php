@@ -142,14 +142,14 @@ $basePath = "../";
                         <!-- Vòng lặp PHP Đơn hàng -->
                         <?php foreach($recentOrders as $o): ?>
                         <tr>
-                            <td class="small fw-bold text-secondary">#ORD-<?php echo $o['id']; ?></td>
-                            <td><div class="fw-bold"><?php echo $o['customer_name']; ?></div></td>
+                            <td class="small fw-bold text-secondary">#ORD-<?php echo e($o['id']); ?></td>
+                            <td><div class="fw-bold"><?php echo e($o['customer_name']); ?></div></td>
                             <td class="small text-secondary"><?php echo date('d/m/Y', strtotime($o['created_at'])); ?></td>
                             <td class="fw-bold text-dark"><?php echo number_format($o['total_price'], 0, ',', '.'); ?>₫</td>
                             <td>
                                 <!-- Hiển thị màu sắc tùy theo trạng thái hiệu chỉnh bằng PHP -->
                                 <span class="badge bg-<?php echo $o['status'] == 'Completed' ? 'success' : ($o['status'] == 'Cancelled' ? 'danger' : 'warning'); ?>-subtle text-dark border fw-normal px-3 py-2 rounded-pill">
-                                    <?php echo $o['status']; ?>
+                                    <?php echo e($o['status']); ?>
                                 </span>
                             </td>
                         </tr>

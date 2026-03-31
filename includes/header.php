@@ -15,6 +15,9 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="<?php echo $basePath; ?>assets/css/style.css">
 
+    <!-- CSRF Token for AJAX -->
+    <meta name="csrf-token" content="<?php echo get_csrf_token(); ?>">
+
     <script>
         // Define global API paths for JS
         const BASE_PATH = "<?php echo $basePath; ?>";
@@ -42,11 +45,15 @@
                 
                 <a href="<?php echo $basePath; ?>cart.php" class="icon-link position-relative">
                     <i class="bi bi-bag"></i>
-                    <?php if(isset($_SESSION['cart']) && count($_SESSION['cart']) > 0): ?>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm" style="font-size: 0.6rem;">
-                            <?php echo count($_SESSION['cart']); ?>
-                        </span>
-                    <?php endif; ?>
+                    <?php 
+                        $cartCount = 0;
+                        if(isset($_SESSION['cart'])) {
+                            foreach($_SESSION['cart'] as $item) $cartCount += $item['qty'];
+                        }
+                    ?>
+                    <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm <?php echo $cartCount > 0 ? '' : 'd-none'; ?>" style="font-size: 0.6rem;">
+                        <?php echo $cartCount; ?>
+                    </span>
                 </a>
 
                 <?php if (isset($_SESSION['user_id']) || isset($_SESSION['admin_id'])): ?>

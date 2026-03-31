@@ -81,17 +81,19 @@ include 'includes/header.php';
                     <?php else: ?>
                         <?php foreach ($featuredProducts as $index => $p): ?>
                         <div class="col-6 col-md-4 col-lg-3 animate-reveal" style="animation-delay: <?php echo $index * 0.1; ?>s">
-                            <a href="product-detail.php?id=<?php echo $p['id']; ?>" class="text-decoration-none">
+                            <a href="product-detail.php?id=<?php echo e($p['id']); ?>" class="text-decoration-none">
                                 <div class="card-glass-product h-100 p-4 transition-all">
                                     <div class="img-wrapper-premium mb-4 rounded-4 overflow-hidden shadow-inner">
-                                        <img src="assets/images/<?php echo $p['image']; ?>" class="img-fluid" alt="<?php echo $p['name']; ?>" onerror="this.src='https://placehold.co/300x400/111/fff?text=Phone'">
+                                        <img src="assets/images/<?php echo e($p['image']); ?>" class="img-fluid" alt="<?php echo e($p['name']); ?>" onerror="this.src='https://placehold.co/300x400/111/fff?text=Phone'">
                                     </div>
                                     <div class="card-content-premium">
-                                        <span class="category-tag mb-2 d-inline-block"><?php echo $p['category']; ?></span>
-                                        <h5 class="fw-bold text-dark mb-2 text-truncate-2"><?php echo $p['name']; ?></h5>
+                                        <span class="category-tag mb-2 d-inline-block"><?php echo e($p['category']); ?></span>
+                                        <h5 class="fw-bold text-dark mb-2 text-truncate-2"><?php echo e($p['name']); ?></h5>
                                         <div class="d-flex align-items-center justify-content-between mt-3">
-                                            <span class="price-premium"><?php echo number_format($p['price'], 0, ',', '.'); ?>₫</span>
-                                            <div class="btn-buy-mini shadow-sm"><i class="bi bi-plus-lg"></i></div>
+                                            <span class="price-premium text-dark fw-bold"><?php echo number_format($p['price'], 0, ',', '.'); ?>₫</span>
+                                            <div class="btn-buy-mini shadow-sm btn-add-to-cart-ajax" data-product-id="<?php echo e($p['id']); ?>" style="cursor: pointer;">
+                                                <i class="bi bi-plus-lg"></i>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

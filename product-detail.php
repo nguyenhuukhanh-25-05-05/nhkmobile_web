@@ -15,7 +15,7 @@ if (!$product) {
     die("Sản phẩm không tồn tại!");
 }
 
-$pageTitle = "NHK Mobile | " . $product['name'];
+$pageTitle = "NHK Mobile | " . e($product['name']);
 $basePath = "";
 include 'includes/header.php';
 ?>
@@ -25,7 +25,7 @@ include 'includes/header.php';
             <div class="row g-5">
                 <div class="col-lg-6">
                     <div class="product-detail-img-wrapper bg-white p-5 rounded-4 shadow-sm text-center">
-                        <img src="assets/images/<?php echo $product['image']; ?>" class="img-fluid" alt="<?php echo $product['name']; ?>" onerror="this.src='https://via.placeholder.com/600x700?text=Phone'">
+                        <img src="assets/images/<?php echo e($product['image']); ?>" class="img-fluid" alt="<?php echo e($product['name']); ?>" onerror="this.src='https://via.placeholder.com/600x700?text=Phone'">
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -33,23 +33,23 @@ include 'includes/header.php';
                         <nav aria-label="breadcrumb" class="mb-4">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="product.php" class="text-decoration-none">Sản phẩm</a></li>
-                                <li class="breadcrumb-item active"><?php echo $product['category']; ?></li>
+                                <li class="breadcrumb-item active"><?php echo e($product['category']); ?></li>
                             </ol>
                         </nav>
                         
-                        <h1 class="display-5 fw-bold mb-3"><?php echo $product['name']; ?></h1>
+                        <h1 class="display-5 fw-bold mb-3"><?php echo e($product['name']); ?></h1>
                         <p class="h3 text-primary fw-bold mb-4"><?php echo number_format($product['price'], 0, ',', '.'); ?>₫</p>
                         
                         <div class="mb-5">
                             <h6 class="fw-bold mb-3 text-uppercase small letter-spacing">Mô tả sản phẩm</h6>
                             <p class="text-secondary leading-relaxed">
-                                <?php echo nl2br($product['description'] ? $product['description'] : 'Sản phẩm chính hãng với hiệu năng mạnh mẽ.'); ?>
+                                <?php echo nl2br(e($product['description'] ? $product['description'] : 'Sản phẩm chính hãng với hiệu năng mạnh mẽ.')); ?>
                             </p>
                         </div>
 
                         <div class="d-grid gap-3">
-                            <a href="cart.php?add=<?php echo $product['id']; ?>" class="btn btn-dark btn-lg rounded-pill py-3 fw-bold text-center text-white">Thêm vào giỏ hàng</a>
-                            <a href="cart.php?add=<?php echo $product['id']; ?>&installment=1" class="btn btn-outline-dark btn-lg rounded-pill py-3 fw-bold text-center">Mua trả góp 0%</a>
+                            <button class="btn btn-dark btn-lg rounded-pill py-3 fw-bold btn-add-to-cart-ajax" data-product-id="<?php echo e($product['id']); ?>">Thêm vào giỏ hàng</button>
+                            <button class="btn btn-outline-dark btn-lg rounded-pill py-3 fw-bold btn-add-to-cart-ajax" data-product-id="<?php echo e($product['id']); ?>" data-installment="1">Mua trả góp 0%</button>
                         </div>
                         </div>
                     </div>
@@ -197,6 +197,20 @@ include 'includes/header.php';
                             return;
                         }
                         
+                        // Hàm helper để an toàn hóa đầu ra JS
+                        const escapeJS = (str) => {
+                            if(!str) return '';
+                            return str.replace(/[&<>"']/g, function(m) {
+                                return {
+                                    '&': '&amp;',
+                                    '<': '&lt;',
+                                    '>': '&gt;',
+                                    '"': '&quot;',
+                                    "'": '&#039;'
+                                }[m];
+                            });
+                        };
+                        
                         reviews.forEach(r => {
                             let stars = '';
                             for(let i=0; i<5; i++) {
@@ -207,15 +221,15 @@ include 'includes/header.php';
                                 <div class="border-bottom py-4">
                                     <div class="d-flex mb-3">
                                         <div class="bg-dark text-white rounded-circle d-flex align-items-center justify-content-center fw-bold me-3" style="width: 48px; height: 48px; font-size: 20px;">
-                                            ${r.avatar_letter}
+                                            ${escapeJS(r.avatar_letter)}
                                         </div>
                                         <div>
-                                            <h6 class="fw-bold mb-1">${r.reviewer_name} ${r.verified_purchase ? '<span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2 py-1 ms-2" style="font-size: 11px;"><i class="bi bi-check-circle-fill me-1"></i>Đã mua hàng tại NHK</span>' : ''}</h6>
-                                            <div class="small text-muted">${stars} <span class="ms-2"><i class="bi bi-clock me-1"></i>${r.date_formatted}</span></div>
+                                            <h6 class="fw-bold mb-1">${escapeJS(r.reviewer_name)} ${r.verified_purchase ? '<span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2 py-1 ms-2" style="font-size: 11px;"><i class="bi bi-check-circle-fill me-1"></i>Đã mua hàng tại NHK</span>' : ''}</h6>
+                                            <div class="small text-muted">${stars} <span class="ms-2"><i class="bi bi-clock me-1"></i>${escapeJS(r.date_formatted)}</span></div>
                                         </div>
                                     </div>
-                                    ${r.title ? `<h6 class="fw-bold mb-2">${r.title}</h6>` : ''}
-                                    <p class="mb-0 text-secondary" style="line-height: 1.6;">${r.content}</p>
+                                    ${r.title ? `<h6 class="fw-bold mb-2">${escapeJS(r.title)}</h6>` : ''}
+                                    <p class="mb-0 text-secondary" style="line-height: 1.6;">${escapeJS(r.content)}</p>
                                 </div>
                             `;
                             list.insertAdjacentHTML('beforeend', html);

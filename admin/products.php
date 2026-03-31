@@ -15,13 +15,16 @@ $basePath = "../";
 
 // A. THÊM HOẶC CẬP NHẬT SẢN PHẨM (Xử lý khi nhấn nút Lưu)
 if (isset($_POST['save_product'])) {
+    if (!verify_csrf_token()) {
+        die("Yêu cầu không hợp lệ (CSRF Token mismatch)");
+    }
     $id = $_POST['id'];
     $name = $_POST['name'];
     $category = $_POST['category'];
     $price = $_POST['price'];
     $stock = $_POST['stock'];
     $description = $_POST['description'];
-    $image = "placeholder.png"; // Tạm thời dùng hình mặc định, có thể nâng cấp upload file sau
+    $image = "placeholder.png"; 
 
     if ($id) {
         // Nếu có ID -> CẬP NHẬT sản phẩm hiện tại
@@ -52,6 +55,9 @@ if (isset($_GET['delete'])) {
 
 // B.1 XÓA NHIỀU SẢN PHẨM (Bulk Delete)
 if (isset($_POST['bulk_delete']) && !empty($_POST['selected_ids'])) {
+    if (!verify_csrf_token()) {
+        die("Yêu cầu không hợp lệ (CSRF Token mismatch)");
+    }
     $ids = $_POST['selected_ids'];
     // Chuyển mảng IDs thành chuỗi để dùng trong câu lệnh SQL IN (?, ?, ...)
     $placeholders = implode(',', array_fill(0, count($ids), '?'));
@@ -164,6 +170,7 @@ if (isset($_GET['edit'])) {
             <?php endif; ?>
 
             <form id="bulkDeleteForm" action="products.php" method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
                         <thead>
@@ -184,31 +191,31 @@ if (isset($_GET['edit'])) {
                             <?php foreach($products as $p): ?>
                             <tr>
                                 <td>
-                                    <input type="checkbox" name="selected_ids[]" value="<?php echo $p['id']; ?>" class="form-check-input select-item">
+                                    <input type="checkbox" name="selected_ids[]" value="<?php echo e($p['id']); ?>" class="form-check-input select-item">
                                 </td>
                                 <td>
-                                    <img src="../assets/images/<?php echo $p['image']; ?>" class="product-img-admin rounded-3" onerror="this.src='https://placehold.co/60'">
+                                    <img src="../assets/images/<?php echo e($p['image']); ?>" class="product-img-admin rounded-3" onerror="this.src='https://placehold.co/60'">
                                 </td>
                             <td>
                                 <div class="fw-bold d-flex align-items-center gap-2">
-                                    <?php echo $p['name']; ?>
+                                    <?php echo e($p['name']); ?>
                                     <?php if($p['is_featured']): ?>
                                         <i class="bi bi-star-fill text-warning" title="Nổi bật (Hiện trên trang chủ)"></i>
                                     <?php endif; ?>
                                 </div>
                             </td>
-                            <td><span class="badge bg-light text-dark border fw-normal"><?php echo $p['category']; ?></span></td>
+                            <td><span class="badge bg-light text-dark border fw-normal"><?php echo e($p['category']); ?></span></td>
                             <td class="fw-bold text-primary"><?php echo number_format($p['price'], 0, ',', '.'); ?>₫</td>
-                            <td><span class="text-secondary"><?php echo $p['stock']; ?> chiếc</span></td>
+                            <td><span class="text-secondary"><?php echo e($p['stock']); ?> chiếc</span></td>
                             <td class="text-end">
                                 <!-- Nút Đánh dấu / Gỡ bỏ Nổi bật -->
-                                <a href="products.php?toggle_featured=<?php echo $p['id']; ?>" class="btn btn-sm border p-2 <?php echo $p['is_featured'] ? 'btn-warning text-white' : 'btn-light text-warning'; ?>" title="Ghim lên đầu trang chủ">
+                                <a href="products.php?toggle_featured=<?php echo e($p['id']); ?>" class="btn btn-sm border p-2 <?php echo $p['is_featured'] ? 'btn-warning text-white' : 'btn-light text-warning'; ?>" title="Ghim lên đầu trang chủ">
                                     <i class="bi bi-star<?php echo $p['is_featured'] ? '-fill' : ''; ?>"></i>
                                 </a>
                                 <!-- Nút Sửa: Truyền ID qua biến GET 'edit' -->
-                                <a href="products.php?edit=<?php echo $p['id']; ?>" class="btn btn-sm btn-light border p-2 ms-1"><i class="bi bi-pencil text-primary"></i></a>
+                                <a href="products.php?edit=<?php echo e($p['id']); ?>" class="btn btn-sm btn-light border p-2 ms-1"><i class="bi bi-pencil text-primary"></i></a>
                                 <!-- Nút Xóa: Truyền ID qua biến GET 'delete' kèm confirm -->
-                                <a href="products.php?delete=<?php echo $p['id']; ?>" class="btn btn-sm btn-light border p-2 text-danger ms-1" onclick="return confirm('Toàn bộ thông tin máy sẽ bị xóa, bạn chắc chứ?')"><i class="bi bi-trash"></i></a>
+                                <a href="products.php?delete=<?php echo e($p['id']); ?>" class="btn btn-sm btn-light border p-2 text-danger ms-1" onclick="return confirm('Toàn bộ thông tin máy sẽ bị xóa, bạn chắc chứ?')"><i class="bi bi-trash"></i></a>
                             </td>
                         </tr>
                         <?php endforeach; ?>
@@ -232,13 +239,16 @@ if (isset($_GET['edit'])) {
                         <a href="products.php" class="btn-close"></a>
                     </div>
                     <div class="modal-body p-4">
+                        <!-- CSRF Token -->
+                        <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
+                        
                         <!-- Input ẩn ID: Dùng để phân biệt Thêm (trống) hay Sửa (có ID) -->
-                        <input type="hidden" name="id" value="<?php echo $editProduct ? $editProduct['id'] : ''; ?>">
+                        <input type="hidden" name="id" value="<?php echo $editProduct ? e($editProduct['id']) : ''; ?>">
                         
                         <div class="row g-3">
                             <div class="col-md-12">
                                 <label class="form-label small fw-bold">Tên điện thoại</label>
-                                <input type="text" name="name" class="form-control rounded-3" value="<?php echo $editProduct ? $editProduct['name'] : ''; ?>" placeholder="VD: iPhone 15 Pro Max" required>
+                                <input type="text" name="name" class="form-control rounded-3" value="<?php echo $editProduct ? e($editProduct['name']) : ''; ?>" placeholder="VD: iPhone 15 Pro Max" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Danh mục hãng</label>
@@ -251,15 +261,15 @@ if (isset($_GET['edit'])) {
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Giá bán (VNĐ)</label>
-                                <input type="number" name="price" class="form-control rounded-3" value="<?php echo $editProduct ? $editProduct['price'] : ''; ?>" placeholder="VD: 30000000" required>
+                                <input type="number" name="price" class="form-control rounded-3" value="<?php echo $editProduct ? e($editProduct['price']) : ''; ?>" placeholder="VD: 30000000" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Số lượng tồn kho</label>
-                                <input type="number" name="stock" class="form-control rounded-3" value="<?php echo $editProduct ? $editProduct['stock'] : ''; ?>" placeholder="VD: 10" required>
+                                <input type="number" name="stock" class="form-control rounded-3" value="<?php echo $editProduct ? e($editProduct['stock']) : ''; ?>" placeholder="VD: 10" required>
                             </div>
                             <div class="col-md-12">
                                 <label class="form-label small fw-bold">Mô tả ngắn gọn</label>
-                                <textarea name="description" class="form-control rounded-3" rows="3" placeholder="Nhập cấu hình sơ bộ..."><?php echo $editProduct ? $editProduct['description'] : ''; ?></textarea>
+                                <textarea name="description" class="form-control rounded-3" rows="3" placeholder="Nhập cấu hình sơ bộ..."><?php echo $editProduct ? e($editProduct['description']) : ''; ?></textarea>
                             </div>
                         </div>
                     </div>

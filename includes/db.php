@@ -44,6 +44,15 @@ try {
      }
 
 } catch (\PDOException $e) {
-     die("Lỗi kết nối CSDL: " . $e->getMessage());
+     // Lưu log lỗi vào file (giả lập) hoặc hệ thống log chuyên dụng
+     // Đối với môi trường dev, có thể hiện lỗi chi tiết. Đối với prod, hiện thông báo chung.
+     $isDev = (getenv('APP_ENV') === 'development' || $host === 'localhost');
+     
+     if ($isDev) {
+         die("Lỗi kết nối CSDL (Dev Mode): " . $e->getMessage());
+     } else {
+         error_log("Database Connection Error: " . $e->getMessage());
+         die("Hệ thống đang bảo trì. Vui lòng quay lại sau.");
+     }
 }
 ?>

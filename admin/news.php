@@ -11,6 +11,9 @@ $basePath = "../";
  */
 
 if (isset($_POST['save_news'])) {
+    if (!verify_csrf_token()) {
+        die("Yêu cầu không hợp lệ (CSRF Token mismatch)");
+    }
     $id = $_POST['id'] ?? null;
     $title = $_POST['title'];
     $category = $_POST['category'];
@@ -32,6 +35,9 @@ if (isset($_POST['save_news'])) {
 }
 
 if (isset($_GET['delete'])) {
+    if (!verify_csrf_token()) {
+        die("Yêu cầu không hợp lệ (CSRF Token mismatch)");
+    }
     $id = $_GET['delete'];
     $stmt = $pdo->prepare("DELETE FROM news WHERE id = ?");
     $stmt->execute([$id]);
@@ -121,18 +127,18 @@ if (isset($_GET['edit'])) {
                         <tr>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <img src="../assets/images/<?php echo $n['image']; ?>" class="rounded-3 me-3" style="width: 60px; height: 60px; object-fit: cover;" onerror="this.src='https://placehold.co/60'">
+                                    <img src="../assets/images/<?php echo e($n['image']); ?>" class="rounded-3 me-3" style="width: 60px; height: 60px; object-fit: cover;" onerror="this.src='https://placehold.co/60'">
                                     <div>
-                                        <div class="fw-bold mb-1 text-dark" style="max-width: 400px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?php echo htmlspecialchars($n['title']); ?></div>
-                                        <div class="small text-secondary" style="max-width: 400px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?php echo htmlspecialchars($n['excerpt']); ?></div>
+                                        <div class="fw-bold mb-1 text-dark" style="max-width: 400px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?php echo e($n['title']); ?></div>
+                                        <div class="small text-secondary" style="max-width: 400px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?php echo e($n['excerpt']); ?></div>
                                     </div>
                                 </div>
                             </td>
-                            <td><span class="badge bg-light text-dark border fw-normal"><?php echo htmlspecialchars($n['category']); ?></span></td>
+                            <td><span class="badge bg-light text-dark border fw-normal"><?php echo e($n['category']); ?></span></td>
                             <td class="small text-secondary"><?php echo date('d/m/Y H:i', strtotime($n['created_at'])); ?></td>
                             <td class="text-end">
-                                <a href="news.php?edit=<?php echo $n['id']; ?>" class="btn btn-sm btn-light border p-2"><i class="bi bi-pencil text-primary"></i></a>
-                                <a href="news.php?delete=<?php echo $n['id']; ?>" class="btn btn-sm btn-light border p-2 text-danger ms-1" onclick="return confirm('Xóa bài viết này vĩnh viễn?')"><i class="bi bi-trash"></i></a>
+                                <a href="news.php?edit=<?php echo e($n['id']); ?>" class="btn btn-sm btn-light border p-2"><i class="bi bi-pencil text-primary"></i></a>
+                                <a href="news.php?delete=<?php echo e($n['id']); ?>&csrf_token=<?php echo get_csrf_token(); ?>" class="btn btn-sm btn-light border p-2 text-danger ms-1" onclick="return confirm('Xóa bài viết này vĩnh viễn?')"><i class="bi bi-trash"></i></a>
                             </td>
                         </tr>
                         <?php endforeach; ?>
@@ -151,17 +157,18 @@ if (isset($_GET['edit'])) {
         <div class="modal-dialog modal-lg border-0">
             <div class="modal-content rounded-4 border-0 shadow-lg">
                 <form action="news.php" method="POST">
+                    <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
                     <div class="modal-header border-bottom-0 pb-0 px-4 pt-4">
                         <h5 class="fw-bold mb-0"><?php echo $editData ? 'Sửa bài viết' : 'Viết bài công nghệ mới'; ?></h5>
                         <a href="news.php" class="btn-close"></a>
                     </div>
                     <div class="modal-body px-4 py-4">
-                        <input type="hidden" name="id" value="<?php echo $editData['id'] ?? ''; ?>">
+                        <input type="hidden" name="id" value="<?php echo e($editData['id'] ?? ''); ?>">
                         
                         <div class="row">
                             <div class="col-md-8 mb-3">
                                 <label class="form-label small fw-bold">Tiêu đề bài viết *</label>
-                                <input type="text" name="title" class="form-control bg-light border-0" value="<?php echo htmlspecialchars($editData['title'] ?? ''); ?>" required placeholder="Nhập tiêu đề hấp dẫn...">
+                                <input type="text" name="title" class="form-control bg-light border-0" value="<?php echo e($editData['title'] ?? ''); ?>" required placeholder="Nhập tiêu đề hấp dẫn...">
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label small fw-bold">Danh mục *</label>
@@ -176,12 +183,12 @@ if (isset($_GET['edit'])) {
 
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Đoạn trích tóm tắt (Excerpt) *</label>
-                            <textarea name="excerpt" class="form-control bg-light border-0" rows="2" required placeholder="Tóm tắt nội dung chính trong 1-2 câu..."><?php echo htmlspecialchars($editData['excerpt'] ?? ''); ?></textarea>
+                            <textarea name="excerpt" class="form-control bg-light border-0" rows="2" required placeholder="Tóm tắt nội dung chính trong 1-2 câu..."><?php echo e($editData['excerpt'] ?? ''); ?></textarea>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Nội dung chi tiết *</label>
-                            <textarea name="content" class="form-control bg-light border-0" rows="10" required placeholder="Viết nội dung bài báo tại đây... Hỗ trợ Markdown/HTML cơ bản."><?php echo htmlspecialchars($editData['content'] ?? ''); ?></textarea>
+                            <textarea name="content" class="form-control bg-light border-0" rows="10" required placeholder="Viết nội dung bài báo tại đây... Hỗ trợ Markdown/HTML cơ bản."><?php echo e($editData['content'] ?? ''); ?></textarea>
                         </div>
                     </div>
                     <div class="modal-footer border-top-0 px-4 pb-4">

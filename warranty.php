@@ -102,6 +102,20 @@ document.getElementById('btnCheckImei').addEventListener('click', function() {
     btnText.textContent = 'Đang tra cứu...';
     btnSpinner.classList.remove('d-none');
     
+    // Hàm helper để an toàn hóa đầu ra JS
+    const escapeJS = (str) => {
+        if(!str) return '';
+        return String(str).replace(/[&<>"']/g, function(m) {
+            return {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            }[m];
+        });
+    };
+
     // Real API call
     fetch('ajax_check_imei.php?imei=' + encodeURIComponent(input))
         .then(response => response.json())
@@ -121,8 +135,8 @@ document.getElementById('btnCheckImei').addEventListener('click', function() {
                             </div>
                             <h6 class="mb-0 ms-3 fw-bold" style="color: #fff !important;">Không có dữ liệu</h6>
                         </div>
-                        <p class="small mb-1" style="color: rgba(255,255,255,0.6) !important;">IMEI: <strong style="color: #fff !important;">${input}</strong></p>
-                        <p class="small mb-0" style="color: rgba(255,255,255,0.6) !important;">Chi tiết: <strong style="color: #fff !important;">${data.message}</strong></p>
+                        <p class="small mb-1" style="color: rgba(255,255,255,0.6) !important;">IMEI: <strong style="color: #fff !important;">${escapeJS(input)}</strong></p>
+                        <p class="small mb-0" style="color: rgba(255,255,255,0.6) !important;">Chi tiết: <strong style="color: #fff !important;">${escapeJS(data.message)}</strong></p>
                     </div>
                 `;
             } else if (data.status === 'success') {
@@ -134,11 +148,11 @@ document.getElementById('btnCheckImei').addEventListener('click', function() {
                                 <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background: rgba(255,60,48,0.2); color: #ff3b30;">
                                     <i class="bi bi-shield-x fs-5"></i>
                                 </div>
-                                <h6 class="mb-0 ms-3 fw-bold" style="color: #fff !important;">${w.warranty_status === 'Active' ? 'Hết hạn bảo hành' : w.warranty_status}</h6>
+                                <h6 class="mb-0 ms-3 fw-bold" style="color: #fff !important;">${escapeJS(w.warranty_status === 'Active' ? 'Hết hạn bảo hành' : w.warranty_status)}</h6>
                             </div>
-                            <p class="small mb-1" style="color: rgba(255,255,255,0.6) !important;">Dòng máy: <strong style="color: #fff !important;">${w.product_name}</strong></p>
-                            <p class="small mb-1" style="color: rgba(255,255,255,0.6) !important;">IMEI: <strong style="color: #fff !important;">${w.imei}</strong></p>
-                            <p class="small mb-0" style="color: rgba(255,255,255,0.6) !important;">Hạn cuối: <strong style="color: #fff !important;">${w.expires_at}</strong></p>
+                            <p class="small mb-1" style="color: rgba(255,255,255,0.6) !important;">Dòng máy: <strong style="color: #fff !important;">${escapeJS(w.product_name)}</strong></p>
+                            <p class="small mb-1" style="color: rgba(255,255,255,0.6) !important;">IMEI: <strong style="color: #fff !important;">${escapeJS(w.imei)}</strong></p>
+                            <p class="small mb-0" style="color: rgba(255,255,255,0.6) !important;">Hạn cuối: <strong style="color: #fff !important;">${escapeJS(w.expires_at)}</strong></p>
                         </div>
                     `;
                 } else {
@@ -150,9 +164,9 @@ document.getElementById('btnCheckImei').addEventListener('click', function() {
                                 </div>
                                 <h6 class="mb-0 ms-3 fw-bold" style="color: #fff !important;">Đang được bảo hành</h6>
                             </div>
-                            <p class="small mb-1" style="color: rgba(255,255,255,0.6) !important;">Dòng máy: <strong style="color: #fff !important;">${w.product_name}</strong></p>
-                            <p class="small mb-1" style="color: rgba(255,255,255,0.6) !important;">IMEI: <strong style="color: #fff !important;">${w.imei}</strong></p>
-                            <p class="small mb-0" style="color: rgba(255,255,255,0.6) !important;">Dịch vụ: <strong style="color: #fff !important;">Bảo hành VIP đến ${w.expires_at}</strong></p>
+                            <p class="small mb-1" style="color: rgba(255,255,255,0.6) !important;">Dòng máy: <strong style="color: #fff !important;">${escapeJS(w.product_name)}</strong></p>
+                            <p class="small mb-1" style="color: rgba(255,255,255,0.6) !important;">IMEI: <strong style="color: #fff !important;">${escapeJS(w.imei)}</strong></p>
+                            <p class="small mb-0" style="color: rgba(255,255,255,0.6) !important;">Dịch vụ: <strong style="color: #fff !important;">Bảo hành VIP đến ${escapeJS(w.expires_at)}</strong></p>
                         </div>
                     `;
                 }

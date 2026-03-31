@@ -191,6 +191,27 @@
     </script>
     <script src="<?php echo isset($basePath) ? $basePath : ''; ?>assets/js/ai-chat.js"></script>
 
+    <!-- Bootstrap Toast Container -->
+    <div class="toast-container position-fixed bottom-0 start-0 p-3" style="z-index: 11000;">
+        <div id="liveToast" class="toast align-items-center text-white bg-dark border-0 rounded-4 shadow-lg p-2" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-center gap-3">
+                    <div id="toastIcon" class="bg-primary p-2 rounded-3 text-white">
+                        <i class="bi bi-cart-plus-fill"></i>
+                    </div>
+                    <div>
+                        <div class="fw-bold fs-6" id="toastTitle">Thông báo</div>
+                        <div class="small opacity-75" id="toastMessage">Đã thực hiện thao tác thành công.</div>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- UI Helpers -->
+    <script src="<?php echo isset($basePath) ? $basePath : ''; ?>assets/js/ui.js"></script>
+
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 

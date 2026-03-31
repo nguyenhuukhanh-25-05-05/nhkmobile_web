@@ -30,6 +30,9 @@ foreach ($cartItems as $item) {
  * XỬ LÝ ĐẶT HÀNG (Khi khách nhấn nút "Xác nhận đặt hàng")
  */
 if (isset($_POST['place_order'])) {
+    if (!verify_csrf_token()) {
+        die("Yêu cầu không hợp lệ (CSRF Token mismatch)");
+    }
     // Lấy thông tin từ Form gửi lên qua POST
     $name = $_POST['full_name'];
     $phone = $_POST['phone'];
@@ -88,6 +91,7 @@ include 'includes/header.php';
                     <div class="col-lg-7">
                         <h2 class="fw-bold mb-4">Thông tin nhận hàng.</h2>
                         <form action="checkout.php" method="POST" id="checkoutForm">
+                            <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
                             <div class="row g-3">
                                 <div class="col-md-12">
                                     <label class="form-label small fw-bold">Họ và tên khách hàng</label>
@@ -122,12 +126,12 @@ include 'includes/header.php';
                         <div class="bg-light rounded-5 p-5 position-sticky" style="top: 100px;">
                             <h4 class="fw-bold mb-4 italic">Đơn hàng của bạn</h4>
                             <div class="cart-items-summary mb-4">
-                                <?php foreach ($cartItems as $item): ?>
+                                <?php foreach ($cartItems as $pid => $item): ?>
                                 <div class="d-flex align-items-center gap-3 mb-3 pb-3 border-bottom border-secondary border-opacity-10">
-                                     <img src="assets/images/<?php echo $item['image']; ?>" width="55" class="rounded bg-white p-2 shadow-sm" onerror="this.src='https://placehold.co/55'">
+                                     <img src="assets/images/<?php echo e($item['image']); ?>" width="55" class="rounded bg-white p-2 shadow-sm" onerror="this.src='https://placehold.co/55'">
                                      <div class="flex-grow-1">
-                                          <div class="fw-bold small"><?php echo $item['name']; ?></div>
-                                          <div class="text-secondary small">Số lượng: <?php echo $item['qty']; ?></div>
+                                          <div class="fw-bold small"><?php echo e($item['name']); ?></div>
+                                          <div class="text-secondary small">Số lượng: <?php echo (int)$item['qty']; ?></div>
                                      </div>
                                      <div class="fw-bold text-nowrap"><?php echo number_format($item['price'] * $item['qty'], 0, ',', '.'); ?>₫</div>
                                 </div>
