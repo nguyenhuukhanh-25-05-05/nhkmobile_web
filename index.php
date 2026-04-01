@@ -56,7 +56,7 @@ include 'includes/header.php';
                                 <div class="p-price-new"><?php echo number_format($p['price'], 0, ',', '.'); ?>₫</div>
                             </div>
                         </a>
-                        <a href="cart_functions.php?action=add&id=<?php echo $p['id']; ?>" class="add-to-cart-btn">
+                        <a href="cart.php?add=<?php echo $p['id']; ?>" class="add-to-cart-btn">
                             <i class="bi bi-plus-lg"></i>
                         </a>
                     </div>

@@ -79,21 +79,47 @@ if (isset($_POST['save_product'])) {
 // B. XÓA SẢN PHẨM (Xử lý khi nhấn nút Xóa trên danh sách)
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
-    $stmt = $pdo->prepare("DELETE FROM products WHERE id = ?");
-    $stmt->execute([$id]);
-    header("Location: products.php?msg=deleted");
+    try {
+        $pdo->beginTransaction();
+        // Xóa các mục liên quan trong giỏ hàng trước
+        $stmtCart = $pdo->prepare("DELETE FROM cart_items WHERE product_id = ?");
+        $stmtCart->execute([$id]);
+        
+        // Xóa sản phẩm
+        $stmt = $pdo->prepare("DELETE FROM products WHERE id = ?");
+        $stmt->execute([$id]);
+        
+        $pdo->commit();
+        header("Location: products.php?msg=deleted");
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        header("Location: products.php?error=fk_violation");
+    }
     exit;
 }
 
 // B.1 XÓA NHIỀU SẢN PHẨM (Bulk Delete)
 if (isset($_POST['bulk_delete']) && !empty($_POST['selected_ids'])) {
     $ids = $_POST['selected_ids'];
-    // Chuyển mảng IDs thành chuỗi để dùng trong câu lệnh SQL IN (?, ?, ...)
-    $placeholders = implode(',', array_fill(0, count($ids), '?'));
-    $sql = "DELETE FROM products WHERE id IN ($placeholders)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($ids);
-    header("Location: products.php?msg=deleted");
+    try {
+        $pdo->beginTransaction();
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        
+        // Xóa trong giỏ hàng trước
+        $stmtCart = $pdo->prepare("DELETE FROM cart_items WHERE product_id IN ($placeholders)");
+        $stmtCart->execute($ids);
+        
+        // Xóa sản phẩm
+        $sql = "DELETE FROM products WHERE id IN ($placeholders)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($ids);
+        
+        $pdo->commit();
+        header("Location: products.php?msg=deleted");
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        header("Location: products.php?error=fk_violation");
+    }
     exit;
 }
 
@@ -207,6 +233,7 @@ if (isset($_GET['edit'])) {
                         elseif ($_GET['error'] == 'invalid_price') echo 'Giá sản phẩm không hợp lệ! Vui lòng nhập số lớn hơn hoặc bằng 0.';
                         elseif ($_GET['error'] == 'invalid_stock') echo 'Số lượng tồn kho không hợp lệ! Vui lòng nhập số lớn hơn hoặc bằng 0.';
                         elseif ($_GET['error'] == 'empty_image') echo 'Vui lòng tải lên ảnh đại diện cho sản phẩm mới!';
+                        elseif ($_GET['error'] == 'fk_violation') echo 'Không thể xóa sản phẩm này vì đang có trong giỏ hàng hoặc đơn hàng của khách!';
                         else echo 'Có lỗi xảy ra!';
                     ?>
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
