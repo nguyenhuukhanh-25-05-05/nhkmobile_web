@@ -34,7 +34,7 @@ if "%commit_msg%"=="" set commit_msg=Update code
 git commit -m "%commit_msg%"
 
 echo [4/4] Dang day code len GitHub...
-git push -u origin main
+git push -f -u origin main
 
 if %errorlevel% equ 0 (
     echo.
