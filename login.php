@@ -1,7 +1,19 @@
 <?php
+/**
+ * NHK Mobile - Authentication Portal
+ * 
+ * Description: Unified login gateway for customers and administrators. 
+ * Handles credential verification, hash validation, and session 
+ * lifecycle management.
+ * 
+ * Author: NguyenHuuKhanh
+ * Version: 2.1
+ * Date: 2026-04-08
+ */
 require_once 'includes/db.php';
 require_once 'includes/auth_functions.php';
 
+// Initialization of authentication variables
 $error = '';
 $redirect = $_GET['redirect'] ?? 'index.php';
 

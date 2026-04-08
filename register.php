@@ -1,7 +1,19 @@
 <?php
+/**
+ * NHK Mobile - User Registration
+ * 
+ * Description: Enables new customers to create accounts. Handles 
+ * validation, secure password hashing, and duplicate account 
+ * prevention.
+ * 
+ * Author: NguyenHuuKhanh
+ * Version: 2.1
+ * Date: 2026-04-08
+ */
 require_once 'includes/db.php';
 require_once 'includes/auth_functions.php';
 
+// Initialization of registration state
 $error = '';
 $success = '';
 

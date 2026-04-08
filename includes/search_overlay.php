@@ -1,3 +1,16 @@
+<?php
+/**
+ * NHK Mobile - Global Search Overlay
+ * 
+ * Description: Immersive full-screen search interface that provides 
+ * real-time product suggestions and quick category navigation. 
+ * Managed via the frontend JS bridging API.
+ * 
+ * Author: NguyenHuuKhanh
+ * Version: 2.1
+ * Date: 2026-04-08
+ */
+?>
 <!-- Search Overlay Overlay -->
 <div id="searchOverlay" class="search-overlay d-none">
     <div class="search-overlay-container">

@@ -1,4 +1,14 @@
 <?php
+/**
+ * NHK Mobile - Tech News Feed
+ * 
+ * Description: Displays the latest technology articles, product reviews, 
+ * and tips. Supports filtering articles by specific tags.
+ * 
+ * Author: NguyenHuuKhanh
+ * Version: 2.2
+ * Date: 2026-04-08
+ */
 session_start();
 require_once 'includes/db.php';
 

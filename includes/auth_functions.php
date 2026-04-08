@@ -1,7 +1,13 @@
 <?php
 /**
- * Tệp chứa các hàm hỗ trợ xác thực (Authentication)
- * Quản lý trạng thái đăng nhập, phân quyền người dùng và admin.
+ * NHK Mobile - Unified Authentication Services
+ * 
+ * Description: Manages security sessions, role-based access control (RBAC), 
+ * and persistent login states for both standard customers and administrators.
+ * 
+ * Author: NguyenHuuKhanh
+ * Version: 2.2
+ * Date: 2026-04-08
  */
 
 // Đảm bảo session luôn được khởi tạo với cấu hình bảo mật

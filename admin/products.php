@@ -149,54 +149,10 @@ if (isset($_GET['edit'])) {
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title><?php echo $pageTitle; ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <!-- Style riêng cho Admin -->
-    <link rel="stylesheet" href="../assets/css/admin.css">
-</head>
-<body>
-
-    <!-- MOBILE HEADER -->
-    <div class="mobile-header d-lg-none">
-        <button class="btn btn-light border-0 me-3" id="sidebarToggle">
-            <i class="bi bi-list fs-3"></i>
-        </button>
-        <img src="../assets/images/logo-k.svg" height="15" alt="Logo">
-    </div>
-
-    <!-- SIDEBAR OVERLAY -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <!-- SIDEBAR QUẢN TRỊ -->
-    <aside class="sidebar text-white" id="sidebarMenu">
-        <div class="mb-5 px-3 d-flex justify-content-between align-items-center">
-             <img src="../assets/images/logo-k.svg" height="20" alt="Logo" class="brightness-0 invert opacity-75">
-             <button class="btn btn-link text-white d-lg-none p-0" id="sidebarClose">
-                <i class="bi bi-x-lg fs-4"></i>
-             </button>
-        </div>
-        <nav>
-            <a href="dashboard.php" class="nav-link-admin"><i class="bi bi-speedometer2"></i> Tổng quan</a>
-            <a href="products.php" class="nav-link-admin active"><i class="bi bi-box-seam"></i> Sản phẩm</a>
-            <a href="orders.php" class="nav-link-admin"><i class="bi bi-receipt"></i> Đơn hàng</a>
-            <a href="users.php" class="nav-link-admin"><i class="bi bi-people"></i> Khách hàng</a>
-            <a href="warranties.php" class="nav-link-admin"><i class="bi bi-shield-check"></i> Bảo hành IMEI</a>
-            <a href="news.php" class="nav-link-admin"><i class="bi bi-newspaper"></i> Tin tức & Tech</a>
-            
-            <div class="mt-5 pt-5 border-top border-secondary mx-3">
-                 <a href="../index.php" class="nav-link-admin text-info ps-0 mb-2"><i class="bi bi-box-arrow-left"></i> Xem Website</a>
-                 <a href="logout.php" class="nav-link-admin text-danger ps-0 small"><i class="bi bi-power"></i> Đăng xuất</a>
-            </div>
-        </nav>
-    </aside>
-
-    <!-- NỘI DUNG CHÍNH -->
-    <main class="main-content">
+$pageTitle = "Kho sản phẩm | Admin";
+$basePath = "../";
+include 'includes/admin_header.php';
+?>
         <header class="d-flex justify-content-between align-items-center mb-5">
             <div>
                  <h2 class="fw-bold mb-1">Kho sản phẩm</h2>
@@ -364,63 +320,31 @@ if (isset($_GET['edit'])) {
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Các phần tử giao diện Sidebar (Mobile)
-        const sidebarMenu = document.getElementById('sidebarMenu');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
-        const sidebarClose = document.getElementById('sidebarClose');
-
-        /**
-         * Hàm bật/tắt menu Sidebar trên thiết bị di động.
-         */
-        function toggleSidebar() {
-            sidebarMenu.classList.toggle('show');
-            sidebarOverlay.classList.toggle('show');
-            document.body.classList.toggle('overflow-hidden');
-        }
-
-        // Gắn sự kiện cho các nút điều khiển Sidebar
-        if (sidebarToggle) sidebarToggle.addEventListener('click', toggleSidebar);
-        if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
-        if (sidebarClose) sidebarClose.addEventListener('click', toggleSidebar);
-
         // Xử lý logic chọn hàng loạt (Bulk Selection)
         const selectAll = document.getElementById('selectAll');
         const selectItems = document.querySelectorAll('.select-item');
         const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
 
-        /**
-         * Kiểm tra số lượng mục đã chọn để ẩn/hiện nút "Xóa mục đã chọn".
-         */
         function toggleBulkDeleteBtn() {
             const checkedCount = document.querySelectorAll('.select-item:checked').length;
-            if (checkedCount > 0) {
-                bulkDeleteBtn.classList.remove('d-none'); // Hiện nút nếu có ít nhất 1 mục được chọn
-            } else {
-                bulkDeleteBtn.classList.add('d-none'); // Ẩn nếu không có mục nào
+            if (bulkDeleteBtn) {
+                if (checkedCount > 0) bulkDeleteBtn.classList.remove('d-none');
+                else bulkDeleteBtn.classList.add('d-none');
             }
         }
 
-        /**
-         * Sự kiện "Chọn tất cả" checkbox ở đầu bảng.
-         */
-        selectAll.addEventListener('change', function() {
-            selectItems.forEach(item => {
-                item.checked = this.checked;
+        if (selectAll) {
+            selectAll.addEventListener('change', function() {
+                selectItems.forEach(item => item.checked = this.checked);
+                toggleBulkDeleteBtn();
             });
-            toggleBulkDeleteBtn();
-        });
+        }
 
-        // Gắn sự kiện cho từng checkbox lẻ trong bảng
         selectItems.forEach(item => {
             item.addEventListener('change', function() {
-                // Nếu có 1 item không được chọn thì bỏ check selectAll
-                if (!this.checked) {
-                    selectAll.checked = false;
-                } else {
-                    // Nếu tất cả item đều được chọn thì tự động check selectAll
+                if (!this.checked) selectAll.checked = false;
+                else {
                     const allChecked = Array.from(selectItems).every(i => i.checked);
                     selectAll.checked = allChecked;
                 }
@@ -428,5 +352,5 @@ if (isset($_GET['edit'])) {
             });
         });
     </script>
-</body>
-</html>
+
+<?php include 'includes/admin_footer.php'; ?>

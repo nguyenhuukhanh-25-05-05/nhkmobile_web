@@ -1,11 +1,23 @@
 <?php
+/**
+ * NHK Mobile - Customer Purchase History
+ * 
+ * Description: Displays a prioritized list of past orders for the 
+ * authenticated user. Cross-references order items and displays 
+ * real-time fulfillment status.
+ * 
+ * Author: NguyenHuuKhanh
+ * Version: 2.1
+ * Date: 2026-04-08
+ */
 session_start();
 require_once 'includes/db.php';
 require_once 'includes/auth_functions.php';
 
-// Cần đăng nhập để xem lịch sử
+// Authentication requirement for viewing sensitive history
 require_login();
 
+// Retrieve normalized user identification
 $userId = get_logged_in_user_id();
 
 // Lấy danh sách đơn hàng của user này

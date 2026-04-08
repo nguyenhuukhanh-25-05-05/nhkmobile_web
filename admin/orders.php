@@ -29,44 +29,11 @@ if (isset($_POST['update_status'])) {
 $stmt = $pdo->query("SELECT * FROM orders ORDER BY created_at DESC");
 $orders = $stmt->fetchAll();
 
-// Cấu hình Header
-$pageTitle = "Quản lý đơn hàng | Admin";
+$pageTitle = "Quản lý đơn hàng | Admin NHK Mobile";
 $basePath = "../";
+include 'includes/admin_header.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title><?php echo $pageTitle; ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="../assets/css/admin.css">
-</head>
-<body>
-
-    <!-- THANH SIDEBAR TRÁI -->
-    <aside class="sidebar text-white d-none d-lg-block">
-        <div class="mb-5 px-3">
-             <img src="../assets/images/logo-k.svg" height="20" alt="Logo" class="brightness-0 invert opacity-75">
-        </div>
-        <nav>
-            <a href="dashboard.php" class="nav-link-admin"><i class="bi bi-speedometer2"></i> Tổng quan</a>
-            <a href="products.php" class="nav-link-admin"><i class="bi bi-box-seam"></i> Sản phẩm</a>
-            <a href="orders.php" class="nav-link-admin active"><i class="bi bi-receipt"></i> Đơn hàng</a>
-            <a href="users.php" class="nav-link-admin"><i class="bi bi-people"></i> Khách hàng</a>
-            <a href="warranties.php" class="nav-link-admin"><i class="bi bi-shield-check"></i> Bảo hành IMEI</a>
-            <a href="news.php" class="nav-link-admin"><i class="bi bi-newspaper"></i> Tin tức & Tech</a>
-            
-            <div class="mt-5 pt-5 border-top border-secondary mx-3">
-                 <a href="../index.php" class="nav-link-admin text-info ps-0 mb-2"><i class="bi bi-box-arrow-left"></i> Xem Website</a>
-                 <a href="logout.php" class="nav-link-admin text-danger ps-0 small"><i class="bi bi-power"></i> Đăng xuất</a>
-            </div>
-        </nav>
-    </aside>
-
-    <!-- NỘI DUNG CHÍNH -->
-    <main class="main-content">
         <header class="d-flex justify-content-between align-items-center mb-5">
             <div>
                  <h2 class="fw-bold mb-1">Duyệt Đơn Hàng</h2>
@@ -165,8 +132,5 @@ $basePath = "../";
                 </table>
             </div>
         </div>
-    </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<?php include 'includes/admin_footer.php'; ?>

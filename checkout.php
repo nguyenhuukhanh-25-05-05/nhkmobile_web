@@ -1,16 +1,24 @@
 <?php
-// Bắt đầu phiên làm việc
+/**
+ * NHK Mobile - Checkout Process
+ * 
+ * Description: Finalizes the purchase flow by collecting customer 
+ * information, payment preference, and creating the order record in 
+ * the database. Supports standard and installment flags.
+ * 
+ * Author: NguyenHuuKhanh
+ * Version: 2.1
+ * Date: 2026-04-08
+ */
 session_start();
-
-// Nhúng file kết nối CSDL
 require_once 'includes/db.php';
 require_once 'includes/cart_functions.php';
 require_once 'includes/auth_functions.php';
 
-// YÊU CẦU ĐĂNG NHẬP MỚI CHO THANH TOÁN
+// Authentication requirement for checkout
 require_login();
 
-// Thực hiện đồng bộ giỏ hàng ngay khi bắt đầu
+// Synchronize cart state for current session
 syncCartWithDatabase($pdo);
 
 // Kiểm tra giỏ hàng có đồ không, nếu không quay lại trang chủ

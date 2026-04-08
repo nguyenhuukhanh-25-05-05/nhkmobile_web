@@ -1,4 +1,16 @@
-    <footer class="footer-new bg-light mt-5 border-top">
+<?php
+/**
+ * NHK Mobile - Global Footer System
+ * 
+ * Description: Contains the multi-column footer, social links, 
+ * legal information, search overlay inclusion, and core JS logic.
+ * 
+ * Author: NguyenHuuKhanh
+ * Version: 2.2
+ * Date: 2026-04-08
+ */
+?>
+<footer class="footer-new bg-light mt-5 border-top">
         <div class="container-wide py-5">
             <div class="footer-grid">
                 <!-- Brand Section -->

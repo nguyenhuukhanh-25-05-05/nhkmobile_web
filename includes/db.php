@@ -1,12 +1,17 @@
 <?php
 /**
- * Tệp kết nối cơ sở dữ liệu (Database Connection)
- * - Tự động nhận diện DATABASE_URL từ môi trường (Render/Heroku).
- * - Khởi tạo bảng và dữ liệu mẫu nếu Database trống.
- * - Chứa cơ chế "Self-Healing" (Tự sửa lỗi) để bổ sung các cột dữ liệu mới.
+ * NHK Mobile - Database Connection & Schema Management
+ * 
+ * Description: Orchestrates the connection to PostgreSQL and implements 
+ * a "Self-Healing" schema layer that ensures all modern features 
+ * (reviews, installments, tagging) have required storage structures.
+ * 
+ * Author: NguyenHuuKhanh
+ * Version: 2.5
+ * Date: 2026-04-08
  */
 
-// 1. Tìm DATABASE_URL (Cách phổ biến nhất trên Render/Heroku)
+// 1. Detect environment-specific connection strings (Render/Heroku/Local)
 $databaseUrl = getenv('DATABASE_URL');
 if (!$databaseUrl)
     $databaseUrl = $_ENV['DATABASE_URL'] ?? $_SERVER['DATABASE_URL'] ?? null;

@@ -1,8 +1,18 @@
 <?php
+/**
+ * NHK Mobile - Product Catalog
+ * 
+ * Description: Displays the full product list with advanced filtering 
+ * by category, search queries, and price sorting.
+ * 
+ * Author: NguyenHuuKhanh
+ * Version: 2.1
+ * Date: 2026-04-08
+ */
 session_start();
 require_once 'includes/db.php';
 
-// Xử lý tìm kiếm, lọc danh mục và sắp xếp
+// Handle search, category filters, and sorting parameters
 $category = isset($_GET['category']) ? $_GET['category'] : null;
 $search = isset($_GET['q']) ? $_GET['q'] : null;
 $sort = isset($_GET['sort']) ? $_GET['sort'] : 'newest';

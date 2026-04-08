@@ -1,4 +1,14 @@
 <?php
+/**
+ * NHK Mobile - Article Detailed View
+ * 
+ * Description: Displays the full content of a technology news article. 
+ * Supports HTML rendering for rich content and tag-based navigation.
+ * 
+ * Author: NguyenHuuKhanh
+ * Version: 2.1
+ * Date: 2026-04-08
+ */
 session_start();
 require_once 'includes/db.php';
 

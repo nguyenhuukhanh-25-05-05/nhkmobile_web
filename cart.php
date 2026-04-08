@@ -1,8 +1,20 @@
 <?php
+/**
+ * NHK Mobile - Shopping Cart Management
+ * 
+ * Description: Handles shopping cart operations including adding, 
+ * removing, and updating product quantities. Supports both standard 
+ * purchase and installment plans.
+ * 
+ * Author: NguyenHuuKhanh
+ * Version: 2.1
+ * Date: 2026-04-08
+ */
 require_once 'includes/db.php';
 require_once 'includes/cart_functions.php';
 require_once 'includes/auth_functions.php';
 
+// Synchronize session cart with database if user is logged in
 syncCartWithDatabase($pdo);
 
 if (isset($_GET['add'])) {

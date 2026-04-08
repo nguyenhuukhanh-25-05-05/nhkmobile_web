@@ -27,44 +27,11 @@ if (isset($_POST['update_status'])) {
 $stmt = $pdo->query("SELECT * FROM users ORDER BY created_at DESC");
 $users = $stmt->fetchAll();
 
-// Cấu hình Header
-$pageTitle = "Quản lý Người dùng | Admin";
+$pageTitle = "Quản lý Người dùng | Admin NHK Mobile";
 $basePath = "../";
+include 'includes/admin_header.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title><?php echo $pageTitle; ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="../assets/css/admin.css">
-</head>
-<body>
-
-    <!-- THANH SIDEBAR TRÁI -->
-    <aside class="sidebar text-white d-none d-lg-block">
-        <div class="mb-5 px-3">
-             <img src="../assets/images/logo-k.svg" height="20" alt="Logo" class="brightness-0 invert opacity-75">
-        </div>
-        <nav>
-            <a href="dashboard.php" class="nav-link-admin"><i class="bi bi-speedometer2"></i> Tổng quan</a>
-            <a href="products.php" class="nav-link-admin"><i class="bi bi-box-seam"></i> Sản phẩm</a>
-            <a href="orders.php" class="nav-link-admin"><i class="bi bi-receipt"></i> Đơn hàng</a>
-            <a href="users.php" class="nav-link-admin active"><i class="bi bi-people"></i> Khách hàng</a>
-            <a href="warranties.php" class="nav-link-admin"><i class="bi bi-shield-check"></i> Bảo hành IMEI</a>
-            <a href="news.php" class="nav-link-admin"><i class="bi bi-newspaper"></i> Tin tức & Tech</a>
-            
-            <div class="mt-5 pt-5 border-top border-secondary mx-3">
-                 <a href="../index.php" class="nav-link-admin text-info ps-0 mb-2"><i class="bi bi-box-arrow-left"></i> Xem Website</a>
-                 <a href="logout.php" class="nav-link-admin text-danger ps-0 small"><i class="bi bi-power"></i> Đăng xuất</a>
-            </div>
-        </nav>
-    </aside>
-
-    <!-- NỘI DUNG CHÍNH -->
-    <main class="main-content">
         <header class="d-flex justify-content-between align-items-center mb-5">
             <div>
                  <h2 class="fw-bold mb-1">Quản lý Khách hàng</h2>
@@ -121,13 +88,13 @@ $basePath = "../";
                                     <input type="hidden" name="id" value="<?php echo $u['id']; ?>">
                                     
                                     <?php if ($u['status'] === 'active' || empty($u['status'])): ?>
-                                        <button type="submit" name="update_status" value="1" class="btn btn-sm btn-outline-danger shadow-sm" title="Khóa tài khoản này">
-                                            <i class="bi bi-lock"></i> Khóa
+                                        <button type="submit" name="update_status" value="1" class="btn btn-sm btn-outline-danger shadow-sm px-3 rounded-pill" title="Khóa tài khoản này">
+                                            <i class="bi bi-lock me-1"></i> Khóa
                                             <input type="hidden" name="status" value="banned">
                                         </button>
                                     <?php else: ?>
-                                        <button type="submit" name="update_status" value="1" class="btn btn-sm btn-outline-success shadow-sm" title="Mở khóa tài khoản">
-                                            <i class="bi bi-unlock"></i> Mở khóa
+                                        <button type="submit" name="update_status" value="1" class="btn btn-sm btn-outline-success shadow-sm px-3 rounded-pill" title="Mở khóa tài khoản">
+                                            <i class="bi bi-unlock me-1"></i> Mở khóa
                                             <input type="hidden" name="status" value="active">
                                         </button>
                                     <?php endif; ?>
@@ -145,8 +112,5 @@ $basePath = "../";
                 </table>
             </div>
         </div>
-    </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<?php include 'includes/admin_footer.php'; ?>

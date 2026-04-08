@@ -1,8 +1,20 @@
 <?php 
+/**
+ * NHK Mobile - Product Details
+ * 
+ * Description: Detailed view of a specific product, including 
+ * high-resolution images, full specifications, pricing, stock levels, 
+ * and customer reviews.
+ * 
+ * Author: NguyenHuuKhanh
+ * Version: 2.1
+ * Date: 2026-04-08
+ */
 session_start();
 require_once 'includes/db.php';
-$id = isset($_GET['id']) ? $_GET['id'] : null;
 
+// Retrieve product ID and fetch data from DB
+$id = isset($_GET['id']) ? $_GET['id'] : null;
 if (!$id) {
     header("Location: product.php");
     exit;

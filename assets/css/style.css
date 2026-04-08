@@ -107,7 +107,12 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: var(--shadow-md);
 }
 
-/* --- Sticky Navbar Premium --- */
+/* /* 
+   ==========================================================================
+   3. NAVIGATION SYSTEM
+   ========================================================================== 
+*/
+
 .navbar-minimal {
     position: fixed;
     top: 0;
@@ -121,12 +126,13 @@ h1, h2, h3, h4, h5, h6 {
     z-index: 1000;
     display: flex;
     align-items: center;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .navbar-minimal.scrolled {
     height: 64px;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
 }
 
 .nav-content {
@@ -134,6 +140,12 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
     justify-content: space-between;
     width: 100%;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    z-index: 1001;
 }
 
 .nav-links {
@@ -323,7 +335,12 @@ h1, h2, h3, h4, h5, h6 {
     transform: translate(-50%, -50%);
 }
 
-/* --- Premium Product Cards --- */
+/* 
+   ==========================================================================
+   4. PRODUCT COMPONENTS
+   ========================================================================== 
+*/
+
 .product-grid-new {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -446,6 +463,7 @@ h1, h2, h3, h4, h5, h6 {
     opacity: 0;
     transform: translateX(20px);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10;
 }
 
 .product-card-new:hover .add-to-cart-btn {
@@ -506,86 +524,48 @@ h1, h2, h3, h4, h5, h6 {
     transform: rotateY(180deg);
 }
 
-/* --- Footer Luxury --- */
-.footer-new {
-    background: #fbfbfb !important;
-    color: var(--text-main) !important;
-    padding: 80px 0 40px;
-    border-top: 1px solid var(--border-light);
+/* 
+   ==========================================================================
+   5. RESPONSIVE ORCHESTRATION
+   ========================================================================== 
+*/
+
+@media (max-width: 991.98px) {
+    .navbar-minimal { height: 64px; }
+    .nav-links { display: none; }
+    
+    /* Reveal Add to Cart button on mobile by default */
+    .add-to-cart-btn {
+        opacity: 1 !important;
+        transform: none !important;
+        bottom: 20px;
+        right: 20px;
+        width: 44px;
+        height: 44px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
 }
 
-.footer-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1.5fr;
-    gap: 80px;
-    margin-bottom: 80px;
-}
-
-.footer-brand p {
-    color: var(--text-secondary);
-    margin-top: 24px;
-    font-size: 15px;
-    line-height: 1.8;
-}
-
-.footer-title {
-    font-size: 14px;
-    font-weight: 800;
-    margin-bottom: 32px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-main);
-}
-
-.footer-links li {
-    margin-bottom: 16px;
-}
-
-.footer-links a {
-    color: var(--text-secondary);
-    font-size: 15px;
-}
-
-.footer-links a:hover {
-    color: var(--primary);
-    transform: translateX(8px);
-    display: inline-block;
-}
-
-.footer-bottom-new {
-    padding-top: 40px;
-    border-top: 1px solid var(--border-light);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: var(--text-muted);
-    font-size: 14px;
-}
-
-/* --- Mobile Responsive Fixes --- */
-@media (max-width: 1024px) {
-    .hero-grid { grid-template-columns: 1fr; text-align: center; gap: 40px; }
-    .hero-text { order: 2; padding: 0 20px; }
-    .hero-image-container { order: 1; }
-    .hero-image-new { max-height: 450px; }
-    .feature-grid { grid-template-columns: 1fr; gap: 24px; }
-    .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
-}
-
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
     .navbar-minimal { height: 60px; }
-    .nav-brand .logo-box { width: 30px !important; height: 30px !important; border-width: 1.5px !important; }
-    .nav-brand span { font-size: 1rem !important; }
-    .nav-icon { width: 40px; height: 40px; font-size: 20px; }
+    .nav-brand .logo-box { 
+        width: 32px !important; 
+        height: 32px !important; 
+        border-width: 1.5px !important;
+    }
+    .nav-brand span { font-size: 0.95rem !important; }
+    .nav-icon { 
+        width: 38px; 
+        height: 38px; 
+        font-size: 18px; 
+    }
     .display-hero { font-size: 2.6rem; }
     .hero-desc { font-size: 17px; }
-    .section-title-box { margin-bottom: 30px; }
     .product-grid-new { gap: 16px; }
-    .product-card-new { padding: 16px; }
+    .product-card-new { padding: 18px; }
     .product-img-box { height: 200px; padding: 20px; }
-    .p-name { font-size: 17px; }
-    
-    /* Footer Mobile Optimization */
+    .p-name { font-size: 16px; margin-bottom: 8px; }
+    .p-price-new { font-size: 16px; }
     .footer-new { padding: 60px 0 30px; }
     .footer-grid { gap: 0; }
     .footer-title-wrapper { padding: 15px 0; border-bottom: 1px solid rgba(0,0,0,0.05); cursor: pointer; }

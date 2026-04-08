@@ -2,10 +2,10 @@
 require_once 'admin_auth.php';
 require_once '../includes/db.php';
 
-$stmtRevenue = $pdo->query("SELECT SUM(total_price) FROM orders WHERE status = 'Completed'");
+$stmtRevenue = $pdo->query("SELECT SUM(total_price) FROM orders WHERE status = 'Completed' OR status = 'Hoàn thành'");
 $totalRevenue = $stmtRevenue->fetchColumn() ?: 0;
 
-$stmtOrders = $pdo->query("SELECT COUNT(*) FROM orders WHERE status = 'Pending'");
+$stmtOrders = $pdo->query("SELECT COUNT(*) FROM orders WHERE status = 'Pending' OR status = 'Chờ duyệt'");
 $newOrdersCount = $stmtOrders->fetchColumn();
 
 $stmtUsers = $pdo->query("SELECT COUNT(*) FROM users");
@@ -19,56 +19,9 @@ $recentOrders = $stmtRecent->fetchAll();
 
 $pageTitle = "Dashboard | Admin NHK Mobile";
 $basePath = "../";
+include 'includes/admin_header.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $pageTitle; ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../assets/css/admin.css">
-</head>
-<body>
-
-    <div class="mobile-header d-lg-none">
-        <button class="btn btn-link text-dark p-0 me-3" id="sidebarToggle">
-            <i class="bi bi-list fs-2"></i>
-        </button>
-        <img src="../assets/images/logo-k.svg" height="24" alt="Logo">
-    </div>
-
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <aside class="sidebar" id="sidebarMenu">
-        <div class="d-flex align-items-center justify-content-between mb-5">
-             <div class="d-flex align-items-center">
-                <img src="../assets/images/logo-k.svg" height="28" alt="Logo" class="me-2">
-                <span class="fw-800 fs-5 tracking-tight">NHK ADMIN</span>
-             </div>
-             <button class="btn btn-link text-dark d-lg-none p-0" id="sidebarClose">
-                <i class="bi bi-x-lg fs-4"></i>
-             </button>
-        </div>
-        <nav class="flex-grow-1">
-            <a href="dashboard.php" class="nav-link-admin active"><i class="bi bi-speedometer2"></i> Tổng quan</a>
-            <a href="products.php" class="nav-link-admin"><i class="bi bi-phone-vibrate"></i> Sản phẩm</a>
-            <a href="orders.php" class="nav-link-admin"><i class="bi bi-cart-check"></i> Đơn hàng</a>
-            <a href="users.php" class="nav-link-admin"><i class="bi bi-people-fill"></i> Khách hàng</a>
-            <a href="warranties.php" class="nav-link-admin"><i class="bi bi-shield-lock"></i> Bảo hành</a>
-            <a href="news.php" class="nav-link-admin"><i class="bi bi-journal-text"></i> Tin tức</a>
-        </nav>
-        
-        <div class="mt-auto pt-4 border-top">
-             <a href="../index.php" class="nav-link-admin text-primary mb-2"><i class="bi bi-globe-americas"></i> Xem Website</a>
-             <a href="logout.php" class="nav-link-admin text-danger"><i class="bi bi-power"></i> Đăng xuất</a>
-        </div>
-    </aside>
-
-    <main class="main-content">
         <header class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 gap-3">
              <div>
                 <h1 class="fw-800 h2 mb-1">Tổng quan hệ thống</h1>
@@ -152,12 +105,20 @@ $basePath = "../";
                             <td><?php echo date('d/m/Y', strtotime($o['created_at'])); ?></td>
                             <td class="fw-800 text-primary"><?php echo number_format($o['total_price'], 0, ',', '.'); ?>₫</td>
                             <td>
-                                <span class="badge-status badge-<?php echo strtolower($o['status']); ?>">
+                                <?php 
+                                    $badgeClass = 'bg-warning text-dark';
+                                    $s = mb_strtolower($o['status'], 'UTF-8');
+                                    if (str_contains($s, 'đã duyệt')) $badgeClass = 'bg-info text-white';
+                                    elseif (str_contains($s, 'đang giao')) $badgeClass = 'bg-primary text-white';
+                                    elseif (str_contains($s, 'hoàn thành')) $badgeClass = 'bg-success text-white';
+                                    elseif (str_contains($s, 'hủy')) $badgeClass = 'bg-danger text-white';
+                                ?>
+                                <span class="badge <?php echo $badgeClass; ?> border-0 px-3 py-1 rounded-pill small">
                                     <?php echo $o['status']; ?>
                                 </span>
                             </td>
                             <td>
-                                <button class="btn btn-light btn-sm rounded-3 px-3"><i class="bi bi-eye"></i></button>
+                                <a href="orders.php" class="btn btn-light btn-sm rounded-3 px-3"><i class="bi bi-eye"></i></a>
                             </td>
                         </tr>
                         <?php endforeach; ?>
@@ -165,23 +126,5 @@ $basePath = "../";
                 </table>
             </div>
         </div>
-    </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        const sidebarMenu = document.getElementById('sidebarMenu');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
-        const sidebarClose = document.getElementById('sidebarClose');
-
-        function toggleSidebar() {
-            sidebarMenu.classList.toggle('show');
-            sidebarOverlay.classList.toggle('show');
-        }
-
-        sidebarToggle.addEventListener('click', toggleSidebar);
-        sidebarOverlay.addEventListener('click', toggleSidebar);
-        sidebarClose.addEventListener('click', toggleSidebar);
-    </script>
-</body>
-</html>
+<?php include 'includes/admin_footer.php'; ?>

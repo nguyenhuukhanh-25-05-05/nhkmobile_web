@@ -1,8 +1,20 @@
+<?php
+/**
+ * NHK Mobile - Global Header System
+ * 
+ * Description: Handles site-wide meta tags, navigation building, 
+ * session detection, and the premium mobile drawer system.
+ * 
+ * Author: NguyenHuuKhanh
+ * Version: 2.5
+ * Date: 2026-04-08
+ */
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title><?php echo isset($pageTitle) ? $pageTitle : 'NHK Mobile | Premium Tech Store'; ?></title>
     <meta name="description" content="NHK Mobile - Chuyên cung cấp iPhone, Samsung và các thiết bị công nghệ chính hãng. Trải nghiệm mua sắm 5 sao, bảo hành tin cậy tại NHK Mobile.">
     <meta name="keywords" content="nhk mobile, iphone 17, điện thoại chính hãng, apple authorized reseller, mua iphone trả góp">

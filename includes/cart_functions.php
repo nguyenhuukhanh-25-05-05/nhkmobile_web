@@ -1,7 +1,14 @@
 <?php
 /**
- * Tệp chứa các hàm quản lý giỏ hàng (Cart Functions)
- * Hỗ trợ đồng bộ giỏ hàng giữa Session (phía khách) và Database (phía chủ).
+ * NHK Mobile - Cart Persistence Services
+ * 
+ * Description: Specialized logic for bidirectional synchronization 
+ * between client-side PHP sessions and server-side database storage. 
+ * Ensures cart contents persist across devices and sessions.
+ * 
+ * Author: NguyenHuuKhanh
+ * Version: 2.2
+ * Date: 2026-04-08
  */
 
 /**

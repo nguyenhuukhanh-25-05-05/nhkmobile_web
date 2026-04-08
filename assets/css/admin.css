@@ -192,32 +192,77 @@ body {
 .badge-pending { background: #FFF4E5; color: #FF9500; }
 .badge-cancelled { background: #FFE5E5; color: #FF3B30; }
 
-/* --- Mobile Elements --- */
-.mobile-header {
-    height: 64px;
-    background: #FFFFFF;
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    border-bottom: 1px solid var(--admin-border);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+/* --- Mobile Elements Enhanced --- */
+@media (max-width: 991.98px) {
+    .sidebar { 
+        width: 300px;
+        transform: translateX(-100%); 
+        box-shadow: 20px 0 40px rgba(0,0,0,0.1);
+    }
+    .sidebar.show { transform: translateX(0); }
+    .main-content { 
+        margin-left: 0; 
+        padding: 24px 16px; 
+    }
+    .mobile-header {
+        height: 72px;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
+        border-bottom: 1px solid var(--admin-border);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        transition: transform 0.3s;
+    }
+    
+    .table-container { 
+        padding: 20px 12px; 
+        border-radius: 12px;
+    }
+    
+    .table thead th {
+        padding: 12px 10px;
+        font-size: 10px;
+    }
+    
+    .table tbody td {
+        padding: 14px 10px;
+        font-size: 13px;
+    }
+
+    h1, h2 { font-size: 1.5rem !important; }
 }
 
 .sidebar-overlay {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     z-index: 1000;
     display: none;
+    opacity: 0;
+    transition: opacity 0.3s;
 }
 
-.sidebar-overlay.show { display: block; }
+.sidebar-overlay.show { 
+    display: block; 
+    opacity: 1;
+}
 
-/* --- Custom Scrollbar --- */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: var(--admin-bg); }
-::-webkit-scrollbar-thumb { background: #D1D1D6; border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: #AEAEB2; }
+/* --- Helper Classes --- */
+.fw-800 { font-weight: 800; }
+.fw-900 { font-weight: 900; }
+.tracking-tight { letter-spacing: -0.02em; }
+.tracking-tighter { letter-spacing: -0.05em; }
+
+/* Custom Scrollbar for Sidebar */
+.sidebar {
+    overflow-y: auto;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: #eee; border-radius: 10px; }

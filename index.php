@@ -1,8 +1,18 @@
 <?php
+/**
+ * NHK Mobile - Home Page
+ * 
+ * Description: The main landing page featuring the hero section, 
+ * featured products grid, and core value propositions.
+ * 
+ * Author: NguyenHuuKhanh
+ * Version: 2.3
+ * Date: 2026-04-08
+ */
 session_start();
 require_once 'includes/db.php';
 
-// 1. Lấy danh sách 8 sản phẩm tiêu biểu
+// 1. Fetch featured products (limit 8)
 $stmt = $pdo->query("SELECT * FROM products ORDER BY is_featured DESC, created_at DESC LIMIT 8");
 $featuredProducts = $stmt->fetchAll();
 

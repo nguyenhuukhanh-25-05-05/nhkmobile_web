@@ -1,6 +1,18 @@
 <?php
+/**
+ * NHK Mobile - Newsletter Subscription Handler
+ * 
+ * Description: Asynchronous endpoint for processing email subscriptions. 
+ * Validates syntax, prevents duplicate entries, and returns JSON status 
+ * for frontend feedback.
+ * 
+ * Author: NguyenHuuKhanh
+ * Version: 2.1
+ * Date: 2026-04-08
+ */
 require_once 'includes/db.php';
 
+// Prepare response as JSON for AJAX requests
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

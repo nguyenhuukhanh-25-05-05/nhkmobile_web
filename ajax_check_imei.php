@@ -1,6 +1,18 @@
 <?php
+/**
+ * NHK Mobile - AJAX Warranty Verification
+ * 
+ * Description: Backend endpoint for asynchronous IMEI verification. 
+ * Cross-references provided IMEI against the hardware database 
+ * and returns JSON status.
+ * 
+ * Author: NguyenHuuKhanh
+ * Version: 2.1
+ * Date: 2026-04-08
+ */
 require_once 'includes/db.php';
 
+// Set response header to JSON format
 header('Content-Type: application/json');
 
 if (!isset($_GET['imei'])) {
