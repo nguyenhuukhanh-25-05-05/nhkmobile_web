@@ -33,14 +33,14 @@
                 <span class="fw-800 fs-6 tracking-tight text-main d-none d-sm-block">MOBILE</span>
             </a>
 
-            <ul class="nav-links mb-0">
+            <ul class="nav-links mb-0 d-none d-lg-flex">
                 <li><a href="<?php echo $basePath; ?>product.php" class="nav-link">Điện thoại</a></li>
                 <li><a href="<?php echo $basePath; ?>warranty.php" class="nav-link">Bảo hành</a></li>
                 <li><a href="<?php echo $basePath; ?>news.php" class="nav-link">Tin tức</a></li>
             </ul>
 
             <div class="nav-actions">
-                <a href="#" id="searchTrigger" class="nav-icon"><i class="bi bi-search"></i></a>
+                <a href="#" id="searchTrigger" class="nav-icon d-none d-md-flex"><i class="bi bi-search"></i></a>
                 <a href="<?php echo $basePath; ?>cart.php" class="nav-icon position-relative">
                     <i class="bi bi-bag-heart"></i>
                     <?php if(isset($_SESSION['cart']) && count($_SESSION['cart']) > 0): ?>
@@ -50,14 +50,68 @@
                     <?php endif; ?>
                 </a>
                 
+                <a href="#mobileNav" data-bs-toggle="offcanvas" class="nav-icon d-flex d-lg-none"><i class="bi bi-list"></i></a>
+                
                 <?php if (isset($_SESSION['user_id']) || isset($_SESSION['admin_id'])): ?>
-                    <a href="#accountOffcanvas" role="button" class="nav-icon" data-bs-toggle="offcanvas"><i class="bi bi-person-circle"></i></a>
+                    <a href="#accountOffcanvas" role="button" class="nav-icon d-none d-sm-flex" data-bs-toggle="offcanvas"><i class="bi bi-person-circle"></i></a>
                 <?php else: ?>
-                    <a href="<?php echo $basePath; ?>login.php" class="nav-icon"><i class="bi bi-person"></i></a>
+                    <a href="<?php echo $basePath; ?>login.php" class="nav-icon d-none d-sm-flex"><i class="bi bi-person"></i></a>
                 <?php endif; ?>
             </div>
         </div>
     </nav>
+    
+    <!-- Mobile Menu Drawer (Premium Style) -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileNav" style="width: 280px; border-right: none;">
+        <div class="offcanvas-header py-4 px-4 border-bottom">
+            <div class="nav-brand d-flex align-items-center">
+                <div class="logo-box me-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border: 2px solid var(--text-main); border-radius: 8px;">
+                    <span class="fw-900 fs-7" style="font-size: 0.75rem;">NHK</span>
+                </div>
+                <span class="fw-800 fs-6 tracking-tight text-main">MENU</span>
+            </div>
+            <button type="button" class="btn-close shadow-none" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body p-0">
+            <div class="py-4">
+                <div class="list-group list-group-flush">
+                    <a href="<?php echo $basePath; ?>index.php" class="list-group-item list-group-item-action py-3 px-4 border-0 fw-bold d-flex align-items-center">
+                        <i class="bi bi-house me-3 fs-5"></i> Trang chủ
+                    </a>
+                    <a href="<?php echo $basePath; ?>product.php" class="list-group-item list-group-item-action py-3 px-4 border-0 fw-bold d-flex align-items-center">
+                        <i class="bi bi-phone me-3 fs-5"></i> Điện thoại & Phụ kiện
+                    </a>
+                    <a href="<?php echo $basePath; ?>warranty.php" class="list-group-item list-group-item-action py-3 px-4 border-0 fw-bold d-flex align-items-center">
+                        <i class="bi bi-shield-check me-3 fs-5"></i> Tra cứu Bảo hành
+                    </a>
+                    <a href="<?php echo $basePath; ?>news.php" class="list-group-item list-group-item-action py-3 px-4 border-0 fw-bold d-flex align-items-center">
+                        <i class="bi bi-newspaper me-3 fs-5"></i> Tin tức Công nghệ
+                    </a>
+                </div>
+            </div>
+            
+            <div class="px-4 mt-2">
+                <div class="p-4 rounded-4 bg-light text-center">
+                    <p class="small text-muted mb-3 italic">Khám phá các siêu phẩm AI mới nhất tại NHK Mobile.</p>
+                    <a href="<?php echo $basePath; ?>product.php" class="btn btn-dark w-100 rounded-pill py-2 small fw-bold">Mua sắm ngay</a>
+                </div>
+            </div>
+            
+            <div class="mt-auto p-4 border-top">
+                <p class="small text-muted mb-3 fw-bold text-uppercase tracking-wider">Tài khoản</p>
+                <?php if (isset($_SESSION['user_id']) || isset($_SESSION['admin_id'])): ?>
+                    <a href="#accountOffcanvas" data-bs-toggle="offcanvas" class="btn btn-outline-dark w-100 rounded-pill py-2 mb-2 d-flex align-items-center justify-content-center gap-2">
+                        <i class="bi bi-person-circle"></i> Trang quản lý
+                    </a>
+                <?php else: ?>
+                    <div class="d-grid gap-2">
+                        <a href="<?php echo $basePath; ?>login.php" class="btn btn-primary rounded-pill py-2 fw-bold">Đăng nhập</a>
+                        <a href="<?php echo $basePath; ?>register.php" class="btn btn-outline-dark rounded-pill py-2 fw-bold">Đăng ký</a>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
 
     <!-- Account Offcanvas (Vẫn giữ logic nhưng đổi style nhẹ) -->
     <?php if (isset($_SESSION['user_id']) || isset($_SESSION['admin_id'])): ?>

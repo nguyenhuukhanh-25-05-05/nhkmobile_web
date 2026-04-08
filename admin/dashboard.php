@@ -75,8 +75,20 @@ $basePath = "../";
                 <p class="text-secondary fw-500 mb-0">Chào mừng trở lại, Admin NHK Mobile</p>
              </div>
              <div class="d-flex gap-2">
-                 <button class="btn btn-white border rounded-3 fw-700 px-4 py-2 small shadow-sm bg-white"><i class="bi bi-download me-2"></i>Báo cáo</button>
-                 <button class="btn btn-primary rounded-3 fw-700 px-4 py-2 small shadow-sm"><i class="bi bi-plus-lg me-2"></i>Thêm mới</button>
+                 <a href="export_stats.php" class="btn btn-white border rounded-3 fw-700 px-4 py-2 small shadow-sm bg-white d-flex align-items-center">
+                     <i class="bi bi-download me-2"></i>Báo cáo
+                 </a>
+                 <div class="dropdown">
+                     <button class="btn btn-primary rounded-3 fw-700 px-4 py-2 small shadow-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                         <i class="bi bi-plus-lg me-2"></i>Thêm mới
+                     </button>
+                     <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-3 py-2">
+                         <li><a class="dropdown-item py-2 px-4 fw-600" href="products.php"><i class="bi bi-phone me-2 text-primary"></i> Sản phẩm mới</a></li>
+                         <li><a class="dropdown-item py-2 px-4 fw-600" href="news.php"><i class="bi bi-newspaper me-2 text-success"></i> Bài viết mới</a></li>
+                         <li><hr class="dropdown-divider opacity-50"></li>
+                         <li><a class="dropdown-item py-2 px-4 fw-600" href="warranties.php"><i class="bi bi-shield-check me-2 text-info"></i> Kích hoạt bảo hành</a></li>
+                     </ul>
+                 </div>
              </div>
         </header>
 

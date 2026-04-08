@@ -33,7 +33,13 @@ if (isset($_POST['save_warranty'])) {
         exit;
     } catch (PDOException $e) {
         // Lỗi trùng IMEI hoặc khóa ngoại
-        $error = "Có lỗi xảy ra: " . $e->getMessage();
+        if ($e->getCode() == '23505') {
+            $error = "Lỗi: Số IMEI này đã được kích hoạt trước đó!";
+        } elseif ($e->getCode() == '23503') {
+            $error = "Lỗi: Mã đơn hàng (Order ID) không tồn tại trong hệ thống. Vui lòng kiểm tra lại.";
+        } else {
+            $error = "Có lỗi xảy ra: " . $e->getMessage();
+        }
     }
 }
 
