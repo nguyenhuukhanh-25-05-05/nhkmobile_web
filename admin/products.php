@@ -147,7 +147,6 @@ if (isset($_GET['edit'])) {
     $stmt->execute([$_GET['edit']]);
     $editProduct = $stmt->fetch();
 }
-?>
 
 $pageTitle = "Kho sản phẩm | Admin";
 $basePath = "../";

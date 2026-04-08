@@ -16,58 +16,57 @@
                 <!-- Brand Section -->
                 <div class="footer-brand">
                     <div class="d-flex align-items-center justify-content-center justify-content-md-start mb-4">
-                        <div class="logo-box me-2 d-flex align-items-center justify-content-center shadow-sm" style="width: 44px; height: 44px; border: 2px solid var(--text-main); border-radius: 10px; background: #fff;">
-                            <span class="fw-900 fs-5 text-main">NHK</span>
-                        </div>
-                        <span class="fw-800 fs-5 tracking-tight text-main">MOBILE</span>
+                        <div class="logo-box me-3">K</div>
+                        <span class="fw-800 fs-5 tracking-tight text-main">NHK MOBILE</span>
                     </div>
-                    <p class="text-secondary small" style="max-width: 300px;">Đại lý ủy quyền chính thức của Apple tại Việt Nam. Dịch vụ hậu mãi chuẩn 5 sao.</p>
-                    <div class="d-flex justify-content-center justify-content-md-start gap-2 mt-4 mb-4 mb-md-0">
-                        <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
-                        <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
-                        <a href="#" class="social-icon"><i class="bi bi-tiktok"></i></a>
-                        <a href="#" class="social-icon"><i class="bi bi-youtube"></i></a>
+                    <p class="text-secondary small mb-4" style="max-width: 300px;">Đại lý ủy quyền chính thức của Apple tại Việt Nam. Chúng tôi mang đến những trải nghiệm công nghệ đỉnh cao cùng dịch vụ hậu mãi chuẩn 5 sao.</p>
+                    <div class="d-flex justify-content-center justify-content-md-start gap-3">
+                        <a href="#" class="social-icon" title="Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="social-icon" title="Instagram"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-icon" title="TikTok"><i class="bi bi-tiktok"></i></a>
+                        <a href="#" class="social-icon" title="YouTube"><i class="bi bi-youtube"></i></a>
                     </div>
                 </div>
                 
-                <!-- Explorar Column (Accordion on Mobile) -->
+                <!-- Explorar Column -->
                 <div class="footer-col accordion-item-mobile">
                     <div class="footer-title-wrapper d-flex justify-content-between align-items-center">
-                        <h6 class="footer-title mb-0">Khám phá</h6>
+                        <h6 class="footer-title">Khám phá</h6>
                         <i class="bi bi-plus-lg d-md-none toggle-icon"></i>
                     </div>
-                    <ul class="footer-links p-0 list-unstyled small accordion-content-mobile">
-                        <li><a href="product.php?category=Apple">iPhone</a></li>
-                        <li><a href="product.php?category=Samsung">Samsung</a></li>
-                        <li><a href="product.php">Tất cả điện thoại</a></li>
+                    <ul class="footer-links list-unstyled accordion-content-mobile">
+                        <li><a href="product.php?category=Apple">iPhone Series</a></li>
+                        <li><a href="product.php?category=Samsung">Samsung Galaxy</a></li>
+                        <li><a href="product.php">Phụ kiện cao cấp</a></li>
                         <li><a href="news.php">Tin tức công nghệ</a></li>
                     </ul>
                 </div>
                 
-                <!-- Services Column (Accordion on Mobile) -->
+                <!-- Services Column -->
                 <div class="footer-col accordion-item-mobile">
                     <div class="footer-title-wrapper d-flex justify-content-between align-items-center">
-                        <h6 class="footer-title mb-0">Dịch vụ</h6>
+                        <h6 class="footer-title">Dịch vụ</h6>
                         <i class="bi bi-plus-lg d-md-none toggle-icon"></i>
                     </div>
-                    <ul class="footer-links p-0 list-unstyled small accordion-content-mobile">
-                        <li><a href="warranty.php">Chính sách bảo hành</a></li>
-                        <li><a href="track_order.php">Tra cứu đơn hàng</a></li>
-                        <li><a href="#">Vận chuyển & Giao nhận</a></li>
-                        <li><a href="#">Câu hỏi thường gặp</a></li>
+                    <ul class="footer-links list-unstyled accordion-content-mobile">
+                        <li><a href="warranty.php">Trung tâm Bảo hành</a></li>
+                        <li><a href="track_order.php">Tình trạng đơn hàng</a></li>
+                        <li><a href="#">Giao hàng tận nơi</a></li>
+                        <li><a href="#">Hình thức thanh toán</a></li>
                     </ul>
                 </div>
                 
-                <!-- Contact Column (Accordion on Mobile) -->
+                <!-- About Column -->
                 <div class="footer-col accordion-item-mobile">
                     <div class="footer-title-wrapper d-flex justify-content-between align-items-center">
-                        <h6 class="footer-title mb-0">Kết nối</h6>
+                        <h6 class="footer-title">Về NHK Mobile</h6>
                         <i class="bi bi-plus-lg d-md-none toggle-icon"></i>
                     </div>
-                    <ul class="footer-links p-0 list-unstyled small accordion-content-mobile">
-                        <li class="contact-info"><i class="bi bi-geo-alt me-2 text-primary"></i> Chư Sê, Gia Lai</li>
-                        <li class="contact-info"><i class="bi bi-telephone me-2 text-primary"></i> 1800 1234</li>
-                        <li class="contact-info"><i class="bi bi-envelope me-2 text-primary"></i> contact@nhkmobile.vn</li>
+                    <ul class="footer-links list-unstyled accordion-content-mobile">
+                        <li><a href="#">Giới thiệu công ty</a></li>
+                        <li><a href="#">Tuyển dụng</a></li>
+                        <li><a href="#">Chính sách bảo mật</a></li>
+                        <li><a href="#">Liên hệ hợp tác</a></li>
                     </ul>
                 </div>
             </div>

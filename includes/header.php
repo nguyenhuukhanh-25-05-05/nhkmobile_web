@@ -38,11 +38,9 @@
 <body>
     <nav class="navbar-minimal">
         <div class="container-wide nav-content">
-            <a href="<?php echo $basePath; ?>index.php" class="nav-brand d-flex align-items-center">
-                <div class="logo-box me-2 d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; border: 2px solid var(--text-main); border-radius: 8px;">
-                    <span class="fw-900 fs-6">NHK</span>
-                </div>
-                <span class="fw-800 fs-6 tracking-tight text-main d-none d-sm-block">MOBILE</span>
+            <a href="<?php echo $basePath; ?>index.php" class="nav-brand">
+                <div class="logo-box">K</div>
+                <span class="fw-800 fs-6 tracking-tight text-main d-none d-sm-block">NHK MOBILE</span>
             </a>
 
             <ul class="nav-links mb-0 d-none d-lg-flex">
@@ -76,11 +74,9 @@
     <!-- Mobile Menu Drawer (Premium Style) -->
     <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileNav" style="width: 280px; border-right: none;">
         <div class="offcanvas-header py-4 px-4 border-bottom">
-            <div class="nav-brand d-flex align-items-center">
-                <div class="logo-box me-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border: 2px solid var(--text-main); border-radius: 8px;">
-                    <span class="fw-900 fs-7" style="font-size: 0.75rem;">NHK</span>
-                </div>
-                <span class="fw-800 fs-6 tracking-tight text-main">MENU</span>
+            <div class="nav-brand">
+                <div class="logo-box" style="width: 34px; height: 34px; font-size: 0.9rem; border-radius: 8px;">K</div>
+                <span class="fw-800 fs-6 tracking-tight text-main">NHK MOBILE</span>
             </div>
             <button type="button" class="btn-close shadow-none" data-bs-dismiss="offcanvas"></button>
         </div>
