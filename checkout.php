@@ -41,17 +41,23 @@ if (isset($_POST['place_order'])) {
     // Lấy thông tin từ Form gửi lên qua POST
     $name = $_POST['full_name'];
     $phone = $_POST['phone'];
+    $address = $_POST['address'] ?? 'Tại cửa hàng';
     $payment = $_POST['payment_method'];
     $userId = get_logged_in_user_id(); // Lấy ID người dùng đang đăng nhập
-    $isInstallment = isset($_SESSION['is_installment']) && $_SESSION['is_installment'] ? 'true' : 'false';
+    $isInstallmentVal = (isset($_SESSION['is_installment']) && $_SESSION['is_installment'] === true) ? 'true' : 'false';
 
     // Thực hiện chèn đơn hàng vào bảng orders trong Postgres
-    $sqlOrder = "INSERT INTO orders (customer_name, customer_phone, total_price, status, payment_method, user_id, is_installment) VALUES (?, ?, ?, 'Chờ duyệt', ?, ?, ?)";
+    // Sử dụng RETURNING id để lấy ID chính xác trong Postgres
+    $sqlOrder = "INSERT INTO orders (customer_name, customer_phone, customer_address, total_price, status, payment_method, user_id, is_installment) VALUES (?, ?, ?, ?, 'Chờ duyệt', ?, ?, ?) RETURNING id";
     $stmtOrder = $pdo->prepare($sqlOrder);
-    $stmtOrder->execute([$name, $phone, $total, $payment, $userId, $isInstallment ? 'true' : 'false']);
+    $stmtOrder->execute([$name, $phone, $address, $total, $payment, $userId, $isInstallmentVal]);
     
-    // Lấy ID vừa chèn (Postgres dùng lastInsertId cho SERIAL hoặc RETURNING)
-    $orderId = $pdo->lastInsertId();
+    // Lấy ID vừa chèn từ RETURNING id
+    $orderId = $stmtOrder->fetchColumn();
+
+    if (!$orderId) {
+        die("Lỗi: Không thể tạo đơn hàng. Vui lòng thử lại.");
+    }
 
     // Lưu từng sản phẩm trong giỏ vào bảng order_items
     $sqlItem = "INSERT INTO order_items (order_id, product_id, product_name, price, quantity) VALUES (?, ?, ?, ?, ?)";
@@ -137,6 +143,10 @@ include 'includes/header.php';
                                 <div class="col-md-6">
                                     <label class="form-label small fw-bold">Địa chỉ Email (Không bắt buộc)</label>
                                     <input type="email" class="form-control rounded-3 border-0 bg-light p-3" placeholder="email@example.com">
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label small fw-bold">Địa chỉ giao hàng</label>
+                                    <textarea name="address" class="form-control rounded-3 border-0 bg-light p-3" rows="2" placeholder="Số nhà, tên đường, Phường/Xã, Quận/Huyện, Tỉnh/Thành phố" required></textarea>
                                 </div>
                                 <div class="col-md-12 mt-4">
                                      <h2 class="fw-bold mb-4">Cách thức thanh toán</h2>

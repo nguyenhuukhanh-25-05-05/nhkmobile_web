@@ -99,6 +99,11 @@ try {
     
     // Cập nhật cấu trúc bảng Giỏ hàng (Cart Items)
     try { $pdo->exec("ALTER TABLE cart_items ADD COLUMN IF NOT EXISTS user_id INT REFERENCES users(id);"); } catch (\PDOException $e) {}
+    try { $pdo->exec("ALTER TABLE cart_items ADD COLUMN IF NOT EXISTS session_id VARCHAR(255);"); } catch (\PDOException $e) {}
+    try { 
+        // Thêm ràng buộc duy nhất để ON CONFLICT hoạt động chính xác trong syncCartWithDatabase
+        $pdo->exec("ALTER TABLE cart_items ADD CONSTRAINT cart_items_session_product_unique UNIQUE (session_id, product_id);"); 
+    } catch (\PDOException $e) { /* Bỏ qua nếu đã tồn tại */ }
 
 } catch (\PDOException $e) {
     die("Lỗi nghiêm trọng khi kết nối cơ sở dữ liệu: " . $e->getMessage());

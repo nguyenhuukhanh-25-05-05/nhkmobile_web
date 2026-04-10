@@ -45,8 +45,14 @@ if (isset($_GET['order_id'])) {
     }
 } else {
     // 2. VIEW ORDER LIST
-    $stmtUserOrders = $pdo->prepare("SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC");
-    $stmtUserOrders->execute([$userId]);
+    if ($isAdmin) {
+        // Admin xem được tất cả các đơn hàng để dễ quản lý/test
+        $stmtUserOrders = $pdo->query("SELECT * FROM orders ORDER BY created_at DESC");
+    } else {
+        // User chỉ xem được đơn hàng của chính mình
+        $stmtUserOrders = $pdo->prepare("SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC");
+        $stmtUserOrders->execute([$userId]);
+    }
     $orders_list = $stmtUserOrders->fetchAll();
 }
 
