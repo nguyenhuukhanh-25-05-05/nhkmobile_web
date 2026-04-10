@@ -1,84 +1,58 @@
 <?php
 /**
- * NHK Mobile - Order Tracking System
- * 
- * Description: Real-time order tracking portal. Supports lookup by 
- * phone number and order ID, with automated detection for 
- * authenticated users.
- * 
- * Author: NguyenHuuKhanh
- * Version: 2.1
- * Date: 2026-04-08
+ * NHK Mobile - Order History & Tracking System
  */
 session_start();
 require_once 'includes/db.php';
 require_once 'includes/auth_functions.php';
 
-// Initialization of tracking variables
+// Initialization
 $order = null;
 $orders_list = [];
 $error = null;
 $items = [];
 
-// 1. CHẾ ĐỘ CÁ NHÂN HÓA (Dành cho Member)
+// 1. LOGGED IN MODE - Automatic History
 $is_logged_in = isset($_SESSION['user_id']);
-$orders_list = [];
-
 if ($is_logged_in) {
     $userId = $_SESSION['user_id'];
-    
-    // Ưu tiên lấy đơn hàng theo ID tài khoản
     $stmtUserOrders = $pdo->prepare("SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC");
     $stmtUserOrders->execute([$userId]);
     $orders_list = $stmtUserOrders->fetchAll();
-    
-    // Nếu có đơn hàng, và không đang xem chi tiết đơn cụ thể nào thì mặc định chuẩn bị list
-    if (!empty($orders_list) && !isset($_GET['order_id'])) {
-        // Tự động gán trạng thái để hiển thị danh sách
-        $_GET['phone'] = 'authenticated'; 
-    }
 }
 
-// 2. CHẾ ĐỘ TRA CỨU THỦ CÔNG (Dành cho Khách vãng lai hoặc Member tra đơn khác)
-if (isset($_GET['phone']) && $_GET['phone'] !== 'authenticated') {
-    $phone = trim($_GET['phone']);
-    $orderId = isset($_GET['order_id']) && !empty($_GET['order_id']) ? (int)$_GET['order_id'] : null;
-
-    if (empty($phone)) {
-        $error = "Vui lòng nhập Số điện thoại đã đặt hàng.";
+// 2. SEARCH MODE (For specific order)
+if (isset($_GET['order_id'])) {
+    $orderId = (int)$_GET['order_id'];
+    
+    if ($is_logged_in) {
+        // Nếu đã đăng nhập, chỉ cho phép xem đơn của chính mình
+        $stmt = $pdo->prepare("SELECT * FROM orders WHERE id = ? AND user_id = ?");
+        $stmt->execute([$orderId, $_SESSION['user_id']]);
     } else {
-        if (!empty($orderId)) {
-            // Tra cứu đích danh 1 đơn
+        // Nếu là khách, yêu cầu kèm SĐT
+        $phone = trim($_GET['phone'] ?? '');
+        if (empty($phone)) {
+            $error = "Vui lòng cung cấp số điện thoại để xem chi tiết đơn hàng.";
+        } else {
             $stmt = $pdo->prepare("SELECT * FROM orders WHERE id = ? AND customer_phone = ?");
             $stmt->execute([$orderId, $phone]);
-            $order = $stmt->fetch();
-
-            if (!$order) {
-                $error = "Không tìm thấy đơn hàng #$orderId khớp với số điện thoại này.";
-            } else {
-                $stmtItems = $pdo->prepare("SELECT order_items.*, products.image FROM order_items LEFT JOIN products ON order_items.product_id = products.id WHERE order_id = ?");
-                $stmtItems->execute([$order['id']]);
-                $items = $stmtItems->fetchAll();
-            }
+        }
+    }
+    
+    if (isset($stmt)) {
+        $order = $stmt->fetch();
+        if ($order) {
+            $stmtItems = $pdo->prepare("SELECT order_items.*, products.image FROM order_items LEFT JOIN products ON order_items.product_id = products.id WHERE order_id = ?");
+            $stmtItems->execute([$order['id']]);
+            $items = $stmtItems->fetchAll();
         } else {
-            // Tra cứu list đơn theo SĐT
-            $stmt = $pdo->prepare("SELECT * FROM orders WHERE customer_phone = ? ORDER BY created_at DESC");
-            $stmt->execute([$phone]);
-            $orders_list = $stmt->fetchAll();
-
-            if (!$orders_list) {
-                $error = "Số điện thoại này chưa có đơn hàng nào tại NHK Mobile.";
-            } elseif (count($orders_list) === 1 && !isset($_GET['list_all'])) {
-                $order = $orders_list[0];
-                $stmtItems = $pdo->prepare("SELECT order_items.*, products.image FROM order_items LEFT JOIN products ON order_items.product_id = products.id WHERE order_id = ?");
-                $stmtItems->execute([$order['id']]);
-                $items = $stmtItems->fetchAll();
-            }
+            $error = "Không tìm thấy đơn hàng này.";
         }
     }
 }
 
-$pageTitle = $is_logged_in ? "Đơn hàng của tôi | NHK Mobile" : "Tra cứu đơn hàng | NHK Mobile";
+$pageTitle = $is_logged_in ? "Lịch sử mua hàng | NHK Mobile" : "Tra cứu đơn hàng | NHK Mobile";
 $basePath = "";
 include 'includes/header.php';
 ?>
@@ -87,295 +61,172 @@ include 'includes/header.php';
 .track-card {
     border: none;
     border-radius: 1.5rem;
-    box-shadow: 0 1rem 3rem rgba(0,0,0,0.08);
+    box-shadow: 0 1rem 3rem rgba(0,0,0,0.06);
     overflow: hidden;
-    transition: transform 0.3s;
-}
-.track-card:hover { transform: translateY(-5px); }
-.track-header {
-    background: linear-gradient(135deg, #1d1d1f 0%, #434343 100%);
-    color: #fff;
-    padding: 3rem 2rem;
-    text-align: center;
 }
 .status-pill {
     padding: 0.5rem 1.25rem;
     border-radius: 50rem;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 .order-item-img {
-    width: 64px;
-    height: 64px;
+    width: 64px; height: 64px;
     object-fit: contain;
     background: #fff;
     border-radius: 12px;
     padding: 4px;
     border: 1px solid #eee;
 }
-.search-toggle-btn {
-    background: #f5f5f7;
-    border: 1px solid #e5e5e7;
-    color: #1d1d1f;
-    font-size: 0.9rem;
-    font-weight: 600;
+
+@media print {
+    body { background: #fff !important; }
+    nav, footer, .btn, .no-print, .alert { display: none !important; }
+    .container { max-width: 100% !important; margin: 0 !important; }
+    .track-card { box-shadow: none !important; border: 1px solid #000 !important; }
+    .order-items { background: #fff !important; }
 }
 </style>
 
 <main class="bg-premium-light min-vh-100 pb-5" style="padding-top: 80px;">
     <div class="container py-5">
         <div class="row justify-content-center">
-            <div class="col-lg-8 col-xl-7">
+            <div class="col-lg-8">
                 
-                <!-- Dashboard Header for Authenticated Users -->
-                <?php if ($is_logged_in): ?>
-                    <div class="d-flex justify-content-between align-items-center mb-4 animate-reveal">
-                        <div>
-                            <h2 class="fw-800 mb-1">Đơn hàng của tôi</h2>
-                            <p class="text-secondary mb-0">Quản lý lịch sử và trạng thái các đơn hàng của bạn.</p>
-                        </div>
-                        <button class="btn search-toggle-btn rounded-pill px-4 shadow-sm" type="button" data-bs-toggle="collapse" data-bs-target="#manualSearchForm">
-                            <i class="bi bi-search me-2"></i> Tra đơn khác
-                        </button>
-                    </div>
+                <?php if ($error): ?>
+                    <div class="alert alert-danger rounded-4 border-0 mb-4 no-print"><?php echo $error; ?></div>
                 <?php endif; ?>
 
-                <!-- Search Form (Prominent for Guests, Collapsible for Members) -->
-                <div class="collapse <?php echo !$is_logged_in ? 'show' : ''; ?> mb-5" id="manualSearchForm">
-                    <div class="track-card bg-white animate-reveal">
-                        <div class="track-header">
-                            <i class="bi bi-box-seam display-4 mb-3 d-block opacity-75"></i>
-                            <h2 class="fw-800 mb-2"><?php echo $is_logged_in ? 'Tra cứu đơn hàng vãng lai' : 'Theo dõi đơn hàng'; ?></h2>
-                            <p class="mb-0 opacity-75">Nhập mã đơn và SĐT để cập nhật tình trạng mới nhất.</p>
+                <?php if ($order): ?>
+                    <!-- DETAILED VIEW -->
+                    <div class="track-card bg-white p-4 p-md-5">
+                        <div class="d-flex justify-content-between align-items-center mb-5 no-print">
+                            <a href="track_order.php" class="btn btn-light rounded-pill"><i class="bi bi-arrow-left me-2"></i> Quay lại</a>
+                            <button onclick="window.print()" class="btn btn-primary rounded-pill"><i class="bi bi-printer me-2"></i> In đơn hàng</button>
                         </div>
-                        <div class="card-body p-4 p-md-5">
-                            <form action="track_order.php" method="GET" class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label small fw-bold text-uppercase tracking-wider text-secondary">Mã đơn hàng</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-light border-0"><i class="bi bi-hash"></i></span>
-                                        <input type="number" name="order_id" class="form-control bg-light border-0 py-2" placeholder="VD: 1024" value="<?php echo htmlspecialchars($_GET['order_id'] ?? ''); ?>" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label small fw-bold text-uppercase tracking-wider text-secondary">Số điện thoại</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-light border-0"><i class="bi bi-phone"></i></span>
-                                        <input type="text" name="phone" class="form-control bg-light border-0 py-2" placeholder="VD: 0987xxx" value="<?php echo htmlspecialchars($_GET['phone'] ?? ''); ?>" required>
-                                    </div>
-                                </div>
-                                <div class="col-12 mt-4 text-center">
-                                    <button type="submit" class="btn btn-dark w-100 py-3 rounded-pill fw-bold shadow-sm transition-all hover-lift">
-                                        <i class="bi bi-search me-2"></i> TRA CỨU NGAY
-                                    </button>
-                                    <?php if ($is_logged_in): ?>
-                                        <a href="track_order.php" class="btn btn-link link-secondary text-decoration-none small mt-3">Quay lại Đơn hàng của tôi</a>
-                                    <?php endif; ?>
-                                </div>
-                            </form>
-                            <?php if ($error): ?>
-                                <div class="alert alert-danger border-0 rounded-4 mt-4 mb-0 d-flex align-items-center">
-                                    <i class="bi bi-exclamation-circle-fill me-3 fs-4"></i>
-                                    <div><?php echo $error; ?></div>
-                                </div>
-                            <?php endif; ?>
+
+                        <div class="row mb-5">
+                            <div class="col-6">
+                                <h2 class="fw-900 mb-0">HÓA ĐƠN</h2>
+                                <p class="text-muted">Mã đơn: #<?php echo $order['id']; ?></p>
+                            </div>
+                            <div class="col-6 text-end">
+                                <img src="assets/images/logo-k.svg" height="40" alt="Logo">
+                                <p class="small text-muted mb-0">NHK Mobile Authorized</p>
+                            </div>
+                        </div>
+
+                        <div class="row g-4 mb-5 border-top pt-4">
+                            <div class="col-md-6">
+                                <p class="text-secondary small text-uppercase fw-bold mb-2">Thông tin người nhận</p>
+                                <h6 class="fw-bold mb-1"><?php echo htmlspecialchars($order['customer_name'] ?? ''); ?></h6>
+                                <p class="text-muted small mb-0"><?php echo htmlspecialchars($order['customer_phone'] ?? ''); ?></p>
+                                <p class="text-muted small mb-0"><?php echo htmlspecialchars($order['customer_address'] ?? 'Tại cửa hàng'); ?></p>
+                            </div>
+                            <div class="col-md-6 text-md-end">
+                                <p class="text-secondary small text-uppercase fw-bold mb-2">Chi tiết giao dịch</p>
+                                <h6 class="fw-bold mb-1">Ngày: <?php echo date('d/m/Y H:i', strtotime($order['created_at'])); ?></h6>
+                                <p class="text-muted small mb-0">Thanh toán: <?php echo htmlspecialchars($order['payment_method'] ?? 'COD'); ?></p>
+                                <p class="text-muted small mb-0">Trạng thái: <strong><?php echo $order['status']; ?></strong></p>
+                            </div>
+                        </div>
+
+                        <div class="order-items mb-4">
+                            <table class="table table-borderless align-middle">
+                                <thead class="border-bottom">
+                                    <tr class="text-muted small">
+                                        <th>SẢN PHẨM</th>
+                                        <th class="text-center">SL</th>
+                                        <th class="text-end">ĐƠN GIÁ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($items as $item): ?>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="assets/images/<?php echo $item['image']; ?>" class="order-item-img me-3 no-print" onerror="this.src='https://placehold.co/100'">
+                                                <span class="fw-bold"><?php echo htmlspecialchars($item['product_name']); ?></span>
+                                            </div>
+                                        </td>
+                                        <td class="text-center"><?php echo $item['quantity']; ?></td>
+                                        <td class="text-end fw-bold"><?php echo number_format($item['price'], 0, ',', '.'); ?>đ</td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                                <tfoot class="border-top">
+                                    <tr>
+                                        <td colspan="2" class="pt-4 h5 fw-bold">Tổng thanh toán:</td>
+                                        <td class="pt-4 h4 fw-900 text-danger text-end"><?php echo number_format($order['total_price'], 0, ',', '.'); ?>đ</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                        <div class="text-center mt-5 pt-5 border-top small text-muted">
+                            <p>Cảm ơn bạn đã tin tưởng lựa chọn NHK Mobile!</p>
+                            <p class="mb-0">Hotline: 1800 1234 | Website: nhkmobile.vn</p>
                         </div>
                     </div>
-                </div>
 
-                <!-- Multiple Results (Order List View) -->
-                <?php if (!empty($orders_list) && count($orders_list) > 1 && !$order): ?>
-                    <div class="animate-reveal">
-                        <div class="d-flex align-items-center gap-2 mb-4">
-                            <div class="bg-primary rounded-pill px-3 py-1 text-white small fw-bold">Tìm thấy <?php echo count($orders_list); ?> đơn hàng</div>
-                            <div class="text-secondary small">Dưới đây là lịch sử đặt hàng của bạn</div>
+                <?php elseif ($is_logged_in): ?>
+                    <!-- LIST VIEW FOR MEMBERS -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="fw-900 mb-0">Lịch sử mua hàng</h2>
+                        <span class="badge bg-primary rounded-pill px-3 py-2"><?php echo count($orders_list); ?> Đơn hàng</span>
+                    </div>
+
+                    <?php if (empty($orders_list)): ?>
+                        <div class="track-card bg-white p-5 text-center">
+                            <i class="bi bi-bag-x display-1 text-light mb-4 d-block"></i>
+                            <h4>Bạn chưa có đơn hàng nào</h4>
+                            <p class="text-muted mb-4">Hãy bắt đầu trải nghiệm mua sắm cùng NHK Mobile ngay hôm nay.</p>
+                            <a href="product.php" class="btn btn-primary rounded-pill px-5 py-3 fw-bold">Mua sắm ngay</a>
                         </div>
-                        
+                    <?php else: ?>
                         <div class="row g-3">
                             <?php foreach ($orders_list as $o): ?>
                                 <div class="col-12">
-                                    <div class="track-card bg-white p-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                                    <div class="track-card bg-white p-4 d-flex justify-content-between align-items-center">
                                         <div class="d-flex align-items-center gap-3">
-                                            <div class="bg-light rounded-4 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                                <i class="bi bi-receipt text-primary fs-4"></i>
-                                            </div>
+                                            <div class="bg-light rounded-4 p-3"><i class="bi bi-receipt text-primary fs-3"></i></div>
                                             <div>
-                                                <h6 class="fw-bold mb-0">Đơn hàng #<?php echo $o['id']; ?></h6>
-                                                <small class="text-secondary"><?php echo date('d/m/Y', strtotime($o['created_at'])); ?> • <?php echo number_format($o['total_price'], 0, ',', '.'); ?>đ</small>
+                                                <h6 class="fw-bold mb-1">Đơn hàng #<?php echo $o['id']; ?></h6>
+                                                <small class="text-muted"><?php echo date('d/m/Y', strtotime($o['created_at'])); ?> • <?php echo number_format($o['total_price'], 0, ',', '.'); ?>đ</small>
                                             </div>
                                         </div>
-                                        
                                         <div class="d-flex align-items-center gap-3">
-                                            <?php
-                                                $s = mb_strtolower($o['status'], 'UTF-8');
-                                                $badgeClass = 'bg-warning text-dark';
-                                                if (str_contains($s, 'hoàn thành')) $badgeClass = 'bg-success text-white';
-                                                elseif (str_contains($s, 'đang giao')) $badgeClass = 'bg-primary text-white';
-                                                elseif (str_contains($s, 'hủy')) $badgeClass = 'bg-danger text-white';
-                                            ?>
-                                            <span class="badge <?php echo $badgeClass; ?> rounded-pill px-3 py-2 small"><?php echo $o['status']; ?></span>
-                                            <a href="track_order.php?order_id=<?php echo $o['id']; ?>&phone=<?php echo urlencode($phone); ?>" class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-bold">Xem chi tiết</a>
+                                            <span class="badge bg-info bg-opacity-10 text-info rounded-pill px-3 py-2 small fw-bold"><?php echo $o['status']; ?></span>
+                                            <a href="track_order.php?order_id=<?php echo $o['id']; ?>" class="btn btn-outline-dark rounded-pill btn-sm px-4 fw-bold">Chi tiết</a>
                                         </div>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
                         </div>
-                    </div>
-                <?php endif; ?>
+                    <?php endif; ?>
 
-                <!-- Results -->
-                <?php if ($order): ?>
-                    <div class="track-card bg-white animate-reveal" style="animation-delay: 0.1s;">
-                        <div class="card-header bg-white border-0 p-4 d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="text-secondary small text-uppercase fw-bold d-block mb-1">Kết quả cho</span>
-                                <h4 class="fw-bold mb-0">Đơn hàng #<?php echo $order['id']; ?></h4>
-                            </div>
-                            <?php
-                                $statusClass = 'bg-secondary';
-                                $statusText = $order['status'];
-                                $s = mb_strtolower($order['status'], 'UTF-8');
-                                if (str_contains($s, 'chờ') || str_contains($s, 'pending')) { $statusClass = 'bg-warning text-dark'; $statusText = '⏳ Chờ duyệt'; }
-                                elseif (str_contains($s, 'duyệt') || str_contains($s, 'approved')) { $statusClass = 'bg-info text-white'; $statusText = '📦 Đang lấy hàng'; }
-                                elseif (str_contains($s, 'đang giao') || str_contains($s, 'shipping')) { $statusClass = 'bg-primary text-white'; $statusText = '🚚 Đang giao'; }
-                                elseif (str_contains($s, 'hoàn thành') || str_contains($s, 'completed')) { $statusClass = 'bg-success text-white'; $statusText = '✅ Thành công'; }
-                                elseif (str_contains($s, 'hủy') || str_contains($s, 'cancelled')) { $statusClass = 'bg-danger text-white'; $statusText = '❌ Đã hủy'; }
-                            ?>
-                            <span class="status-pill <?php echo $statusClass; ?>"><?php echo $statusText; ?></span>
-                    </div>
-
-                    <!-- Order Timeline (Premium UI) -->
-                    <div class="px-4 pb-4">
-                        <div class="order-timeline d-flex justify-content-between position-relative mt-4 mb-5">
-                            <div class="timeline-line"></div>
-                            <?php
-                                $steps = [
-                                    ['label' => 'Đã đặt', 'icon' => 'bi-cart-check', 'match' => 'chờ'],
-                                    ['label' => 'Đã duyệt', 'icon' => 'bi-file-earmark-check', 'match' => 'đã duyệt'],
-                                    ['label' => 'Đang giao', 'icon' => 'bi-truck', 'match' => 'đang giao'],
-                                    ['label' => 'Hoàn thành', 'icon' => 'bi-house-check', 'match' => 'hoàn thành']
-                                ];
-                                
-                                $currentStep = 0;
-                                $s = mb_strtolower($order['status'], 'UTF-8');
-                                if (str_contains($s, 'hoàn thành')) $currentStep = 3;
-                                elseif (str_contains($s, 'đang giao')) $currentStep = 2;
-                                elseif (str_contains($s, 'đã duyệt')) $currentStep = 1;
-                                
-                                // Nếu bị hủy thì không hiện timeline bình thường
-                                $isCancelled = str_contains($s, 'hủy');
-                            ?>
-
-                            <?php if (!$isCancelled): ?>
-                                <?php foreach ($steps as $index => $step): ?>
-                                    <div class="timeline-step <?php echo $index <= $currentStep ? 'active' : ''; ?> text-center position-relative z-1" style="width: 25%;">
-                                        <div class="step-icon mx-auto mb-2 d-flex align-items-center justify-content-center">
-                                            <i class="bi <?php echo $step['icon']; ?>"></i>
-                                        </div>
-                                        <span class="step-label d-block fw-bold small"><?php echo $step['label']; ?></span>
-                                    </div>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <div class="w-100 text-center py-3 bg-danger bg-opacity-10 rounded-4">
-                                    <p class="text-danger fw-bold mb-0"><i class="bi bi-x-octagon-fill me-2"></i> Đơn hàng này đã bị hủy bỏ</p>
-                                </div>
-                            <?php endif; ?>
+                <?php else: ?>
+                    <!-- GUEST SEARCH FORM -->
+                    <div class="track-card bg-white overflow-hidden">
+                        <div class="p-5 bg-dark text-white text-center">
+                            <i class="bi bi-search display-3 mb-3"></i>
+                            <h2 class="fw-900">Tra cứu đơn hàng</h2>
+                            <p class="opacity-75">Vui lòng nhập thông tin để xem trạng thái đơn hàng</p>
                         </div>
-                    </div>
-
-                    <style>
-                    .order-timeline .timeline-line {
-                        position: absolute;
-                        top: 20px;
-                        left: 12.5%;
-                        right: 12.5%;
-                        height: 4px;
-                        background: #eee;
-                        z-index: 0;
-                    }
-                    .timeline-step .step-icon {
-                        width: 44px;
-                        height: 44px;
-                        background: #eee;
-                        border-radius: 50%;
-                        color: #aaa;
-                        font-size: 1.25rem;
-                        border: 4px solid #fff;
-                        transition: all 0.4s;
-                    }
-                    .timeline-step.active .step-icon {
-                        background: var(--primary);
-                        color: #fff;
-                    }
-                    .timeline-step.active .step-label {
-                        color: var(--primary);
-                    }
-                    .timeline-step.active ~ .timeline-step .step-icon {
-                        background: #eee;
-                    }
-                    /* Line coloring */
-                    .timeline-line::before {
-                        content: '';
-                        position: absolute;
-                        left: 0;
-                        top: 0;
-                        height: 100%;
-                        background: var(--primary);
-                        width: <?php echo ($currentStep / 3) * 100; ?>%;
-                        transition: width 1s ease-in-out;
-                    }
-                    </style>
-
-                    <div class="card-body p-4 pt-0">
-                            <hr class="opacity-10 mb-4">
-                            
-                            <div class="row g-4 mb-4">
+                        <div class="p-5">
+                            <form action="track_order.php" method="GET" class="row g-4">
                                 <div class="col-md-6">
-                                    <p class="text-secondary small text-uppercase fw-bold mb-2">Thông tin người nhận</p>
-                                    <h6 class="fw-bold mb-1"><?php echo htmlspecialchars($order['customer_name']); ?></h6>
-                                    <p class="text-muted small mb-0"><?php echo htmlspecialchars($order['customer_phone']); ?></p>
-                                    <p class="text-muted small mb-0"><?php echo htmlspecialchars($order['customer_address']); ?></p>
+                                    <label class="form-label small fw-bold text-muted">MÃ ĐƠN HÀNG</label>
+                                    <input type="number" name="order_id" class="form-control bg-light border-0 py-3" placeholder="VD: 1024" required>
                                 </div>
-                                <div class="col-md-6 text-md-end">
-                                    <p class="text-secondary small text-uppercase fw-bold mb-2">Thời gian đặt</p>
-                                    <h6 class="fw-bold mb-1"><?php echo date('d/m/Y H:i', strtotime($order['created_at'])); ?></h6>
-                                    <p class="text-muted small mb-0">Thanh toán: <?php echo htmlspecialchars($order['payment_method'] ?? 'COD'); ?></p>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold text-muted">SỐ ĐIỆN THOẠI</label>
+                                    <input type="text" name="phone" class="form-control bg-light border-0 py-3" placeholder="VD: 098xxx" required>
                                 </div>
-                            </div>
-
-                            <div class="order-items bg-light rounded-4 p-3 mb-4">
-                                <?php foreach ($items as $item): ?>
-                                    <div class="d-flex align-items-center mb-3 last-child-mb-0">
-                                        <img src="assets/images/<?php echo $item['image']; ?>" class="order-item-img me-3" onerror="this.src='https://placehold.co/100x100?text=SP'">
-                                        <div class="flex-grow-1">
-                                            <h6 class="mb-0 fw-bold small"><?php echo htmlspecialchars($item['product_name']); ?></h6>
-                                            <span class="text-secondary small">Số lượng: <?php echo $item['quantity']; ?></span>
-                                        </div>
-                                        <div class="text-end">
-                                            <span class="fw-bold text-dark small"><?php echo number_format($item['price'], 0, ',', '.'); ?>đ</span>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
-
-                            <div class="d-flex justify-content-between align-items-center p-3 border rounded-4">
-                                <span class="fw-bold text-secondary">Tổng cộng:</span>
-                                <h4 class="fw-900 text-danger mb-0"><?php echo number_format($order['total_price'], 0, ',', '.'); ?>đ</h4>
-                            </div>
-
-                            <div class="text-center mt-5">
-                                <p class="small text-muted mb-4 text-center mx-auto" style="max-width: 400px;">Nếu bạn có bất kỳ thắc mắc nào về đơn hàng, vui lòng liên hệ hotline <strong>1800 1234</strong> để được hỗ trợ nhanh nhất.</p>
-                                
-                                <div class="d-flex justify-content-center gap-2">
-                                    <?php if (count($orders_list) > 1): ?>
-                                        <a href="track_order.php?phone=<?php echo urlencode($phone); ?>&list_all=1" class="btn btn-outline-dark btn-sm rounded-pill px-4">
-                                            <i class="bi bi-list-ul me-2"></i> Quay lại danh sách
-                                        </a>
-                                    <?php endif; ?>
-                                    <button onclick="window.print()" class="btn btn-outline-dark btn-sm rounded-pill px-4"><i class="bi bi-printer me-2"></i> In đơn hàng</button>
-                                    <a href="product.php" class="btn btn-dark btn-sm rounded-pill px-4">Tiếp tục mua hàng</a>
+                                <div class="col-12 pt-3">
+                                    <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill fw-bold">KIỂM TRA NGAY</button>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 <?php endif; ?>
