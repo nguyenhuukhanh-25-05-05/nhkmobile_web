@@ -9,7 +9,7 @@
  * Version: 2.3
  * Date: 2026-04-08
  */
-session_start();
+require_once 'includes/auth_functions.php';
 require_once 'includes/db.php';
 
 // 1. Fetch featured products (limit 8)

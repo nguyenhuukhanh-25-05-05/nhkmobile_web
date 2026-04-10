@@ -10,8 +10,8 @@
  * Version: 2.1
  * Date: 2026-04-08
  */
-require_once 'includes/db.php';
 require_once 'includes/auth_functions.php';
+require_once 'includes/db.php';
 
 // Initialization of authentication variables
 $error = '';

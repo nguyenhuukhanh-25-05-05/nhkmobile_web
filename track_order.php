@@ -5,17 +5,18 @@
  * Description: Displays a direct list of orders purchased by the 
  * authenticated user. Lookup functionality removed as per user request.
  */
-session_start();
-require_once 'includes/db.php';
 require_once 'includes/auth_functions.php';
+require_once 'includes/db.php';
 
-// Force login to view history
-if (!isset($_SESSION['user_id'])) {
+// Force login to view history (Allow both Users and Admins)
+if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
     header("Location: login.php?redirect=track_order.php");
     exit;
 }
 
-$userId = $_SESSION['user_id'];
+// Determine whose orders to show
+$userId = $_SESSION['user_id'] ?? null;
+$isAdmin = isset($_SESSION['admin_id']);
 $order = null;
 $items = [];
 
@@ -23,9 +24,15 @@ $items = [];
 if (isset($_GET['order_id'])) {
     $orderId = (int)$_GET['order_id'];
     
-    // Only allow viewing own orders
-    $stmt = $pdo->prepare("SELECT * FROM orders WHERE id = ? AND user_id = ?");
-    $stmt->execute([$orderId, $userId]);
+    // If admin, can view any order. If user, only own orders.
+    if ($isAdmin) {
+        $stmt = $pdo->prepare("SELECT * FROM orders WHERE id = ?");
+        $stmt->execute([$orderId]);
+    } else {
+        $stmt = $pdo->prepare("SELECT * FROM orders WHERE id = ? AND user_id = ?");
+        $stmt->execute([$orderId, $userId]);
+    }
+    
     $order = $stmt->fetch();
     
     if ($order) {

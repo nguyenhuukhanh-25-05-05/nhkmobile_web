@@ -29,6 +29,8 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="<?php echo $basePath; ?>assets/css/style.css?v=<?php echo time(); ?>">
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="<?php echo $basePath; ?>assets/css/tailwind.css?v=<?php echo time(); ?>">
 
     <script>
         const BASE_PATH = "<?php echo $basePath; ?>";
@@ -151,7 +153,7 @@
                         <i class="bi bi-speedometer2 fs-5"></i> Bảng điều khiển Admin
                     </a>
                     <a href="<?php echo $basePath; ?>track_order.php" class="btn btn-outline-dark w-100 rounded-pill py-3 fw-bold d-flex align-items-center justify-content-center gap-2">
-                        <i class="bi bi-geo-alt fs-5"></i> Theo dõi đơn hàng
+                        <i class="bi bi-receipt-cutoff fs-5"></i> Lịch sử mua hàng
                     </a>
                 <?php elseif (isset($_SESSION['user_id'])): ?>
                     <!-- User thường: Chỉ hiện Theo dõi đơn hàng -->
