@@ -10,7 +10,7 @@
  * Version: 2.1
  * Date: 2026-04-08
  */
-require_once 'includes/db.php';
+require_once '../includes/db.php';
 
 // Set response header to JSON format
 header('Content-Type: application/json');
