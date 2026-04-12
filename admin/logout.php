@@ -1,6 +1,7 @@
 <?php
-session_start();
-unset($_SESSION['admin_logged_in']);
-header("Location: login.php");
+/**
+ * NHK Mobile - Admin Secure Termination
+ */
+header("Location: ../logout.php");
 exit;
 ?>

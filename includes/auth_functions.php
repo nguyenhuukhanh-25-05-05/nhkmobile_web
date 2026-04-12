@@ -12,9 +12,14 @@
 
 // Đảm bảo session luôn được khởi tạo với cấu hình bảo mật
 if (session_status() === PHP_SESSION_NONE) {
-    // Cấu hình Session sống lâu hơn (7 ngày) để tránh mất giỏ hàng/đăng nhập đột ngột
+    // Cấu hình Session sống lâu hơn (7 ngày) và phạm vi toàn bộ domain '/'
     ini_set('session.gc_maxlifetime', 604800);
-    session_set_cookie_params(604800);
+    session_set_cookie_params([
+        'lifetime' => 604800,
+        'path' => '/',
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
     session_start();
 }
 
@@ -75,7 +80,11 @@ function require_login() {
  */
 function require_admin() {
     if (!isset($_SESSION['admin_id'])) {
-        header("Location: login.php?error=no_admin");
+        // Xác định đường dẫn về login.php dựa trên vị trí file hiện tại
+        // Nếu đang ở trong thư mục admin/ thì quay ra ngoài 1 cấp
+        $is_in_admin = str_contains($_SERVER['REQUEST_URI'], '/admin/');
+        $login_url = ($is_in_admin ? '../' : '') . 'login.php?error=no_admin';
+        header("Location: " . $login_url);
         exit;
     }
 }

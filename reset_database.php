@@ -60,7 +60,7 @@ try {
     // Products
     $pdo->exec("CREATE TABLE products (
         id SERIAL PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
+        name VARCHAR(255) UNIQUE NOT NULL,
         category VARCHAR(100),
         price DECIMAL(15,2) NOT NULL,
         stock INT DEFAULT 0,
@@ -163,7 +163,7 @@ try {
         ['OnePlus 13', 'OnePlus', 15500000, 20, 'oneplus13.png', 'Mượt mà nhất phân khúc.', false]
     ];
 
-    $stmt = $pdo->prepare("INSERT INTO products (name, category, price, stock, image, description, is_featured) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $pdo->prepare("INSERT INTO products (name, category, price, stock, image, description, is_featured) VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT DO NOTHING");
     foreach ($products as $p) {
         $stmt->execute($p);
     }
