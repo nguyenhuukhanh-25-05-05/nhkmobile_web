@@ -31,6 +31,9 @@ include 'includes/admin_header.php';
                  <a href="export_stats.php" class="btn btn-white border rounded-3 fw-700 px-4 py-2 small shadow-sm bg-white d-flex align-items-center">
                      <i class="bi bi-download me-2"></i>Báo cáo
                  </a>
+                 <a href="reset_database.php" class="btn btn-danger border rounded-3 fw-700 px-4 py-2 small shadow-sm d-flex align-items-center">
+                     <i class="bi bi-arrow-clockwise me-2"></i>Reset DB
+                 </a>
                  <div class="dropdown">
                      <button class="btn btn-primary rounded-3 fw-700 px-4 py-2 small shadow-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
                          <i class="bi bi-plus-lg me-2"></i>Thêm mới

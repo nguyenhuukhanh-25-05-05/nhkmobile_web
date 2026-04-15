@@ -45,15 +45,34 @@ try {
     // Khởi tạo kết nối PDO
     $pdo = new PDO($dsn, $user, $pass, $options);
 
+    // CHECK FOR FORCE RESET (via environment variable)
+    // Set FORCE_DB_RESET=true in Render environment to trigger full reset
+    $forceReset = getenv('FORCE_DB_RESET') === 'true' || $_ENV['FORCE_DB_RESET'] === 'true';
+    
+    if ($forceReset) {
+        error_log("[DB] FORCE RESET TRIGGERED - Dropping and recreating all tables...");
+        
+        // Drop tất cả tables
+        $tables = [
+            'password_resets', 'repair_history', 'order_items', 'orders',
+            'cart_items', 'reviews', 'wishlists', 'warranties',
+            'products', 'users', 'admins', 'news'
+        ];
+        foreach ($tables as $table) {
+            try { $pdo->exec("DROP TABLE IF EXISTS $table CASCADE"); } catch (\PDOException $e) {}
+        }
+    }
+
     /**
      * KHỞI TẠO SCHEMA LẦN ĐẦU
-     * Chỉ chạy init_db.sql (tạo bảng và chèn sản phẩm mẫu) khi bảng products còn trống.
+     * Chỉ chạy init_db.sql (tạo bảng và chèn sản phẩm mẫu) khi bảng products còn trống
+     * HOẶC khi FORCE_DB_RESET=true
      */
     $sqlFile = __DIR__ . '/../php/config/init_db.sql';
     if (file_exists($sqlFile)) {
         $productCount = 0;
-        try { 
-            $productCount = (int)$pdo->query("SELECT COUNT(*) FROM products")->fetchColumn(); 
+        try {
+            $productCount = (int)$pdo->query("SELECT COUNT(*) FROM products")->fetchColumn();
         } catch (\PDOException $e) {
             // Lỗi bảng không tồn tại -> productCount giữ nguyên là 0 để chạy khởi tạo
         }
@@ -61,6 +80,7 @@ try {
         if ($productCount === 0) {
             $sql = file_get_contents($sqlFile);
             try { $pdo->exec($sql); } catch (\PDOException $e) { /* Bỏ qua lỗi migration nếu có */ }
+            error_log("[DB] Initial schema created from init_db.sql");
         }
     }
 
