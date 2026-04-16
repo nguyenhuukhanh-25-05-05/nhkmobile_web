@@ -13,31 +13,28 @@
 
 require_once __DIR__ . '/functions.php';
 
-// 1. Detect environment-specific connection strings (Render/Heroku/Local)
-$databaseUrl = getenv('DATABASE_URL');
-if (!$databaseUrl)
-    $databaseUrl = $_ENV['DATABASE_URL'] ?? $_SERVER['DATABASE_URL'] ?? null;
+// 1. Cấu hình kết nối - ƯU TIÊN SUPABASE
+$databaseUrl = 'postgresql://postgres:' . urlencode('@Khanh2006') . '@db.qfaslglevzkujkmylxfx.supabase.co:5432/postgres';
 
-// Fallback connection string - THAY CHUỖI DƯỚI ĐÂY BẰNG SUPABASE HOẶC NEON URL CỦA BẠN
-if (!$databaseUrl) {
-    // Thông tin lấy từ URL dự án mới: qfaslglevzkujkmylxfx và mật khẩu của bạn (đã mã hóa @ thành %40)
-    $databaseUrl = 'postgresql://postgres:%40Khanh2006@db.qfaslglevzkujkmylxfx.supabase.co:5432/postgres';
+// Nếu có biến môi trường từ Render và không phải database cũ, mới ghi đè
+$envUrl = getenv('DATABASE_URL') ?: ($_ENV['DATABASE_URL'] ?? $_SERVER['DATABASE_URL'] ?? null);
+if ($envUrl && strpos($envUrl, 'render.com') === false) {
+    $databaseUrl = $envUrl;
 }
 
 $connected = false;
 $pdo = null;
 
-// Thử kết nối với DATABASE_URL
 if ($databaseUrl) {
     $dbParts = parse_url($databaseUrl);
     $host = $dbParts['host'] ?? '';
     $port = $dbParts['port'] ?? '5432';
     $db = isset($dbParts['path']) ? ltrim($dbParts['path'], '/') : '';
-    $user = $dbParts['user'] ?? '';
-    $pass = $dbParts['pass'] ?? '';
+    $user = isset($dbParts['user']) ? urldecode($dbParts['user']) : '';
+    $pass = isset($dbParts['pass']) ? urldecode($dbParts['pass']) : '';
 
-    // Thử kết nối với SSL mode=require cho Render
     try {
+        // Dùng SSL mode cho Supabase
         $dsn = "pgsql:host=$host;port=$port;dbname=$db;sslmode=require;connect_timeout=10";
         $options = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -46,19 +43,8 @@ if ($databaseUrl) {
         ];
         $pdo = new PDO($dsn, $user, $pass, $options);
         $connected = true;
-        error_log("[DB] Connected successfully to Render PostgreSQL");
     } catch (PDOException $e) {
-        error_log("[DB] Failed to connect with SSL: " . $e->getMessage());
-        // Thử lại không có SSL
-        try {
-            $dsn = "pgsql:host=$host;port=$port;dbname=$db;connect_timeout=10";
-            $pdo = new PDO($dsn, $user, $pass, $options);
-            $connected = true;
-            error_log("[DB] Connected without SSL");
-        } catch (PDOException $e2) {
-            error_log("[DB] Failed to connect without SSL: " . $e2->getMessage());
-            $pdo = null;
-        }
+        error_log("[DB] Primary connection failed: " . $e->getMessage());
     }
 }
 
