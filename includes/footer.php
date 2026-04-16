@@ -145,6 +145,73 @@
     <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
 
+    <!-- Quick View Modal -->
+    <div class="quick-view-modal" id="quickViewModal">
+        <div class="quick-view-content">
+            <button class="quick-view-close" onclick="closeQuickView()">
+                <i class="bi bi-x-lg"></i>
+            </button>
+            <div class="quick-view-image">
+                <img id="quickViewImage" src="" alt="">
+            </div>
+            <div class="quick-view-info">
+                <div class="quick-view-category" id="quickViewCategory"></div>
+                <h2 class="quick-view-name" id="quickViewName"></h2>
+                <div class="quick-view-price" id="quickViewPrice"></div>
+                <p class="quick-view-description" id="quickViewDesc"></p>
+                <div class="quick-view-actions">
+                    <div class="quick-view-quantity">
+                        <button onclick="updateQty(-1)">-</button>
+                        <input type="number" id="quickViewQty" value="1" min="1" max="10">
+                        <button onclick="updateQty(1)">+</button>
+                    </div>
+                    <button class="quick-view-add-cart" onclick="addToCartFromQuickView()">
+                        <i class="bi bi-cart-plus"></i>
+                        Thêm vào giỏ
+                    </button>
+                </div>
+                <div class="quick-view-links">
+                    <a href="#" id="quickViewDetailLink">Xem chi tiết <i class="bi bi-arrow-right"></i></a>
+                    <a href="#" onclick="addToWishlistFromQuickView()">
+                        <i class="bi bi-heart"></i> Yêu thích
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Chat Widget -->
+    <div class="live-chat-widget">
+        <div class="live-chat-window" id="liveChatWindow">
+            <div class="live-chat-header">
+                <h5><span class="live-chat-status"></span> Hỗ trợ trực tuyến</h5>
+                <button class="live-chat-close" onclick="toggleLiveChat()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="live-chat-body" id="chatBody">
+                <div class="chat-message">
+                    <div class="chat-avatar"><i class="bi bi-headset"></i></div>
+                    <div>
+                        <div class="chat-bubble">Xin chào! Tôi có thể giúp gì cho bạn hôm nay?</div>
+                        <div class="chat-time">Vừa xong</div>
+                    </div>
+                </div>
+            </div>
+            <div class="live-chat-footer">
+                <div class="live-chat-input-group">
+                    <input type="text" class="live-chat-input" id="chatInput" placeholder="Nhập tin nhắn..." onkeypress="handleChatKeypress(event)">
+                    <button class="live-chat-send" onclick="sendChatMessage()">
+                        <i class="bi bi-send-fill"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <button class="live-chat-button" id="liveChatBtn" onclick="toggleLiveChat()">
+            <i class="bi bi-chat-dots-fill"></i>
+        </button>
+    </div>
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="<?php echo $basePath; ?>assets/js/search-overlay.js"></script>
@@ -258,6 +325,216 @@
                     });
             });
         });
+
+        // Quick View Functions
+        let currentProductId = null;
+
+        function openQuickView(productId) {
+            currentProductId = productId;
+            const modal = document.getElementById('quickViewModal');
+
+            // Fetch product data
+            fetch(`api/product_detail.php?id=${productId}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.error) {
+                        showToast('Không thể tải thông tin sản phẩm', 'error');
+                        return;
+                    }
+
+                    document.getElementById('quickViewImage').src = `assets/images/${data.image}`;
+                    document.getElementById('quickViewImage').alt = data.name;
+                    document.getElementById('quickViewCategory').textContent = data.category;
+                    document.getElementById('quickViewName').textContent = data.name;
+
+                    const priceHtml = data.discount_price
+                        ? `${new Intl.NumberFormat('vi-VN').format(data.discount_price)}₫ <span class="old-price">${new Intl.NumberFormat('vi-VN').format(data.price)}₫</span>`
+                        : `${new Intl.NumberFormat('vi-VN').format(data.price)}₫`;
+                    document.getElementById('quickViewPrice').innerHTML = priceHtml;
+
+                    document.getElementById('quickViewDesc').textContent = data.description || 'Không có mô tả';
+                    document.getElementById('quickViewDetailLink').href = `product-detail.php?id=${productId}`;
+                    document.getElementById('quickViewQty').value = 1;
+
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                })
+                .catch(() => {
+                    showToast('Có lỗi xảy ra', 'error');
+                });
+        }
+
+        function closeQuickView() {
+            const modal = document.getElementById('quickViewModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            currentProductId = null;
+        }
+
+        function updateQty(change) {
+            const input = document.getElementById('quickViewQty');
+            let val = parseInt(input.value) + change;
+            if (val < 1) val = 1;
+            if (val > 10) val = 10;
+            input.value = val;
+        }
+
+        function addToCartFromQuickView() {
+            if (!currentProductId) return;
+            const qty = document.getElementById('quickViewQty').value;
+
+            fetch(`cart.php?add=${currentProductId}&qty=${qty}`)
+                .then(() => {
+                    showToast('Đã thêm vào giỏ hàng!', 'success');
+                    closeQuickView();
+                    if (typeof loadMiniCart === 'function') loadMiniCart();
+                    updateCartBadge();
+                })
+                .catch(() => showToast('Có lỗi xảy ra', 'error'));
+        }
+
+        function addToWishlistFromQuickView() {
+            if (!currentProductId) return;
+            // Call wishlist API
+            fetch('api/wishlist.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'product_id=' + currentProductId
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.status === 'added') {
+                    showToast('Đã thêm vào yêu thích!', 'success');
+                } else if (data.status === 'removed') {
+                    showToast('Đã bỏ yêu thích!', 'success');
+                }
+            })
+            .catch(() => showToast('Vui lòng đăng nhập để sử dụng tính năng này', 'warning'));
+        }
+
+        // Close modal on outside click
+        document.getElementById('quickViewModal').addEventListener('click', function(e) {
+            if (e.target === this) closeQuickView();
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeQuickView();
+                document.getElementById('liveChatWindow').classList.remove('active');
+            }
+        });
+
+        // Live Chat Functions
+        let chatOpen = false;
+
+        function toggleLiveChat() {
+            const window = document.getElementById('liveChatWindow');
+            const btn = document.getElementById('liveChatBtn');
+            chatOpen = !chatOpen;
+
+            if (chatOpen) {
+                window.classList.add('active');
+                btn.classList.remove('has-new');
+                setTimeout(() => document.getElementById('chatInput').focus(), 100);
+            } else {
+                window.classList.remove('active');
+            }
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const body = document.getElementById('chatBody');
+            const time = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+
+            // Add user message
+            body.innerHTML += `
+                <div class="chat-message user">
+                    <div class="chat-avatar user"><i class="bi bi-person"></i></div>
+                    <div>
+                        <div class="chat-bubble">${escapeHtml(message)}</div>
+                        <div class="chat-time">${time}</div>
+                    </div>
+                </div>
+            `;
+
+            input.value = '';
+            body.scrollTop = body.scrollHeight;
+
+            // Simulate auto-reply
+            setTimeout(() => {
+                const replies = [
+                    'Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm nhất.',
+                    'Bạn có thể gọi hotline 1900 xxxx để được hỗ trợ nhanh hơn.',
+                    'Dạ, em hiểu. Để em kiểm tra và báo lại ạ.',
+                    'Sản phẩm này đang có sẵn tại cửa hàng ạ.'
+                ];
+                const reply = replies[Math.floor(Math.random() * replies.length)];
+
+                body.innerHTML += `
+                    <div class="chat-message">
+                        <div class="chat-avatar"><i class="bi bi-headset"></i></div>
+                        <div>
+                            <div class="chat-bubble">${reply}</div>
+                            <div class="chat-time">Vừa xong</div>
+                        </div>
+                    </div>
+                `;
+                body.scrollTop = body.scrollHeight;
+            }, 1000 + Math.random() * 2000);
+        }
+
+        function handleChatKeypress(e) {
+            if (e.key === 'Enter') sendChatMessage();
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Simulate new message notification after 30 seconds
+        setTimeout(() => {
+            if (!chatOpen) {
+                document.getElementById('liveChatBtn').classList.add('has-new');
+            }
+        }, 30000);
+
+        // Recently Viewed Products
+        function addToRecentlyViewed(product) {
+            let recent = JSON.parse(localStorage.getItem('recentlyViewed') || '[]');
+            recent = recent.filter(p => p.id !== product.id);
+            recent.unshift(product);
+            if (recent.length > 8) recent = recent.slice(0, 8);
+            localStorage.setItem('recentlyViewed', JSON.stringify(recent));
+        }
+
+        function renderRecentlyViewed() {
+            const container = document.getElementById('recentlyViewedContainer');
+            if (!container) return;
+
+            const recent = JSON.parse(localStorage.getItem('recentlyViewed') || '[]');
+            if (recent.length === 0) {
+                container.style.display = 'none';
+                return;
+            }
+
+            const grid = container.querySelector('.recently-viewed-grid');
+            grid.innerHTML = recent.map(p => `
+                <a href="product-detail.php?id=${p.id}" class="recently-viewed-item">
+                    <img src="assets/images/${p.image}" alt="${p.name}" onerror="this.src='https://placehold.co/200x150/f5f5f7/1d1d1f?text=Phone'">
+                    <h4>${p.name}</h4>
+                    <div class="price">${new Intl.NumberFormat('vi-VN').format(p.price)}₫</div>
+                </a>
+            `).join('');
+        }
+
+        // Render recently viewed on page load
+        renderRecentlyViewed();
     </script>
 </body>
 </html>

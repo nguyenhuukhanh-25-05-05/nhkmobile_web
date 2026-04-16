@@ -428,6 +428,11 @@ include 'includes/header.php';
                             </a>
                             <?php endif; ?>
 
+                            <!-- Quick View Button -->
+                            <button class="btn-quick-view" onclick="openQuickView(<?php echo $p['id']; ?>)">
+                                <i class="bi bi-eye"></i> Xem nhanh
+                            </button>
+
                             <a href="product-detail.php?id=<?php echo $p['id']; ?>">
                                 <div class="product-img-box">
                                     <img src="assets/images/<?php echo $p['image']; ?>" alt="<?php echo $p['name']; ?>"

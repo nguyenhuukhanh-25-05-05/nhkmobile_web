@@ -443,6 +443,35 @@
     </script>
 </head>
 <body>
+    <?php
+    // Breadcrumb helper
+    function getBreadcrumbs() {
+        $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $filename = basename($path, '.php');
+
+        $breadcrumbs = [
+            'index' => ['title' => 'Trang chủ', 'url' => 'index.php'],
+            'product' => ['title' => 'Sản phẩm', 'url' => 'product.php'],
+            'product-detail' => ['title' => 'Chi tiết sản phẩm', 'url' => '#'],
+            'cart' => ['title' => 'Giỏ hàng', 'url' => 'cart.php'],
+            'checkout' => ['title' => 'Thanh toán', 'url' => 'checkout.php'],
+            'login' => ['title' => 'Đăng nhập', 'url' => 'login.php'],
+            'register' => ['title' => 'Đăng ký', 'url' => 'register.php'],
+            'profile' => ['title' => 'Hồ sơ', 'url' => 'profile.php'],
+            'wishlist' => ['title' => 'Yêu thích', 'url' => 'wishlist.php'],
+            'track_order' => ['title' => 'Đơn hàng', 'url' => 'track_order.php'],
+            'warranty' => ['title' => 'Bảo hành', 'url' => 'warranty.php'],
+            'news' => ['title' => 'Tin tức', 'url' => 'news.php'],
+            'news-detail' => ['title' => 'Chi tiết tin', 'url' => '#'],
+        ];
+
+        return $breadcrumbs[$filename] ?? null;
+    }
+
+    $currentPage = getBreadcrumbs();
+    $showBreadcrumb = $currentPage && $currentPage['title'] !== 'Trang chủ';
+    ?>
+
     <nav class="navbar-minimal">
         <div class="container-wide nav-content">
             <a href="<?php echo $basePath; ?>index.php" class="nav-brand d-flex align-items-center">
@@ -522,7 +551,20 @@
             </div>
         </div>
     </nav>
-    
+
+    <!-- Breadcrumb Section -->
+    <?php if ($showBreadcrumb): ?>
+    <section class="breadcrumb-section">
+        <div class="container-wide">
+            <nav class="breadcrumb">
+                <span class="breadcrumb-item"><a href="<?php echo $basePath; ?>index.php"><i class="bi bi-house-door"></i> Trang chủ</a></span>
+                <span class="breadcrumb-separator"><i class="bi bi-chevron-right"></i></span>
+                <span class="breadcrumb-item active"><?php echo $currentPage['title']; ?></span>
+            </nav>
+        </div>
+    </section>
+    <?php endif; ?>
+
     <!-- Mobile Menu Drawer (Premium Style) -->
     <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileNav" style="width: 280px; border-right: none;">
         <div class="offcanvas-header py-4 px-4 border-bottom">

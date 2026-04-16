@@ -1,14 +1,14 @@
 <?php
 /**
  * NHK Mobile - Database Connection & Schema Management
- * 
- * Description: Orchestrates the connection to PostgreSQL and implements 
- * a "Self-Healing" schema layer that ensures all modern features 
+ *
+ * Description: Orchestrates the connection to PostgreSQL and implements
+ * a "Self-Healing" schema layer that ensures all modern features
  * (reviews, installments, tagging) have required storage structures.
- * 
+ *
  * Author: NguyenHuuKhanh
- * Version: 2.5
- * Date: 2026-04-08
+ * Version: 2.6
+ * Date: 2026-04-16
  */
 
 require_once __DIR__ . '/functions.php';
@@ -18,35 +18,127 @@ $databaseUrl = getenv('DATABASE_URL');
 if (!$databaseUrl)
     $databaseUrl = $_ENV['DATABASE_URL'] ?? $_SERVER['DATABASE_URL'] ?? null;
 
+// Fallback connection string nếu không có env var
+if (!$databaseUrl) {
+    $databaseUrl = 'postgresql://nhkmobile_db_user:AJIKpubrkKYEbsRHZ4xMnM7YVxNKnJUJ@dpg-d6slq6i4d50c73bqegug-a/nhkmobile_db';
+}
+
+$connected = false;
+$pdo = null;
+
+// Thử kết nối với DATABASE_URL
 if ($databaseUrl) {
-    // Nếu có URL, bóc tách thông tin từ chuỗi kết nối
     $dbParts = parse_url($databaseUrl);
-    $host = $dbParts['host'] ?? 'localhost';
+    $host = $dbParts['host'] ?? '';
     $port = $dbParts['port'] ?? '5432';
     $db = isset($dbParts['path']) ? ltrim($dbParts['path'], '/') : '';
     $user = $dbParts['user'] ?? '';
     $pass = $dbParts['pass'] ?? '';
-} else {
-    // 2. Dự phòng các biến lẻ (DB_HOST, DB_USER...)
+
+    // Thử kết nối với SSL mode=require cho Render
+    try {
+        $dsn = "pgsql:host=$host;port=$port;dbname=$db;sslmode=require;connect_timeout=10";
+        $options = [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false,
+        ];
+        $pdo = new PDO($dsn, $user, $pass, $options);
+        $connected = true;
+        error_log("[DB] Connected successfully to Render PostgreSQL");
+    } catch (PDOException $e) {
+        error_log("[DB] Failed to connect with SSL: " . $e->getMessage());
+        // Thử lại không có SSL
+        try {
+            $dsn = "pgsql:host=$host;port=$port;dbname=$db;connect_timeout=10";
+            $pdo = new PDO($dsn, $user, $pass, $options);
+            $connected = true;
+            error_log("[DB] Connected without SSL");
+        } catch (PDOException $e2) {
+            error_log("[DB] Failed to connect without SSL: " . $e2->getMessage());
+            $pdo = null;
+        }
+    }
+}
+
+// 2. Nếu không kết nối được, thử dùng biến môi trường riêng lẻ
+if (!$connected) {
     $host = getenv('DB_HOST') ?: ($_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? 'localhost');
     $port = getenv('DB_PORT') ?: ($_ENV['DB_PORT'] ?? $_SERVER['DB_PORT'] ?? '5432');
     $db = getenv('DB_NAME') ?: ($_ENV['DB_NAME'] ?? $_SERVER['DB_NAME'] ?? 'web_ban_dien_thoai');
     $user = getenv('DB_USER') ?: ($_ENV['DB_USER'] ?? $_SERVER['DB_USER'] ?? 'postgres');
-    $pass = getenv('DB_PASS') ?: ($_ENV['DB_PASS'] ?? $_SERVER['DB_PASS'] ?? 'Anhkhoi2006@');
+    $pass = getenv('DB_PASS') ?: ($_ENV['DB_PASS'] ?? $_SERVER['DB_PASS'] ?? '');
+
+    try {
+        $dsn = "pgsql:host=$host;port=$port;dbname=$db;connect_timeout=5";
+        $options = [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false,
+        ];
+        $pdo = new PDO($dsn, $user, $pass, $options);
+        $connected = true;
+    } catch (PDOException $e) {
+        error_log("[DB] Failed to connect using individual env vars: " . $e->getMessage());
+        $pdo = null;
+    }
 }
 
-$dsn = "pgsql:host=$host;port=$port;dbname=$db";
+// 3. Nếu vẫn không kết nối được, thử kết nối local development
+if (!$connected) {
+    try {
+        $dsn = "pgsql:host=localhost;port=5432;dbname=web_ban_dien_thoai;connect_timeout=3";
+        $options = [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false,
+        ];
+        $pdo = new PDO($dsn, 'postgres', '', $options);
+        $connected = true;
+        error_log("[DB] Connected using local fallback");
+    } catch (PDOException $e) {
+        error_log("[DB] Failed to connect using local fallback: " . $e->getMessage());
+        $pdo = null;
+    }
+}
 
-$options = [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES => false,
-];
+// 4. Nếu tất cả đều thất bại, hiển thị lỗi thân thiện
+if (!$connected || !$pdo) {
+    http_response_code(503);
+    $errorMsg = '<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lỗi kết nối - NHK Mobile</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f7; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .error-container { text-align: center; padding: 40px; max-width: 500px; }
+        .error-icon { font-size: 64px; margin-bottom: 20px; }
+        h1 { color: #1d1d1f; margin-bottom: 16px; }
+        p { color: #6e6e73; line-height: 1.6; margin-bottom: 24px; }
+        .btn { display: inline-block; padding: 14px 28px; background: #007AFF; color: white; text-decoration: none; border-radius: 980px; font-weight: 600; }
+        .btn:hover { background: #0056b3; }
+        .retry-info { margin-top: 24px; padding: 16px; background: #fff; border-radius: 12px; font-size: 14px; color: #86868b; }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-icon">🔧</div>
+        <h1>Đang bảo trì hệ thống</h1>
+        <p>Chúng tôi đang nâng cấp cơ sở dữ liệu để phục vụ bạn tốt hơn. Vui lòng thử lại sau vài phút.</p>
+        <a href="/" class="btn">Thử lại</a>
+        <div class="retry-info">
+            Nếu lỗi tiếp tục xảy ra, vui lòng liên hệ hotline: <strong>1900 xxxx</strong>
+        </div>
+    </div>
+</body>
+</html>';
+    die($errorMsg);
+}
 
+// Kết nối thành công, tiếp tục với schema management
 try {
-    // Khởi tạo kết nối PDO
-    /** @var PDO $pdo */
-    $pdo = new PDO($dsn, $user, $pass, $options);
 
     // CHECK FOR FORCE RESET (via environment variable)
     // Set FORCE_DB_RESET=true in Render environment to trigger full reset
@@ -204,8 +296,8 @@ try {
     // Thêm cột reset_status cho bảng users để track password reset requests
     try { $pdo->exec("ALTER TABLE users ADD COLUMN IF NOT EXISTS last_password_reset TIMESTAMP;"); } catch (\PDOException $e) {}
 
-
 } catch (\PDOException $e) {
-    die("Lỗi nghiêm trọng khi kết nối cơ sở dữ liệu: " . $e->getMessage());
+    error_log("[DB] Schema management error: " . $e->getMessage());
+    // Không die ở đây vì kết nối đã thành công, chỉ là lỗi migration
 }
 ?>
