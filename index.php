@@ -18,6 +18,12 @@ require_once 'includes/db.php';
 $stmt = $pdo->query("SELECT * FROM products ORDER BY is_featured DESC, created_at DESC LIMIT 8");
 $featuredProducts = $stmt->fetchAll();
 
+// 2. Fetch "Dành cho bạn" - 8 sản phẩm khác, không trùng với featured
+$featuredIds = array_column($featuredProducts, 'id');
+$excludeIds = implode(',', array_map('intval', $featuredIds ?: [0]));
+$forYouStmt = $pdo->query("SELECT * FROM products WHERE id NOT IN ($excludeIds) ORDER BY RANDOM() LIMIT 8");
+$forYouProducts = $forYouStmt->fetchAll();
+
 $pageTitle = "NHK Mobile | Apple Authorized Reseller";
 $basePath = "";
 
@@ -263,9 +269,41 @@ include 'includes/header.php';
         </div>
     </section>
 
-    <!-- WHY CHOOSE US -->
-    <section class="features-new">
+    <!-- FOR YOU SECTION -->
+    <section class="products-section" style="background: var(--bg-soft);">
         <div class="container-wide">
+            <div class="section-title-box reveal">
+                <span class="section-subtitle">Gợi ý cho bạn</span>
+                <h2 class="display-5 fw-bold">Dành cho bạn.</h2>
+            </div>
+            <div class="product-grid-new reveal-stagger">
+                <?php foreach ($forYouProducts as $p): ?>
+                    <div class="product-card-new">
+                        <a href="product-detail.php?id=<?php echo $p['id']; ?>">
+                            <div class="product-img-box">
+                                <img src="assets/images/<?php echo $p['image']; ?>" alt="<?php echo $p['name']; ?>"
+                                    onerror="this.src='https://placehold.co/300x400/f5f5f7/1d1d1f?text=Phone'">
+                            </div>
+                            <div class="product-info-new">
+                                <span class="p-cat"><?php echo $p['category']; ?></span>
+                                <h3 class="p-name"><?php echo $p['name']; ?></h3>
+                                <div class="p-price-new"><?php echo number_format($p['price'], 0, ',', '.'); ?>₫</div>
+                            </div>
+                        </a>
+                        <a href="cart.php?add=<?php echo $p['id']; ?>" class="add-to-cart-btn">
+                            <i class="bi bi-plus-lg"></i>
+                        </a>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+            <div class="text-center mt-5">
+                <a href="product.php" class="btn-main btn-outline">Xem tất cả sản phẩm</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHY CHOOSE US -->
+    <section class="features-new">        <div class="container-wide">
             <div class="section-title-box reveal">
                 <span class="section-subtitle">Tại sao chọn NHK Mobile?</span>
                 <h2 class="display-5 fw-bold">Trải nghiệm mua sắm chuẩn 5 sao.</h2>

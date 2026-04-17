@@ -7,6 +7,9 @@
     --primary: #007AFF; 
     --primary-gradient: linear-gradient(135deg, #007AFF, #00C6FF);
     --secondary: #5856D6;
+    --danger: #ff3b30;
+    --danger-gradient: linear-gradient(135deg, #ff3b30, #ff6b6b);
+    --danger-shadow: rgba(255, 59, 48, 0.3);
     --bg-white: #ffffff;
     --bg-soft: #fbfbfb;
     --bg-gray: #f5f5f7;
@@ -419,7 +422,7 @@ h1, h2, h3, h4, h5, h6 {
     position: absolute;
     top: 15px;
     left: 15px;
-    background: #ff3b30;
+    background: var(--danger);
     color: #fff;
     padding: 6px 14px;
     border-radius: 980px;
@@ -428,7 +431,7 @@ h1, h2, h3, h4, h5, h6 {
     text-transform: uppercase;
     letter-spacing: 0.05em;
     z-index: 5;
-    box-shadow: 0 4px 10px rgba(255, 59, 48, 0.3);
+    box-shadow: 0 4px 10px var(--danger-shadow);
 }
 
 .product-img-box::after {
@@ -744,9 +747,36 @@ h1, h2, h3, h4, h5, h6 {
     .display-hero { font-size: 2.2rem; }
     .hero-badge { margin-bottom: 24px; padding: 6px 16px; font-size: 12px; }
     .hero-desc { font-size: 16px; padding: 0 10px; }
-    .container-wide { padding: 0 20px; }
+    .container-wide { padding: 0 16px; }
     .btn-main { padding: 14px 28px; width: 100%; border-radius: 12px; }
     .hero-image-new { max-height: 340px; }
+    /* Product grid: 1 cột trên màn hình rất nhỏ */
+    .product-grid-new {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    .product-card-new { padding: 14px; }
+    .product-img-box { height: 180px; padding: 16px; }
+    .p-name { font-size: 15px; }
+    .p-price-new { font-size: 15px; }
+    /* Flash Sale responsive */
+    .flash-sale-section { padding: 48px 0; }
+    .flash-sale-title h2 { font-size: 1.5rem; }
+    .countdown-item { padding: 6px 10px; min-width: 48px; }
+    .countdown-number { font-size: 1.3rem; }
+    /* Section spacing */
+    section { padding: 60px 0; }
+    .section-title-box { margin-bottom: 32px; }
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+    /* 2 cột trên màn hình trung bình nhỏ */
+    .product-grid-new {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+    .product-card-new { padding: 16px; }
+    .product-img-box { height: 190px; padding: 18px; }
 }
 
 /* --- Admin Dashboard Minimal --- */
@@ -1032,7 +1062,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Flash Sale Section */
 .flash-sale-section {
-    background: linear-gradient(135deg, #ff3b30 0%, #ff6b6b 100%);
+    background: var(--danger-gradient);
     padding: 80px 0;
     color: #fff;
 }
@@ -1804,7 +1834,7 @@ h1, h2, h3, h4, h5, h6 {
     right: 5px;
     width: 14px;
     height: 14px;
-    background: #ff3b30;
+    background: var(--danger);
     border-radius: 50%;
     border: 2px solid #fff;
     animation: pulse 2s infinite;

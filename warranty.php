@@ -44,7 +44,7 @@ include 'includes/header.php';
                         </p>
                         <div class="row g-3 mt-4">
                             <div class="col-md-6">
-                                <div class="glass-card p-4 rounded-4 bg-white shadow-sm h-100">
+                            <div class="glass-card p-4 rounded-4 shadow-sm h-100" style="background: var(--bg-white);">
                                     <i class="bi bi-arrow-repeat text-primary fs-3 mb-3 d-block"></i>
                                     <h5 class="fw-bold">Lỗi 1 đổi 1</h5>
                                     <p class="small text-secondary mb-0">Áp dụng trong 30 ngày đầu cho bất kỳ lỗi phần
@@ -52,7 +52,7 @@ include 'includes/header.php';
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="glass-card p-4 rounded-4 bg-white shadow-sm h-100">
+                            <div class="glass-card p-4 rounded-4 shadow-sm h-100" style="background: var(--bg-white);">
                                     <i class="bi bi-battery-charging text-primary fs-3 mb-3 d-block"></i>
                                     <h5 class="fw-bold">Bảo hành Pin</h5>
                                     <p class="small text-secondary mb-0">Pin máy mới được bảo hành 12 tháng, máy cũ 6
@@ -64,7 +64,7 @@ include 'includes/header.php';
 
                     <div class="mb-5 mt-8">
                         <h3 class="display-6 fw-bold mb-4 text-dark">2. Điều kiện bảo hành</h3>
-                        <div class="glass-card p-4 rounded-4 bg-white shadow-sm border-start border-primary border-4">
+                        <div class="glass-card p-4 rounded-4 shadow-sm border-start border-primary border-4" style="background: var(--bg-white);">
                             <p class="text-secondary leading-relaxed mb-0">
                                 Sản phẩm phải còn nguyên vẹn, không có dấu hiện can thiệp phần cứng trái phép. Tem bảo
                                 hành của NHK Mobile phải còn nguyên, không bị rách hoặc tẩy xóa. Chúng tôi từ chối bảo

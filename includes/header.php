@@ -198,6 +198,23 @@
         transform: translateY(0);
     }
 
+    /* Responsive mini-cart: màn hình nhỏ hơn 576px */
+    @media (max-width: 575.98px) {
+        .mini-cart-dropdown {
+            position: fixed;
+            top: 64px;
+            left: 50%;
+            right: auto;
+            transform: translateX(-50%) translateY(-10px);
+            width: 92vw;
+            max-width: 400px;
+        }
+        .mini-cart-wrapper:hover .mini-cart-dropdown,
+        .mini-cart-dropdown.active {
+            transform: translateX(-50%) translateY(0);
+        }
+    }
+
     .mini-cart-header {
         padding: 20px 24px;
         border-bottom: 1px solid var(--border-light);
@@ -329,6 +346,7 @@
        DARK MODE - FULL COVERAGE
        ============================================= */
     body.dark-mode {
+        color-scheme: dark;
         --bg-white:      #0d0d0d;
         --bg-soft:       #161616;
         --bg-gray:       #252525;
@@ -658,6 +676,110 @@
     body.dark-mode .auth-input { background: #252525 !important; color: #f0f0f0 !important; border-color: rgba(255,255,255,0.12) !important; }
     body.dark-mode .auth-input::placeholder { color: #6e6e73 !important; }
     body.dark-mode .strength-bar { background: #252525; }
+
+    /* ── Logo / Brand Box ── */
+    body.dark-mode .brand-logo-box {
+        background: #1a1a1a !important;
+        border-color: rgba(255,255,255,0.25) !important;
+        color: #f0f0f0 !important;
+    }
+    body.dark-mode .brand-text { color: #f0f0f0 !important; }
+
+    /* ── News / Warranty page specific ── */
+    body.dark-mode .bg-premium-light { background: #0d0d0d !important; }
+    body.dark-mode .hero-premium { background: #0d0d0d; }
+    body.dark-mode .hero-bg-gradient { opacity: 0.4; }
+
+    /* glass-card on warranty & news */
+    body.dark-mode .glass-card,
+    body.dark-mode .card-glass-product {
+        background: #1a1a1a !important;
+        border-color: rgba(255,255,255,0.08) !important;
+        color: #f0f0f0 !important;
+    }
+
+    /* text-dark Bootstrap override in dark mode */
+    body.dark-mode .text-dark { color: #f0f0f0 !important; }
+    body.dark-mode h1, body.dark-mode h2,
+    body.dark-mode h3, body.dark-mode h4,
+    body.dark-mode h5, body.dark-mode h6 { color: var(--text-main); }
+
+    /* tags badge bg-light on news */
+    body.dark-mode .badge.bg-light {
+        background: #252525 !important;
+        color: #a0a0a0 !important;
+        border-color: rgba(255,255,255,0.1) !important;
+    }
+
+    /* glass-badge pill */
+    body.dark-mode .glass-badge {
+        background: rgba(0,122,255,0.12) !important;
+        border-color: rgba(0,122,255,0.2) !important;
+    }
+
+    /* Profile, checkout, cart page cards */
+    body.dark-mode .card-body,
+    body.dark-mode .card-header,
+    body.dark-mode .card-footer {
+        background: #1a1a1a !important;
+        border-color: rgba(255,255,255,0.08) !important;
+        color: #f0f0f0 !important;
+    }
+
+    /* Alert boxes */
+    body.dark-mode .alert {
+        border-color: rgba(255,255,255,0.1) !important;
+    }
+    body.dark-mode .alert-info {
+        background: rgba(0,122,255,0.1) !important;
+        color: #7db8ff !important;
+    }
+    body.dark-mode .alert-success {
+        background: rgba(52,199,89,0.1) !important;
+        color: #5de385 !important;
+    }
+    body.dark-mode .alert-danger {
+        background: rgba(255,59,48,0.1) !important;
+        color: #ff6b6b !important;
+    }
+    body.dark-mode .alert-warning {
+        background: rgba(255,149,0,0.1) !important;
+        color: #ffb340 !important;
+    }
+
+    /* View toggle buttons (product.php) */
+    body.dark-mode .view-btn {
+        background: #1a1a1a;
+        border-color: rgba(255,255,255,0.08);
+        color: #a0a0a0;
+    }
+    body.dark-mode .view-btn:hover,
+    body.dark-mode .view-btn.active {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: #fff;
+    }
+
+    /* Wishlist button */
+    body.dark-mode .btn-wishlist {
+        background: rgba(30,30,30,0.9);
+        color: #a0a0a0;
+    }
+    body.dark-mode .btn-wishlist:hover,
+    body.dark-mode .btn-wishlist.active {
+        background: #1a1a1a;
+        color: #e74c3c;
+    }
+
+    /* Newsletter input */
+    body.dark-mode .newsletter-input {
+        background: rgba(255,255,255,0.08) !important;
+        border-color: rgba(255,255,255,0.15) !important;
+        color: #f0f0f0 !important;
+    }
+    body.dark-mode .newsletter-input::placeholder {
+        color: rgba(255,255,255,0.4) !important;
+    }
 
     </style>
 

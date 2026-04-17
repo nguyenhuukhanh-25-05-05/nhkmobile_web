@@ -86,10 +86,12 @@ include 'includes/header.php';
                             <div class="position-relative">
                                 <img src="assets/images/<?php echo $a['image']; ?>" class="card-img-top object-fit-cover" alt="<?php echo $a['title']; ?>" style="height: 240px;" onerror="this.src='https://placehold.co/600x400/f5f5f7/1d1d1f?text=Tech+News'">
                                 <div class="position-absolute top-0 start-0 m-3">
-                                    <span class="badge bg-primary rounded-pill px-3 py-2"><?php echo $a['category']; ?></span>
+                                    <?php if (!empty($a['category'] ?? '')): ?>
+                                    <span class="badge bg-primary rounded-pill px-3 py-2"><?php echo htmlspecialchars($a['category'] ?? ''); ?></span>
+                                    <?php endif; ?>
                                 </div>
                             </div>
-                            <div class="p-4 bg-white">
+                            <div class="p-4" style="background: var(--bg-white);">
                                 <div class="text-secondary small mb-2">
                                     <i class="bi bi-calendar3 me-1"></i> <?php echo date('d/m/Y', strtotime($a['created_at'])); ?>
                                 </div>
@@ -107,7 +109,7 @@ include 'includes/header.php';
                                 <?php else: ?>
                                 <div class="mb-3"></div> <!-- padding thay thế -->
                                 <?php endif; ?>
-                                <p class="text-secondary small mb-4 line-clamp-3"><?php echo htmlspecialchars($a['excerpt']); ?></p>
+                                <p class="text-secondary small mb-4 line-clamp-3"><?php echo htmlspecialchars($a['excerpt'] ?? ($a['content'] ? mb_strimwidth(strip_tags($a['content']), 0, 120, '...') : '')); ?></p>
                                 <a href="news-detail.php?id=<?php echo $a['id']; ?>" class="btn btn-link text-primary p-0 text-decoration-none fw-bold">
                                     Đọc tiếp <i class="bi bi-arrow-right ms-1"></i>
                                 </a>
