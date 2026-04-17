@@ -85,7 +85,7 @@ include 'includes/admin_header.php';
                             </li>
                             <li class="list-group-item">
                                 <i class="bi bi-box text-info me-2"></i>
-                                <strong>Products:</strong> 5 sản phẩm mẫu
+                                <strong>Products:</strong> 27 sản phẩm đầy đủ
                             </li>
                             <li class="list-group-item">
                                 <i class="bi bi-newspaper text-warning me-2"></i>
@@ -143,7 +143,7 @@ include 'includes/admin_header.php';
                         
                         <div class="row text-center mb-4">
                             <div class="col-3">
-                                <div class="h3 mb-0 text-primary">5</div>
+                                <div class="h3 mb-0 text-primary">27</div>
                                 <small class="text-muted">Products</small>
                             </div>
                             <div class="col-3">
