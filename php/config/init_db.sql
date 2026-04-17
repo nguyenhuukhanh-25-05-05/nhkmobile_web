@@ -148,11 +148,11 @@ CREATE TABLE news (
 -- 3. SEED DATA (CLEAN - Chỉ để lại 1 admin + 1 user test)
 
 -- Default Admin: admin / admin123
-INSERT INTO admins (username, password) VALUES ('admin', '$2y$10$Zs8VJhGqKX7nF6YqJ3mHLe.aB2cD3eF4gH5iJ6kL7mN8oP9qR0sT');
+INSERT INTO admins (username, password) VALUES ('admin', '$2y$10$OxpLzqVPHtjUl6j9rc7Fj.JxotEpbaT0bMmUMymJNVLBZ0tVgI49K');
 
 -- Test User: test@test.com / Test123!
 INSERT INTO users (fullname, email, password, status, phone, address) 
-VALUES ('Test User', 'test@test.com', '$2y$10$Yx9WkIhHpL8mG7zK4nOPu.vC3dE4fG5hI6jK7lM8nO9pQ0rR1sU', 'active', '0901234567', '123 Đường Test, Quận 1, TP.HCM');
+VALUES ('Test User', 'test@test.com', '$2y$10$a6Fbn90.iVoW2.0SigmIS.uMc6ya4vXC2/zV5i.n4eL1xcDP35f6i', 'active', '0901234567', '123 Đường Test, Quận 1, TP.HCM');
 
 -- Full Products (30 sản phẩm - tên ảnh mới brand-model-slug.png)
 INSERT INTO products (name, category, price, stock, image, description, specs, is_featured) VALUES
