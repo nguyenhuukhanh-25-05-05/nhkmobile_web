@@ -142,27 +142,27 @@ include 'includes/header.php';
             </div>
             <div class="category-grid reveal-stagger">
                 <a href="product.php?category=Apple" class="category-item">
-                    <div class="category-icon apple"><i class="bi bi-apple"></i></div>
+                    <div class="category-icon apple"><img src="assets/images/apple-iphone-17-pro-max.png" alt="Apple" onerror="this.parentElement.innerHTML='<i class=\'bi bi-apple\'></i>'"></div>
                     <span class="category-name">Apple</span>
                 </a>
                 <a href="product.php?category=Samsung" class="category-item">
-                    <div class="category-icon samsung"><i class="bi bi-phone"></i></div>
+                    <div class="category-icon samsung"><img src="assets/images/samsung-galaxy-s25-ultra.png" alt="Samsung" onerror="this.parentElement.innerHTML='<i class=\'bi bi-phone\'></i>'"></div>
                     <span class="category-name">Samsung</span>
                 </a>
                 <a href="product.php?category=Xiaomi" class="category-item">
-                    <div class="category-icon xiaomi"><i class="bi bi-lightning-charge"></i></div>
+                    <div class="category-icon xiaomi"><img src="assets/images/xiaomi-17-ultra.png" alt="Xiaomi" onerror="this.parentElement.innerHTML='<i class=\'bi bi-lightning-charge\'></i>'"></div>
                     <span class="category-name">Xiaomi</span>
                 </a>
                 <a href="product.php?category=OPPO" class="category-item">
-                    <div class="category-icon oppo"><i class="bi bi-camera"></i></div>
+                    <div class="category-icon oppo"><img src="assets/images/oppo-find-x10.png" alt="OPPO" onerror="this.parentElement.innerHTML='<i class=\'bi bi-camera\'></i>'"></div>
                     <span class="category-name">OPPO</span>
                 </a>
                 <a href="product.php?category=Vivo" class="category-item">
-                    <div class="category-icon vivo"><i class="bi bi-music-note-beamed"></i></div>
+                    <div class="category-icon vivo"><img src="assets/images/vivo-x300.png" alt="Vivo" onerror="this.parentElement.innerHTML='<i class=\'bi bi-music-note-beamed\'></i>'"></div>
                     <span class="category-name">Vivo</span>
                 </a>
                 <a href="product.php?category=Realme" class="category-item">
-                    <div class="category-icon realme"><i class="bi bi-bolt"></i></div>
+                    <div class="category-icon realme"><img src="assets/images/realme-gt9.png" alt="Realme" onerror="this.parentElement.innerHTML='<i class=\'bi bi-bolt\'></i>'"></div>
                     <span class="category-name">Realme</span>
                 </a>
             </div>
@@ -192,6 +192,15 @@ include 'includes/header.php';
                                 <span class="p-cat"><?php echo $p['category']; ?></span>
                                 <h3 class="p-name"><?php echo $p['name']; ?></h3>
                                 <div class="p-price-new"><?php echo number_format($p['price'], 0, ',', '.'); ?>₫</div>
+                                <?php if(!empty($p['specs'])): ?>
+                                <div class="p-specs">
+                                    <?php
+                                    $specsArr = array_map('trim', explode(',', $p['specs']));
+                                    foreach(array_slice($specsArr, 0, 2) as $spec): ?>
+                                    <span><?php echo htmlspecialchars($spec); ?></span>
+                                    <?php endforeach; ?>
+                                </div>
+                                <?php endif; ?>
                             </div>
                         </a>
                         <a href="cart.php?add=<?php echo $p['id']; ?>" class="add-to-cart-btn">
@@ -244,7 +253,7 @@ include 'includes/header.php';
                     <div class="product-card-new" style="background: #fff; border: none;">
                         <a href="product-detail.php?id=<?php echo $p['id']; ?>">
                             <div class="product-img-box">
-                                <span class="badge-hot" style="background: #ff3b30;">-<?php echo $discountPercent; ?>%</span>
+                                <span class="badge-hot" style="background: #007AFF;">-<?php echo $discountPercent; ?>%</span>
                                 <img src="assets/images/<?php echo $p['image']; ?>" alt="<?php echo $p['name']; ?>"
                                     onerror="this.src='https://placehold.co/300x400/f5f5f7/1d1d1f?text=Phone'">
                             </div>
@@ -252,19 +261,28 @@ include 'includes/header.php';
                                 <span class="p-cat"><?php echo $p['category']; ?></span>
                                 <h3 class="p-name"><?php echo $p['name']; ?></h3>
                                 <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                                    <span style="font-size: 18px; font-weight: 800; color: #ff3b30;"><?php echo number_format($salePrice, 0, ',', '.'); ?>₫</span>
-                                    <span style="font-size: 14px; color: #999; text-decoration: line-through;"><?php echo number_format($p['price'], 0, ',', '.'); ?>₫</span>
+                                    <span style="font-size: 18px; font-weight: 800; color: #fff;"><?php echo number_format($salePrice, 0, ',', '.'); ?>₫</span>
+                                    <span style="font-size: 14px; color: rgba(255,255,255,0.7); text-decoration: line-through;"><?php echo number_format($p['price'], 0, ',', '.'); ?>₫</span>
                                 </div>
+                                <?php if(!empty($p['specs'])): ?>
+                                <div class="p-specs">
+                                    <?php
+                                    $specsArr = array_map('trim', explode(',', $p['specs']));
+                                    foreach(array_slice($specsArr, 0, 2) as $spec): ?>
+                                    <span><?php echo htmlspecialchars($spec); ?></span>
+                                    <?php endforeach; ?>
+                                </div>
+                                <?php endif; ?>
                             </div>
                         </a>
-                        <a href="cart.php?add=<?php echo $p['id']; ?>" class="add-to-cart-btn" style="opacity: 1; transform: none; background: #ff3b30;">
+                        <a href="cart.php?add=<?php echo $p['id']; ?>" class="add-to-cart-btn" style="opacity: 1; transform: none; background: #007AFF;">
                             <i class="bi bi-plus-lg"></i>
                         </a>
                     </div>
                 <?php endforeach; ?>
             </div>
             <div class="text-center mt-5">
-                <a href="product.php" class="btn-main btn-outline" style="background: #fff; color: #ff3b30; border-color: #fff;">Xem tất cả Flash Sale</a>
+                <a href="product.php" class="btn-main btn-outline" style="background: rgba(255,255,255,0.15); color: #fff; border-color: rgba(255,255,255,0.3);">Xem tất cả Flash Sale</a>
             </div>
         </div>
     </section>
@@ -288,6 +306,15 @@ include 'includes/header.php';
                                 <span class="p-cat"><?php echo $p['category']; ?></span>
                                 <h3 class="p-name"><?php echo $p['name']; ?></h3>
                                 <div class="p-price-new"><?php echo number_format($p['price'], 0, ',', '.'); ?>₫</div>
+                                <?php if(!empty($p['specs'])): ?>
+                                <div class="p-specs">
+                                    <?php
+                                    $specsArr = array_map('trim', explode(',', $p['specs']));
+                                    foreach(array_slice($specsArr, 0, 2) as $spec): ?>
+                                    <span><?php echo htmlspecialchars($spec); ?></span>
+                                    <?php endforeach; ?>
+                                </div>
+                                <?php endif; ?>
                             </div>
                         </a>
                         <a href="cart.php?add=<?php echo $p['id']; ?>" class="add-to-cart-btn">

@@ -771,6 +771,29 @@
         color: #e74c3c;
     }
 
+    /* Add to cart button */
+    body.dark-mode .add-to-cart-btn {
+        background: #e0e0e0 !important;
+        color: #1d1d1f !important;
+    }
+    body.dark-mode .add-to-cart-btn:hover {
+        background: var(--primary) !important;
+        color: #fff !important;
+    }
+    body.dark-mode .product-card-new .p-specs span {
+        background: #252525;
+        color: #a0a0a0;
+    }
+
+    /* Flash Sale - keep blue tone in dark mode */
+    body.dark-mode .flash-sale-section {
+        background: linear-gradient(135deg, #0a2a5e, #007AFF) !important;
+    }
+    body.dark-mode .flash-sale-section .product-card-new {
+        background: #1a1a1a !important;
+        border-color: rgba(255,255,255,0.08) !important;
+    }
+
     /* Newsletter input */
     body.dark-mode .newsletter-input {
         background: rgba(255,255,255,0.08) !important;

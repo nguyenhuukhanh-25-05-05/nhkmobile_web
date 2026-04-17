@@ -489,6 +489,24 @@ h1, h2, h3, h4, h5, h6 {
     background: var(--primary);
 }
 
+/* Product specs badge on card */
+.p-specs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.p-specs span {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--bg-gray);
+    padding: 4px 10px;
+    border-radius: 980px;
+    white-space: nowrap;
+}
+
 .add-to-cart-btn {
     position: absolute;
     bottom: 32px;
@@ -1041,18 +1059,27 @@ h1, h2, h3, h4, h5, h6 {
     justify-content: center;
     font-size: 28px;
     transition: all 0.3s ease;
+    overflow: hidden;
+    padding: 4px;
 }
 
 .category-item:hover .category-icon {
     transform: scale(1.1);
 }
 
-.category-icon.apple { background: linear-gradient(135deg, #1d1d1f, #434344); color: #fff; }
-.category-icon.samsung { background: linear-gradient(135deg, #1428a0, #3b5bdb); color: #fff; }
-.category-icon.xiaomi { background: linear-gradient(135deg, #ff6900, #ff9f43); color: #fff; }
-.category-icon.oppo { background: linear-gradient(135deg, #009b77, #00d68f); color: #fff; }
-.category-icon.vivo { background: linear-gradient(135deg, #415fff, #6b8cff); color: #fff; }
-.category-icon.realme { background: linear-gradient(135deg, #ffc107, #ff9800); color: #fff; }
+.category-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.category-icon.apple { background: #f5f5f7; }
+.category-icon.samsung { background: #f0f0ff; }
+.category-icon.xiaomi { background: #fff5ee; }
+.category-icon.oppo { background: #f0faf5; }
+.category-icon.vivo { background: #f0f4ff; }
+.category-icon.realme { background: #fffbf0; }
 
 .category-name {
     font-size: 14px;
@@ -1062,7 +1089,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Flash Sale Section */
 .flash-sale-section {
-    background: var(--danger-gradient);
+    background: var(--primary-gradient);
     padding: 80px 0;
     color: #fff;
 }
@@ -1297,7 +1324,7 @@ h1, h2, h3, h4, h5, h6 {
     .hero-carousel-nav { bottom: 20px; }
     .category-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
     .category-item { padding: 16px 12px; }
-    .category-icon { width: 48px; height: 48px; font-size: 22px; }
+    .category-icon { width: 48px; height: 48px; font-size: 22px; padding: 2px; }
     .flash-sale-header { flex-direction: column; text-align: center; }
     .flash-sale-title { flex-direction: column; }
     .flash-sale-title h2 { font-size: 1.8rem; }

@@ -59,21 +59,21 @@ if ($search) {
 // Price range filter
 if ($priceRange) {
     switch ($priceRange) {
-        case 'under5':
-            $sql .= " AND price < 5000000";
-            $countSql .= " AND price < 5000000";
+        case 'under15':
+            $sql .= " AND price < 15000000";
+            $countSql .= " AND price < 15000000";
             break;
-        case '5to10':
-            $sql .= " AND price BETWEEN 5000000 AND 10000000";
-            $countSql .= " AND price BETWEEN 5000000 AND 10000000";
+        case '15to20':
+            $sql .= " AND price BETWEEN 15000000 AND 20000000";
+            $countSql .= " AND price BETWEEN 15000000 AND 20000000";
             break;
-        case '10to20':
-            $sql .= " AND price BETWEEN 10000000 AND 20000000";
-            $countSql .= " AND price BETWEEN 10000000 AND 20000000";
+        case '20to25':
+            $sql .= " AND price BETWEEN 20000000 AND 25000000";
+            $countSql .= " AND price BETWEEN 20000000 AND 25000000";
             break;
-        case '20to30':
-            $sql .= " AND price BETWEEN 20000000 AND 30000000";
-            $countSql .= " AND price BETWEEN 20000000 AND 30000000";
+        case '25to30':
+            $sql .= " AND price BETWEEN 25000000 AND 30000000";
+            $countSql .= " AND price BETWEEN 25000000 AND 30000000";
             break;
         case 'over30':
             $sql .= " AND price > 30000000";
@@ -377,10 +377,10 @@ include 'includes/header.php';
                             <span class="filter-label"><i class="bi bi-cash-stack me-2"></i>Khoảng giá</span>
                             <div class="filter-options">
                                 <a href="product.php<?php echo buildQuery(['price' => null]); ?>" class="filter-chip <?php echo !$priceRange ? 'active' : ''; ?>">Tất cả</a>
-                                <a href="product.php<?php echo buildQuery(['price' => 'under5']); ?>" class="filter-chip <?php echo $priceRange == 'under5' ? 'active' : ''; ?>">Dưới 5 triệu</a>
-                                <a href="product.php<?php echo buildQuery(['price' => '5to10']); ?>" class="filter-chip <?php echo $priceRange == '5to10' ? 'active' : ''; ?>">5 - 10 triệu</a>
-                                <a href="product.php<?php echo buildQuery(['price' => '10to20']); ?>" class="filter-chip <?php echo $priceRange == '10to20' ? 'active' : ''; ?>">10 - 20 triệu</a>
-                                <a href="product.php<?php echo buildQuery(['price' => '20to30']); ?>" class="filter-chip <?php echo $priceRange == '20to30' ? 'active' : ''; ?>">20 - 30 triệu</a>
+                                <a href="product.php<?php echo buildQuery(['price' => 'under15']); ?>" class="filter-chip <?php echo $priceRange == 'under15' ? 'active' : ''; ?>">Dưới 15 triệu</a>
+                                <a href="product.php<?php echo buildQuery(['price' => '15to20']); ?>" class="filter-chip <?php echo $priceRange == '15to20' ? 'active' : ''; ?>">15 - 20 triệu</a>
+                                <a href="product.php<?php echo buildQuery(['price' => '20to25']); ?>" class="filter-chip <?php echo $priceRange == '20to25' ? 'active' : ''; ?>">20 - 25 triệu</a>
+                                <a href="product.php<?php echo buildQuery(['price' => '25to30']); ?>" class="filter-chip <?php echo $priceRange == '25to30' ? 'active' : ''; ?>">25 - 30 triệu</a>
                                 <a href="product.php<?php echo buildQuery(['price' => 'over30']); ?>" class="filter-chip <?php echo $priceRange == 'over30' ? 'active' : ''; ?>">Trên 30 triệu</a>
                             </div>
                         </div>
@@ -391,11 +391,9 @@ include 'includes/header.php';
                             <span class="filter-label"><i class="bi bi-device-hdd me-2"></i>Bộ nhớ</span>
                             <div class="filter-options">
                                 <a href="product.php<?php echo buildQuery(['storage' => null]); ?>" class="filter-chip <?php echo !$storage ? 'active' : ''; ?>">Tất cả</a>
-                                <a href="product.php<?php echo buildQuery(['storage' => '64GB']); ?>" class="filter-chip <?php echo $storage == '64GB' ? 'active' : ''; ?>">64GB</a>
                                 <a href="product.php<?php echo buildQuery(['storage' => '128GB']); ?>" class="filter-chip <?php echo $storage == '128GB' ? 'active' : ''; ?>">128GB</a>
                                 <a href="product.php<?php echo buildQuery(['storage' => '256GB']); ?>" class="filter-chip <?php echo $storage == '256GB' ? 'active' : ''; ?>">256GB</a>
                                 <a href="product.php<?php echo buildQuery(['storage' => '512GB']); ?>" class="filter-chip <?php echo $storage == '512GB' ? 'active' : ''; ?>">512GB</a>
-                                <a href="product.php<?php echo buildQuery(['storage' => '1TB']); ?>" class="filter-chip <?php echo $storage == '1TB' ? 'active' : ''; ?>">1TB</a>
                             </div>
                         </div>
                     </div>
@@ -442,6 +440,15 @@ include 'includes/header.php';
                                     <span class="p-cat"><?php echo $p['category']; ?></span>
                                     <h3 class="p-name"><?php echo $p['name']; ?></h3>
                                     <div class="p-price-new"><?php echo number_format($p['price'], 0, ',', '.'); ?>₫</div>
+                                    <?php if(!empty($p['specs'])): ?>
+                                    <div class="p-specs">
+                                        <?php
+                                        $specsArr = array_map('trim', explode(',', $p['specs']));
+                                        foreach(array_slice($specsArr, 0, 2) as $spec): ?>
+                                        <span><?php echo htmlspecialchars($spec); ?></span>
+                                        <?php endforeach; ?>
+                                    </div>
+                                    <?php endif; ?>
                                 </div>
                             </a>
                             <a href="cart.php?add=<?php echo $p['id']; ?>" class="add-to-cart-btn">
