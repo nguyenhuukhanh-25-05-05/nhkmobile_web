@@ -74,8 +74,16 @@ if (isset($_POST['place_order'])) {
     unset($_SESSION['cart']);
     unset($_SESSION['is_installment']); // Xóa flag trả góp sau khi đặt hàng
     
-    $stmtClearCart = $pdo->prepare("DELETE FROM cart_items WHERE session_id = ?");
-    $stmtClearCart->execute([session_id()]);
+    // Xóa giỏ hàng trong DB theo user_id (đúng với cách lưu cart)
+    $clearUserId = $userId ?? (isset($_SESSION['admin_id']) ? $_SESSION['admin_id'] : null);
+    if ($clearUserId) {
+        $stmtClearCart = $pdo->prepare("DELETE FROM cart_items WHERE user_id = ?");
+        $stmtClearCart->execute([$clearUserId]);
+    }
+    
+    // Fallback: xóa theo session_id nếu có
+    $stmtClearCartSession = $pdo->prepare("DELETE FROM cart_items WHERE session_id = ?");
+    $stmtClearCartSession->execute([session_id()]);
     
     // Chuyển hướng sang trang thông báo thành công
     header("Location: checkout.php?order=success");
