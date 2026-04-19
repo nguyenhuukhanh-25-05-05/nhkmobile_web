@@ -39,55 +39,65 @@ foreach ($cartItems as $item) {
  */
 if (isset($_POST['place_order'])) {
     // Lấy thông tin từ Form gửi lên qua POST
-    $name = $_POST['full_name'];
-    $phone = $_POST['phone'];
-    $address = $_POST['address'] ?? 'Tại cửa hàng';
-    $payment = $_POST['payment_method'];
+    $name = trim($_POST['full_name'] ?? '');
+    $phone = trim($_POST['phone'] ?? '');
+    $address = trim($_POST['address'] ?? 'Tại cửa hàng');
+    $payment = $_POST['payment_method'] ?? 'COD';
     $userId = get_logged_in_user_id(); // Lấy ID người dùng đang đăng nhập
-    $isInstallmentVal = (isset($_SESSION['is_installment']) && $_SESSION['is_installment'] === true) ? 'true' : 'false';
+    $isInstallmentVal = (isset($_SESSION['is_installment']) && $_SESSION['is_installment'] === true) ? true : false;
+    
+    // Validate thông tin
+    if (empty($name) || empty($phone)) {
+        $error = "Vui lòng điền đầy đủ họ tên và số điện thoại";
+    } else {
+        try {
+            // Thực hiện chèn đơn hàng vào bảng orders trong Postgres
+            // Sử dụng RETURNING id để lấy ID chính xác trong Postgres
+            $sqlOrder = "INSERT INTO orders (customer_name, customer_phone, customer_address, total_price, status, payment_method, user_id, is_installment) VALUES (?, ?, ?, ?, 'Chờ duyệt', ?, ?, ?) RETURNING id";
+            $stmtOrder = $pdo->prepare($sqlOrder);
+            $stmtOrder->execute([$name, $phone, $address, $total, $payment, $userId, $isInstallmentVal]);
+            
+            // Lấy ID vừa chèn từ RETURNING id
+            $orderId = $stmtOrder->fetchColumn();
 
-    // Thực hiện chèn đơn hàng vào bảng orders trong Postgres
-    // Sử dụng RETURNING id để lấy ID chính xác trong Postgres
-    $sqlOrder = "INSERT INTO orders (customer_name, customer_phone, customer_address, total_price, status, payment_method, user_id, is_installment) VALUES (?, ?, ?, ?, 'Chờ duyệt', ?, ?, ?) RETURNING id";
-    $stmtOrder = $pdo->prepare($sqlOrder);
-    $stmtOrder->execute([$name, $phone, $address, $total, $payment, $userId, $isInstallmentVal]);
-    
-    // Lấy ID vừa chèn từ RETURNING id
-    $orderId = $stmtOrder->fetchColumn();
+            if (!$orderId) {
+                die("Lỗi: Không thể tạo đơn hàng. Vui lòng thử lại.");
+            }
 
-    if (!$orderId) {
-        die("Lỗi: Không thể tạo đơn hàng. Vui lòng thử lại.");
+            // Lưu từng sản phẩm trong giỏ vào bảng order_items
+            $sqlItem = "INSERT INTO order_items (order_id, product_id, product_name, price, quantity) VALUES (?, ?, ?, ?, ?)";
+            $stmtItem = $pdo->prepare($sqlItem);
+            foreach ($cartItems as $pid => $item) {
+                $stmtItem->execute([$orderId, $pid, $item['name'], $item['price'], (int)$item['qty']]);
+            }
+            
+            // Lưu thông tin đơn vừa đặt vào session để trang thành công có thể hiển thị/tra cứu
+            $_SESSION['last_order_id'] = $orderId;
+            $_SESSION['last_order_phone'] = $phone;
+            
+            // Sau khi lưu đơn thành công, xóa sạch giỏ hàng trong Session và Database
+            unset($_SESSION['cart']);
+            unset($_SESSION['is_installment']); // Xóa flag trả góp sau khi đặt hàng
+            
+            // Xóa giỏ hàng trong DB theo user_id (đúng với cách lưu cart)
+            $clearUserId = $userId ?? (isset($_SESSION['admin_id']) ? $_SESSION['admin_id'] : null);
+            if ($clearUserId) {
+                $stmtClearCart = $pdo->prepare("DELETE FROM cart_items WHERE user_id = ?");
+                $stmtClearCart->execute([$clearUserId]);
+            }
+            
+            // Fallback: xóa theo session_id nếu có
+            $stmtClearCartSession = $pdo->prepare("DELETE FROM cart_items WHERE session_id = ?");
+            $stmtClearCartSession->execute([session_id()]);
+            
+            // Chuyển hướng sang trang thông báo thành công
+            header("Location: checkout.php?order=success");
+            exit;
+        } catch (Exception $e) {
+            error_log("[Checkout] Order creation error: " . $e->getMessage());
+            $error = "Có lỗi xảy ra khi tạo đơn hàng. Vui lòng thử lại.";
+        }
     }
-
-    // Lưu từng sản phẩm trong giỏ vào bảng order_items
-    $sqlItem = "INSERT INTO order_items (order_id, product_id, product_name, price, quantity) VALUES (?, ?, ?, ?, ?)";
-    $stmtItem = $pdo->prepare($sqlItem);
-    foreach ($cartItems as $pid => $item) {
-        $stmtItem->execute([$orderId, $pid, $item['name'], $item['price'], $item['qty']]);
-    }
-    
-    // Lưu thông tin đơn vừa đặt vào session để trang thành công có thể hiển thị/tra cứu
-    $_SESSION['last_order_id'] = $orderId;
-    $_SESSION['last_order_phone'] = $phone;
-    
-    // Sau khi lưu đơn thành công, xóa sạch giỏ hàng trong Session và Database
-    unset($_SESSION['cart']);
-    unset($_SESSION['is_installment']); // Xóa flag trả góp sau khi đặt hàng
-    
-    // Xóa giỏ hàng trong DB theo user_id (đúng với cách lưu cart)
-    $clearUserId = $userId ?? (isset($_SESSION['admin_id']) ? $_SESSION['admin_id'] : null);
-    if ($clearUserId) {
-        $stmtClearCart = $pdo->prepare("DELETE FROM cart_items WHERE user_id = ?");
-        $stmtClearCart->execute([$clearUserId]);
-    }
-    
-    // Fallback: xóa theo session_id nếu có
-    $stmtClearCartSession = $pdo->prepare("DELETE FROM cart_items WHERE session_id = ?");
-    $stmtClearCartSession->execute([session_id()]);
-    
-    // Chuyển hướng sang trang thông báo thành công
-    header("Location: checkout.php?order=success");
-    exit;
 }
 
 // Cấu hình trang
@@ -139,6 +149,11 @@ include 'includes/header.php';
                 <div class="row g-5">
                     <div class="col-lg-7">
                         <h2 class="fw-bold mb-4">Thông tin nhận hàng.</h2>
+                        
+                        <?php if (isset($error)): ?>
+                            <div class="alert alert-danger border-0 rounded-3 small fw-600 mb-4"><?php echo htmlspecialchars($error); ?></div>
+                        <?php endif; ?>
+                        
                             <div class="row g-3">
                                 <div class="col-md-12">
                                     <label class="form-label small fw-bold">Họ và tên khách hàng</label>

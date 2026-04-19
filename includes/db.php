@@ -14,7 +14,7 @@
 require_once __DIR__ . '/functions.php';
 
 // 1. Cấu hình kết nối - SỬ DỤNG TRANSACTION POOLER (CỔNG 6543) ĐỂ ỔN ĐỊNH TRÊN RENDER
-$databaseUrl = 'postgresql://postgres.qfaslglevzkujkmylxfx:' . urlencode('@Khanh2006') . '@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres';
+$databaseUrl = 'postgresql://postgres.qfaslglevzkujkmylxfx:' . rawurlencode('@Khanh2006') . '@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres';
 
 // Nếu có biến môi trường từ Render và không phải database cũ, mới ghi đè
 $envUrl = getenv('DATABASE_URL') ?: ($_ENV['DATABASE_URL'] ?? $_SERVER['DATABASE_URL'] ?? null);
@@ -206,15 +206,29 @@ try {
     try { $pdo->exec("ALTER TABLE orders ADD COLUMN IF NOT EXISTS payment_method VARCHAR(50);"); } catch (\PDOException $e) {}
     try { $pdo->exec("ALTER TABLE orders ADD COLUMN IF NOT EXISTS is_installment BOOLEAN DEFAULT FALSE;"); } catch (\PDOException $e) {}
     
-    // Cập nhật cấu trúc bảng Giỏ hàng (Cart Items)
-    try { $pdo->exec("ALTER TABLE cart_items ADD COLUMN IF NOT EXISTS user_id INT REFERENCES users(id);"); } catch (\PDOException $e) {}
+// Thêm cột session_id cho bảng cart_items nếu chưa có (để tương thích với guest users)
     try { $pdo->exec("ALTER TABLE cart_items ADD COLUMN IF NOT EXISTS session_id VARCHAR(255);"); } catch (\PDOException $e) {}
+    
+    // Đảm bảo có bảng Giỏ hàng (Cart Items) với cấu trúc đúng
+    try { $pdo->exec("
+        CREATE TABLE IF NOT EXISTS cart_items (
+            id SERIAL PRIMARY KEY,
+            user_id INT REFERENCES users(id) ON DELETE CASCADE,
+            product_id INT REFERENCES products(id) ON DELETE CASCADE,
+            quantity INT DEFAULT 1,
+            session_id VARCHAR(255),
+            added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE (user_id, product_id)
+        );
+    "); } catch (\PDOException $e) {}
+    
+    // Xóa constraint cũ dựa trên (session_id, product_id) nếu tồn tại
     try { 
-        // Xóa constraint cũ dựa trên (session_id, product_id) nếu tồn tại
         $pdo->exec("ALTER TABLE cart_items DROP CONSTRAINT IF EXISTS cart_items_session_product_unique;"); 
     } catch (\PDOException $e) { /* Bỏ qua nếu không tồn tại */ }
+    
+    // Thêm ràng buộc duy nhất mới dựa trên (user_id, product_id) để ON CONFLICT hoạt động chính xác
     try { 
-        // Thêm ràng buộc duy nhất mới dựa trên (user_id, product_id) để ON CONFLICT hoạt động chính xác
         $pdo->exec("ALTER TABLE cart_items ADD CONSTRAINT cart_items_user_product_unique UNIQUE (user_id, product_id);"); 
     } catch (\PDOException $e) { /* Bỏ qua nếu đã tồn tại */ }
 

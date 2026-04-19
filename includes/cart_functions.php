@@ -27,61 +27,74 @@ function syncCartWithDatabase($pdo) {
     $isAdmin = isset($_SESSION['admin_id']);
     $sessionId = session_id();
 
-    // Chưa đăng nhập: xóa sạch giỏ hàng trong session (không load từ DB)
+    // Nếu chưa đăng nhập, chỉ dùng session (không load từ DB)
     if (!$userId && !$isAdmin) {
-        $_SESSION['cart'] = [];
+        if (!isset($_SESSION['cart'])) {
+            $_SESSION['cart'] = [];
+        }
         return;
     }
     
     // Đối với admin, sử dụng admin_id như user_id tạm thời
     $effectiveUserId = $userId ?? ($isAdmin ? ($_SESSION['admin_id'] ?? null) : null);
     if (!$effectiveUserId) {
-        $_SESSION['cart'] = [];
+        if (!isset($_SESSION['cart'])) {
+            $_SESSION['cart'] = [];
+        }
         return;
     }
     
     // TRƯỜNG HỢP 1: Session rỗng -> Nạp giỏ hàng từ DB theo user_id
     if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
-        $sql = "SELECT ci.*, p.name, p.price, p.image FROM cart_items ci 
-                JOIN products p ON ci.product_id = p.id 
-                WHERE ci.user_id = ?";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$effectiveUserId]);
-        $items = $stmt->fetchAll();
-        
-        $_SESSION['cart'] = [];
-        foreach ($items as $item) {
-            $_SESSION['cart'][$item['product_id']] = [
-                'name'  => $item['name'],
-                'price' => $item['price'],
-                'image' => $item['image'],
-                'qty'   => $item['quantity']
-            ];
+        try {
+            $sql = "SELECT ci.*, p.name, p.price, p.image FROM cart_items ci 
+                    JOIN products p ON ci.product_id = p.id 
+                    WHERE ci.user_id = ?";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$effectiveUserId]);
+            $items = $stmt->fetchAll();
+            
+            $_SESSION['cart'] = [];
+            foreach ($items as $item) {
+                $_SESSION['cart'][$item['product_id']] = [
+                    'name'  => $item['name'],
+                    'price' => $item['price'],
+                    'image' => $item['image'],
+                    'qty'   => (int)$item['quantity']
+                ];
+            }
+        } catch (Exception $e) {
+            error_log("[Cart] Error loading cart from DB: " . $e->getMessage());
+            $_SESSION['cart'] = [];
         }
     } 
     // TRƯỜNG HỢP 2: Session có hàng -> Lưu xuống DB theo user_id
     else {
-        // Xóa những món trong DB mà session không giữ nữa trước
-        $productIds = array_keys($_SESSION['cart']);
-        if (!empty($productIds)) {
-            $placeholders = implode(',', array_fill(0, count($productIds), '?'));
-            $stmt = $pdo->prepare("
-                DELETE FROM cart_items 
-                WHERE user_id = ? AND product_id NOT IN ($placeholders)
-            ");
-            $params = array_merge([$effectiveUserId], $productIds);
-            $stmt->execute($params);
-        }
-        
-        // Lưu/Update từng sản phẩm xuống DB
-        foreach ($_SESSION['cart'] as $pid => $item) {
-            $stmt = $pdo->prepare("
-                INSERT INTO cart_items (user_id, product_id, quantity, session_id) 
-                VALUES (?, ?, ?, ?)
-                ON CONFLICT (user_id, product_id) 
-                DO UPDATE SET quantity = EXCLUDED.quantity, session_id = EXCLUDED.session_id
-            ");
-            $stmt->execute([$effectiveUserId, $pid, $item['qty'], $sessionId]);
+        try {
+            // Xóa những món trong DB mà session không giữ nữa trước
+            $productIds = array_keys($_SESSION['cart']);
+            if (!empty($productIds)) {
+                $placeholders = implode(',', array_fill(0, count($productIds), '?'));
+                $stmt = $pdo->prepare("
+                    DELETE FROM cart_items 
+                    WHERE user_id = ? AND product_id NOT IN ($placeholders)
+                ");
+                $params = array_merge([$effectiveUserId], $productIds);
+                $stmt->execute($params);
+            }
+            
+            // Lưu/Update từng sản phẩm xuống DB
+            foreach ($_SESSION['cart'] as $pid => $item) {
+                $stmt = $pdo->prepare("
+                    INSERT INTO cart_items (user_id, product_id, quantity, session_id) 
+                    VALUES (?, ?, ?, ?)
+                    ON CONFLICT (user_id, product_id) 
+                    DO UPDATE SET quantity = EXCLUDED.quantity, session_id = EXCLUDED.session_id
+                ");
+                $stmt->execute([$effectiveUserId, $pid, (int)$item['qty'], $sessionId]);
+            }
+        } catch (Exception $e) {
+            error_log("[Cart] Error syncing cart to DB: " . $e->getMessage());
         }
     }
 }
