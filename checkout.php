@@ -7,13 +7,14 @@
  * the database. Supports standard and installment flags.
  * 
  * Author: NguyenHuuKhanh
- * Version: 2.1
- * Date: 2026-04-08
+ * Version: 2.2
+ * Date: 2026-04-19
  */
-session_start();
+// QUAN TRỌNG: Phải load auth_functions.php TRƯỚC để nó quản lý session
+// Không gọi session_start() ở đây vì auth_functions.php đã lo
+require_once 'includes/auth_functions.php';
 require_once 'includes/db.php';
 require_once 'includes/cart_functions.php';
-require_once 'includes/auth_functions.php';
 
 // Authentication requirement for checkout
 require_login();
@@ -39,21 +40,28 @@ foreach ($cartItems as $item) {
  */
 if (isset($_POST['place_order'])) {
     // Lấy thông tin từ Form gửi lên qua POST
-    $name = trim($_POST['full_name'] ?? '');
-    $phone = trim($_POST['phone'] ?? '');
-    $address = trim($_POST['address'] ?? 'Tại cửa hàng');
+    $name    = trim($_POST['full_name'] ?? '');
+    $phone   = trim($_POST['phone'] ?? '');
+    $address = trim($_POST['address'] ?? '') ?: 'Tại cửa hàng';  // Fallback khi rỗng
     $payment = $_POST['payment_method'] ?? 'COD';
-    $userId = get_logged_in_user_id(); // Lấy ID người dùng đang đăng nhập
-    $isInstallmentVal = (isset($_SESSION['is_installment']) && $_SESSION['is_installment'] === true) ? true : false;
+    $userId  = get_logged_in_user_id(); // null nếu là admin
+    // Cast boolean đúng cho PostgreSQL
+    $isInstallmentVal = (isset($_SESSION['is_installment']) && $_SESSION['is_installment'] === true) ? 'true' : 'false';
     
     // Validate thông tin
     if (empty($name) || empty($phone)) {
         $error = "Vui lòng điền đầy đủ họ tên và số điện thoại";
     } else {
         try {
+            // Kiểm tra kết nối DB trước
+            if (!$pdo) {
+                throw new Exception("Không có kết nối cơ sở dữ liệu");
+            }
+
             // Thực hiện chèn đơn hàng vào bảng orders trong Postgres
-            // Sử dụng RETURNING id để lấy ID chính xác trong Postgres
-            $sqlOrder = "INSERT INTO orders (customer_name, customer_phone, customer_address, total_price, status, payment_method, user_id, is_installment) VALUES (?, ?, ?, ?, 'Chờ duyệt', ?, ?, ?) RETURNING id";
+            // Ghi chú: is_installment dùng string 'true'/'false' cho PostgreSQL BOOLEAN qua PDO
+            $sqlOrder = "INSERT INTO orders (customer_name, customer_phone, customer_address, total_price, status, payment_method, user_id, is_installment) 
+                         VALUES (?, ?, ?, ?, 'Chờ duyệt', ?, ?, CAST(? AS BOOLEAN)) RETURNING id";
             $stmtOrder = $pdo->prepare($sqlOrder);
             $stmtOrder->execute([$name, $phone, $address, $total, $payment, $userId, $isInstallmentVal]);
             
@@ -61,7 +69,7 @@ if (isset($_POST['place_order'])) {
             $orderId = $stmtOrder->fetchColumn();
 
             if (!$orderId) {
-                die("Lỗi: Không thể tạo đơn hàng. Vui lòng thử lại.");
+                throw new Exception("Không thể lấy ID đơn hàng sau khi tạo");
             }
 
             // Lưu từng sản phẩm trong giỏ vào bảng order_items
@@ -95,7 +103,7 @@ if (isset($_POST['place_order'])) {
             exit;
         } catch (Exception $e) {
             error_log("[Checkout] Order creation error: " . $e->getMessage());
-            $error = "Có lỗi xảy ra khi tạo đơn hàng. Vui lòng thử lại.";
+            $error = "Có lỗi xảy ra khi tạo đơn hàng: " . $e->getMessage() . ". Vui lòng thử lại hoặc liên hệ cửa hàng.";
         }
     }
 }
@@ -169,7 +177,7 @@ include 'includes/header.php';
                                 </div>
                                 <div class="col-md-12">
                                     <label class="form-label small fw-bold">Địa chỉ giao hàng</label>
-                                    <textarea name="address" class="form-control rounded-3 border-0 bg-light p-3" rows="2" placeholder="Số nhà, tên đường, Phường/Xã, Quận/Huyện, Tỉnh/Thành phố" required></textarea>
+                                    <textarea name="address" class="form-control rounded-3 border-0 bg-light p-3" rows="2" placeholder="Số nhà, tên đường, Phường/Xã, Quận/Huyện, Tỉnh/Thành phố (để trống = nhận tại cửa hàng)"></textarea>
                                 </div>
                                 <div class="col-md-12 mt-4">
                                      <h2 class="fw-bold mb-4">Cách thức thanh toán</h2>

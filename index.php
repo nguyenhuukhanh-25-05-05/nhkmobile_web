@@ -31,270 +31,42 @@ include 'includes/header.php';
 ?>
 
 <main>
-    <!-- HERO CAROUSEL SECTION - REDESIGNED -->
-    <section class="hero-carousel hero-premium" id="heroCarousel">
-        <!-- Floating Particles Background -->
-        <div class="hero-particles">
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-        </div>
-
-        <!-- Slide 1: iPhone -->
-        <div class="hero-slide active" data-slide="0">
-            <div class="hero-slide-bg gradient-1"></div>
-            <div class="hero-decoration-circle circle-1"></div>
-            <div class="hero-decoration-circle circle-2"></div>
-            <div class="container-wide">
-                <div class="hero-grid">
-                    <div class="hero-text">
-                        <div class="hero-badge-wrapper">
-                            <span class="hero-badge"><i class="bi bi-stars"></i>Thế hệ AI 2026</span>
-                            <span class="hero-badge hero-badge-secondary">Mới ra mắt</span>
-                        </div>
-                        <h1 class="display-hero hero-title-animate">iPhone 17 Pro.<br><span class="text-gradient">Đỉnh cao trí tuệ.</span></h1>
-                        <p class="hero-desc hero-desc-animate">Sức mạnh vượt bậc từ chip A19 Pro. Trải nghiệm hệ sinh thái AI toàn cầu ngay trên tay bạn với thiết kế titan siêu nhẹ và camera AI đột phá.</p>
-                        
-                        <!-- Hero Stats -->
-                        <div class="hero-stats hero-stats-animate">
-                            <div class="hero-stat-item">
-                                <div class="hero-stat-value">A19 Pro</div>
-                                <div class="hero-stat-label">Chip mạnh nhất</div>
-                            </div>
-                            <div class="hero-stat-divider"></div>
-                            <div class="hero-stat-item">
-                                <div class="hero-stat-value">48MP</div>
-                                <div class="hero-stat-label">Camera AI</div>
-                            </div>
-                            <div class="hero-stat-divider"></div>
-                            <div class="hero-stat-item">
-                                <div class="hero-stat-value">Titan</div>
-                                <div class="hero-stat-label">Siêu bền</div>
-                            </div>
-                        </div>
-
-                        <!-- Hero Search Box -->
-                        <div class="hero-search-box hero-search-animate">
-                            <form action="product.php" method="GET">
-                                <input type="text" name="q" class="hero-search-input" placeholder="Tìm kiếm iPhone, Samsung, Xiaomi...">
-                                <button type="submit" class="hero-search-btn"><i class="bi bi-search"></i></button>
-                            </form>
-                        </div>
-                        
-                        <div class="d-flex gap-3 flex-wrap hero-buttons-animate">
-                            <a href="product.php?category=Apple" class="btn-main btn-primary btn-hero"><i class="bi bi-bag"></i>Mua ngay</a>
-                            <a href="product-detail.php?id=1" class="btn-main btn-outline btn-hero"><i class="bi bi-play-circle"></i>Xem chi tiết</a>
-                        </div>
-                        
-                        <!-- Trust Indicators -->
-                        <div class="hero-trust hero-trust-animate">
-                            <div class="hero-trust-item">
-                                <i class="bi bi-check-circle-fill"></i>
-                                <span>Bảo hành 12 tháng</span>
-                            </div>
-                            <div class="hero-trust-item">
-                                <i class="bi bi-truck"></i>
-                                <span>Giao hàng miễn phí</span>
-                            </div>
-                            <div class="hero-trust-item">
-                                <i class="bi bi-arrow-repeat"></i>
-                                <span>Đổi trả 30 ngày</span>
-                            </div>
-                        </div>
+    <!-- HERO SECTION - CLEAN & PROFESSIONAL -->
+    <section class="hero-new" id="heroCarousel">
+        <div class="container-wide">
+            <div class="hero-grid">
+                <div class="hero-text">
+                    <span class="hero-badge"><i class="bi bi-stars"></i>Siêu phẩm AI 2026</span>
+                    <h1 class="display-hero">iPhone 17 Pro Max.<br><span class="text-gradient">Đẳng cấp vượt trội.</span></h1>
+                    <p class="hero-desc">Trải nghiệm công nghệ AI đỉnh cao với chip A19 Pro, camera 48MP và thiết kế Titan sang trọng. Đặt hàng ngay để nhận ưu đãi đặc biệt!</p>
+                    
+                    <div class="d-flex gap-3 flex-wrap mt-4">
+                        <a href="product.php" class="btn-main btn-primary"><i class="bi bi-bag"></i>Mua ngay</a>
+                        <a href="product.php?category=Apple" class="btn-main btn-outline"><i class="bi bi-arrow-right"></i>Xem thêm</a>
                     </div>
-                    <div class="hero-image-container">
-                        <div class="hero-image-wrapper">
-                            <img src="assets/images/apple-iphone-17-pro-max.png" alt="iPhone 17 Pro" class="hero-image-new hero-image-animate"
-                                onerror="this.src='https://placehold.co/800x1000/transparent/333?text=iPhone+17+Pro'">
-                            <div class="hero-image-shadow"></div>
+                    
+                    <!-- Quick Stats -->
+                    <div class="hero-quick-stats">
+                        <div class="hero-quick-stat">
+                            <div class="hero-quick-stat-value">48MP</div>
+                            <div class="hero-quick-stat-label">Camera</div>
                         </div>
-                        <div class="hero-glow"></div>
-                        <div class="hero-floating-badge hero-floating-badge-1">
-                            <i class="bi bi-star-fill"></i>
-                            <span>4.9/5</span>
+                        <div class="hero-quick-stat">
+                            <div class="hero-quick-stat-value">A19 Pro</div>
+                            <div class="hero-quick-stat-label">Chip</div>
                         </div>
-                        <div class="hero-floating-badge hero-floating-badge-2">
-                            <i class="bi bi-hand-thumbs-up-fill"></i>
-                            <span>Best Seller</span>
+                        <div class="hero-quick-stat">
+                            <div class="hero-quick-stat-value">Titan</div>
+                            <div class="hero-quick-stat-label">Chất liệu</div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Slide 2: Samsung -->
-        <div class="hero-slide" data-slide="1">
-            <div class="hero-slide-bg gradient-2"></div>
-            <div class="hero-decoration-circle circle-1" style="background: rgba(20, 40, 160, 0.1);"></div>
-            <div class="hero-decoration-circle circle-2" style="background: rgba(59, 91, 219, 0.08);"></div>
-            <div class="container-wide">
-                <div class="hero-grid">
-                    <div class="hero-text">
-                        <div class="hero-badge-wrapper">
-                            <span class="hero-badge" style="color: #1428a0;"><i class="bi bi-phone"></i>Galaxy AI</span>
-                            <span class="hero-badge hero-badge-secondary">AI Phone</span>
-                        </div>
-                        <h1 class="display-hero hero-title-animate">Galaxy S25 Ultra.<br><span style="background: linear-gradient(135deg, #1428a0, #3b5bdb); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Tương lai trong tay.</span></h1>
-                        <p class="hero-desc hero-desc-animate">Trải nghiệm Galaxy AI đỉnh cao với S Pen, camera 200MP và màn hình Dynamic AMOLED 2X 120Hz.</p>
-                        
-                        <!-- Hero Stats -->
-                        <div class="hero-stats hero-stats-animate">
-                            <div class="hero-stat-item">
-                                <div class="hero-stat-value">200MP</div>
-                                <div class="hero-stat-label">Camera</div>
-                            </div>
-                            <div class="hero-stat-divider"></div>
-                            <div class="hero-stat-item">
-                                <div class="hero-stat-value">S Pen</div>
-                                <div class="hero-stat-label">Tích hợp</div>
-                            </div>
-                            <div class="hero-stat-divider"></div>
-                            <div class="hero-stat-item">
-                                <div class="hero-stat-value">120Hz</div>
-                                <div class="hero-stat-label">AMOLED</div>
-                            </div>
-                        </div>
-
-                        <div class="hero-search-box hero-search-animate">
-                            <form action="product.php" method="GET">
-                                <input type="text" name="q" class="hero-search-input" placeholder="Tìm kiếm iPhone, Samsung, Xiaomi...">
-                                <button type="submit" class="hero-search-btn" style="background: linear-gradient(135deg, #1428a0, #3b5bdb);"><i class="bi bi-search"></i></button>
-                            </form>
-                        </div>
-                        
-                        <div class="d-flex gap-3 flex-wrap hero-buttons-animate">
-                            <a href="product.php?category=Samsung" class="btn-main btn-primary btn-hero" style="background: linear-gradient(135deg, #1428a0, #3b5bdb);"><i class="bi bi-compass"></i>Khám phá ngay</a>
-                            <a href="product.php?category=Samsung" class="btn-main btn-outline btn-hero">Xem tất cả</a>
-                        </div>
-                        
-                        <!-- Trust Indicators -->
-                        <div class="hero-trust hero-trust-animate">
-                            <div class="hero-trust-item">
-                                <i class="bi bi-check-circle-fill"></i>
-                                <span>Chính hãng Samsung</span>
-                            </div>
-                            <div class="hero-trust-item">
-                                <i class="bi bi-gift"></i>
-                                <span>Tặng phụ kiện</span>
-                            </div>
-                            <div class="hero-trust-item">
-                                <i class="bi bi-credit-card"></i>
-                                <span>Trả góp 0%</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="hero-image-container">
-                        <div class="hero-image-wrapper">
-                            <img src="assets/images/samsung-galaxy-s25-ultra.png" alt="Galaxy S25 Ultra" class="hero-image-new hero-image-animate"
-                                onerror="this.src='https://placehold.co/800x1000/transparent/1428a0?text=Galaxy+S25+Ultra'">
-                            <div class="hero-image-shadow"></div>
-                        </div>
-                        <div class="hero-glow" style="background: #1428a0;"></div>
-                        <div class="hero-floating-badge hero-floating-badge-1">
-                            <i class="bi bi-camera-fill"></i>
-                            <span>200MP</span>
-                        </div>
-                        <div class="hero-floating-badge hero-floating-badge-2">
-                            <i class="bi bi-lightning-charge-fill"></i>
-                            <span>AI Phone</span>
-                        </div>
-                    </div>
+                <div class="hero-image-container">
+                    <img src="assets/images/apple-iphone-17-pro-max.png" alt="iPhone 17 Pro" class="hero-image-new"
+                        onerror="this.src='https://placehold.co/800x1000/transparent/333?text=iPhone+17+Pro'">
+                    <div class="hero-glow"></div>
                 </div>
             </div>
-        </div>
-
-        <!-- Slide 3: Xiaomi -->
-        <div class="hero-slide" data-slide="2">
-            <div class="hero-slide-bg gradient-3"></div>
-            <div class="hero-decoration-circle circle-1" style="background: rgba(255, 105, 0, 0.1);"></div>
-            <div class="hero-decoration-circle circle-2" style="background: rgba(255, 159, 67, 0.08);"></div>
-            <div class="container-wide">
-                <div class="hero-grid">
-                    <div class="hero-text">
-                        <div class="hero-badge-wrapper">
-                            <span class="hero-badge" style="color: #ff6900;"><i class="bi bi-lightning-charge"></i>Flagship Killer</span>
-                            <span class="hero-badge hero-badge-secondary">Giá tốt</span>
-                        </div>
-                        <h1 class="display-hero hero-title-animate">Xiaomi 15 Ultra.<br><span style="background: linear-gradient(135deg, #ff6900, #ff9f43); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Sức mạnh vượt trội.</span></h1>
-                        <p class="hero-desc hero-desc-animate">Camera Leica đỉnh cao, sạc nhanh 120W, chip Snapdragon 8 Elite. Hiệu năng mạnh mẽ, giá hợp lý.</p>
-                        
-                        <!-- Hero Stats -->
-                        <div class="hero-stats hero-stats-animate">
-                            <div class="hero-stat-item">
-                                <div class="hero-stat-value">Leica</div>
-                                <div class="hero-stat-label">Camera</div>
-                            </div>
-                            <div class="hero-stat-divider"></div>
-                            <div class="hero-stat-item">
-                                <div class="hero-stat-value">120W</div>
-                                <div class="hero-stat-label">Sạc nhanh</div>
-                            </div>
-                            <div class="hero-stat-divider"></div>
-                            <div class="hero-stat-item">
-                                <div class="hero-stat-value">8 Elite</div>
-                                <div class="hero-stat-label">Snapdragon</div>
-                            </div>
-                        </div>
-
-                        <div class="hero-search-box hero-search-animate">
-                            <form action="product.php" method="GET">
-                                <input type="text" name="q" class="hero-search-input" placeholder="Tìm kiếm iPhone, Samsung, Xiaomi...">
-                                <button type="submit" class="hero-search-btn" style="background: linear-gradient(135deg, #ff6900, #ff9f43);"><i class="bi bi-search"></i></button>
-                            </form>
-                        </div>
-                        
-                        <div class="d-flex gap-3 flex-wrap hero-buttons-animate">
-                            <a href="product.php?category=Xiaomi" class="btn-main btn-primary btn-hero" style="background: linear-gradient(135deg, #ff6900, #ff9f43);"><i class="bi bi-cart"></i>Mua ngay</a>
-                            <a href="product.php?category=Xiaomi" class="btn-main btn-outline btn-hero">So sánh</a>
-                        </div>
-                        
-                        <!-- Trust Indicators -->
-                        <div class="hero-trust hero-trust-animate">
-                            <div class="hero-trust-item">
-                                <i class="bi bi-check-circle-fill"></i>
-                                <span>Chính hãng Xiaomi</span>
-                            </div>
-                            <div class="hero-trust-item">
-                                <i class="bi bi-lightning-charge"></i>
-                                <span>Sạc nhanh 120W</span>
-                            </div>
-                            <div class="hero-trust-item">
-                                <i class="bi bi-piggy-bank"></i>
-                                <span>Giá tốt nhất</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="hero-image-container">
-                        <div class="hero-image-wrapper">
-                            <img src="assets/images/xiaomi-17-ultra.png" alt="Xiaomi 15 Ultra" class="hero-image-new hero-image-animate"
-                                onerror="this.src='https://placehold.co/800x1000/transparent/ff6900?text=Xiaomi+15+Ultra'">
-                            <div class="hero-image-shadow"></div>
-                        </div>
-                        <div class="hero-glow" style="background: #ff6900;"></div>
-                        <div class="hero-floating-badge hero-floating-badge-1">
-                            <i class="bi bi-camera-reels"></i>
-                            <span>Leica</span>
-                        </div>
-                        <div class="hero-floating-badge hero-floating-badge-2">
-                            <i class="bi bi-lightning-charge-fill"></i>
-                            <span>120W</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Carousel Navigation -->
-        <button class="carousel-arrow prev" onclick="changeSlide(-1)"><i class="bi bi-chevron-left"></i></button>
-        <button class="carousel-arrow next" onclick="changeSlide(1)"><i class="bi bi-chevron-right"></i></button>
-
-        <!-- Carousel Dots -->
-        <div class="hero-carousel-nav">
-            <button class="carousel-dot active" onclick="goToSlide(0)"></button>
-            <button class="carousel-dot" onclick="goToSlide(1)"></button>
-            <button class="carousel-dot" onclick="goToSlide(2)"></button>
         </div>
     </section>
 
@@ -607,29 +379,32 @@ const slides = document.querySelectorAll('.hero-slide');
 const dots = document.querySelectorAll('.carousel-dot');
 const totalSlides = slides.length;
 
-function showSlide(index) {
-    slides.forEach((slide, i) => {
-        slide.classList.remove('active');
-        dots[i].classList.remove('active');
-    });
-    slides[index].classList.add('active');
-    dots[index].classList.add('active');
-}
+// Chỉ chạy carousel nếu có slide trong DOM
+if (totalSlides > 0) {
+    function showSlide(index) {
+        slides.forEach((slide, i) => {
+            slide.classList.remove('active');
+            if (dots[i]) dots[i].classList.remove('active');
+        });
+        slides[index].classList.add('active');
+        if (dots[index]) dots[index].classList.add('active');
+    }
 
-function changeSlide(direction) {
-    currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
-    showSlide(currentSlide);
-}
+    function changeSlide(direction) {
+        currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+        showSlide(currentSlide);
+    }
 
-function goToSlide(index) {
-    currentSlide = index;
-    showSlide(currentSlide);
-}
+    function goToSlide(index) {
+        currentSlide = index;
+        showSlide(currentSlide);
+    }
 
-// Auto-play carousel
-setInterval(() => {
-    changeSlide(1);
-}, 6000);
+    // Auto-play carousel
+    setInterval(() => {
+        changeSlide(1);
+    }, 6000);
+}
 
 // Countdown Timer
 function updateCountdown() {

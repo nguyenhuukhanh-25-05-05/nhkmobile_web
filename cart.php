@@ -10,11 +10,13 @@
  * Version: 2.1
  * Date: 2026-04-08
  */
+// QUAN TRỌNG: auth_functions.php phải load TRƯỚC để khởi tạo session
+require_once 'includes/auth_functions.php';
 require_once 'includes/db.php';
 require_once 'includes/cart_functions.php';
-require_once 'includes/auth_functions.php';
 
-// Synchronize session cart with database if user is logged in
+// LOGIC: Xem giỏ hàng KHÔNG cần login (dùng session)
+// Nhưng thêm sản phẩm / checkout PHẢI login
 syncCartWithDatabase($pdo);
 
 if (isset($_GET['add'])) {

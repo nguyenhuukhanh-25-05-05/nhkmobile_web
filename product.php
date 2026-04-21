@@ -9,7 +9,8 @@
  * Version: 2.2
  * Date: 2026-04-16
  */
-session_start();
+// auth_functions.php phải load TRƯỚC để session được khởi tạo bảo mật
+require_once 'includes/auth_functions.php';
 require_once 'includes/db.php';
 
 // Lấy danh sách product_id đã yêu thích của user (nếu đăng nhập)

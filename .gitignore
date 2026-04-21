@@ -6,3 +6,5 @@ Thumbs.db
 .env
 composer.lock
 nul
+config.local.php
+api/_secret.php

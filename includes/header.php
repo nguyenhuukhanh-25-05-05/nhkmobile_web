@@ -29,8 +29,90 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="<?php echo $basePath; ?>assets/css/style.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="<?php echo $basePath; ?>assets/css/hero-new.css?v=<?php echo time(); ?>">
     
-    <!-- Auth Animation Styles -->
+    <!-- Auth Animation Styles + Toast Notification -->
+    <style>
+    /* ── Toast Notification ── */
+    .toast-container {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        z-index: 99999;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        pointer-events: none;
+    }
+
+    .toast {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 20px;
+        border-radius: 14px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        min-width: 280px;
+        max-width: 360px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        animation: toastSlideIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        pointer-events: all;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+
+    .toast.success {
+        background: rgba(52, 199, 89, 0.95);
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .toast.error {
+        background: rgba(255, 59, 48, 0.95);
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .toast.warning {
+        background: rgba(255, 149, 0, 0.95);
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .toast.info {
+        background: rgba(0, 122, 255, 0.95);
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .toast i {
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+
+    .toast span { line-height: 1.4; }
+
+    .toast.hide {
+        animation: toastSlideOut 0.3s ease forwards;
+    }
+
+    @keyframes toastSlideIn {
+        from { opacity: 0; transform: translateX(120px) scale(0.9); }
+        to   { opacity: 1; transform: translateX(0) scale(1); }
+    }
+
+    @keyframes toastSlideOut {
+        from { opacity: 1; transform: translateX(0) scale(1); }
+        to   { opacity: 0; transform: translateX(120px) scale(0.9); }
+    }
+
+    @media (max-width: 480px) {
+        .toast-container { top: 70px; right: 10px; left: 10px; }
+        .toast { min-width: auto; max-width: 100%; }
+    }
+    </style>
+
     <style>
     @keyframes slideUp {
         from { opacity: 0; transform: translateY(30px); }

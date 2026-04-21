@@ -10,7 +10,8 @@
  * Version: 2.1
  * Date: 2026-04-08
  */
-session_start();
+// auth_functions.php phải load TRƯỚC để session được khởi tạo bảo mật
+require_once 'includes/auth_functions.php';
 require_once 'includes/db.php';
 
 // Retrieve product ID and fetch data from DB

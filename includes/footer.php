@@ -306,25 +306,72 @@
             }, duration);
         }
 
-        // Add to cart with toast notification
+        // Add to cart - kiểm tra login + chống spam
+        const IS_LOGGED_IN = <?php echo (isset($_SESSION['user_id']) || isset($_SESSION['admin_id'])) ? 'true' : 'false'; ?>;
+
         document.querySelectorAll('a[href*="cart.php?add="]').forEach(btn => {
             btn.addEventListener('click', function(e) {
+                // Chưa đăng nhập → redirect sang login
+                if (!IS_LOGGED_IN) {
+                    return; // PHP sẽ bắt đăng nhập
+                }
+
                 e.preventDefault();
+
+                // Chống spam: nếu đang loading thì bỏ qua
+                if (this.dataset.loading === 'true') return;
+
                 const href = this.getAttribute('href');
+                const btn = this;
+
+                // Lưu nội dung gốc của nút
+                const originalHTML = btn.innerHTML;
+
+                // Hiển thị trạng thái loading
+                btn.dataset.loading = 'true';
+                btn.style.pointerEvents = 'none';
+                btn.style.opacity = '0.7';
+                btn.innerHTML = '<i class="bi bi-hourglass-split"></i>';
 
                 fetch(href)
-                    .then(() => {
-                        showToast('Đã thêm sản phẩm vào giỏ hàng!', 'success');
-                        if (typeof loadMiniCart === 'function') {
-                            loadMiniCart();
+                    .then(r => {
+                        if (r.redirected && r.url.includes('login')) {
+                            window.location.href = r.url;
+                            return;
                         }
+
+                        // Hiệu ứng thành công
+                        btn.innerHTML = '<i class="bi bi-check-lg"></i>';
+                        btn.style.opacity = '1';
+
+                        // Lấy tên sản phẩm từ card cha nếu có
+                        const card = btn.closest('[data-name], .product-card, .product-item');
+                        const productName = card?.querySelector('h3, h4, .product-name, [class*="name"]')?.textContent?.trim() || 'Sản phẩm';
+
+                        showToast(`🛒 Đã thêm "<b>${productName}</b>" vào giỏ hàng!`, 'success', 3000);
+
+                        if (typeof loadMiniCart === 'function') loadMiniCart();
                         updateCartBadge();
+
+                        // Khôi phục nút sau 2 giây (chống spam)
+                        setTimeout(() => {
+                            btn.innerHTML = originalHTML;
+                            btn.style.pointerEvents = '';
+                            btn.style.opacity = '';
+                            btn.dataset.loading = 'false';
+                        }, 2000);
                     })
                     .catch(() => {
+                        // Khôi phục nút khi lỗi
+                        btn.innerHTML = originalHTML;
+                        btn.style.pointerEvents = '';
+                        btn.style.opacity = '';
+                        btn.dataset.loading = 'false';
                         showToast('Có lỗi xảy ra, vui lòng thử lại.', 'error');
                     });
             });
         });
+
 
         // Quick View Functions
         let currentProductId = null;
@@ -427,30 +474,60 @@
 
         // Live Chat Functions
         let chatOpen = false;
+        let chatHistory = []; // Lưu lịch sử để AI có ngữ cảnh
+        let chatIsSending = false;
 
         function toggleLiveChat() {
-            const window = document.getElementById('liveChatWindow');
+            const win = document.getElementById('liveChatWindow');
             const btn = document.getElementById('liveChatBtn');
             chatOpen = !chatOpen;
 
             if (chatOpen) {
-                window.classList.add('active');
+                win.classList.add('active');
                 btn.classList.remove('has-new');
                 setTimeout(() => document.getElementById('chatInput').focus(), 100);
             } else {
-                window.classList.remove('active');
+                win.classList.remove('active');
             }
         }
 
-        function sendChatMessage() {
+        function addTypingIndicator() {
+            const body = document.getElementById('chatBody');
+            const el = document.createElement('div');
+            el.className = 'chat-message';
+            el.id = 'typingIndicator';
+            el.innerHTML = `
+                <div class="chat-avatar"><i class="bi bi-robot"></i></div>
+                <div>
+                    <div class="chat-bubble" style="padding: 10px 16px;">
+                        <span style="display:inline-flex;gap:4px;align-items:center;">
+                            <span style="width:7px;height:7px;border-radius:50%;background:currentColor;animation:typingDot 1.2s infinite 0s;"></span>
+                            <span style="width:7px;height:7px;border-radius:50%;background:currentColor;animation:typingDot 1.2s infinite 0.2s;"></span>
+                            <span style="width:7px;height:7px;border-radius:50%;background:currentColor;animation:typingDot 1.2s infinite 0.4s;"></span>
+                        </span>
+                    </div>
+                </div>
+            `;
+            body.appendChild(el);
+            body.scrollTop = body.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const el = document.getElementById('typingIndicator');
+            if (el) el.remove();
+        }
+
+        async function sendChatMessage() {
+            if (chatIsSending) return;
             const input = document.getElementById('chatInput');
             const message = input.value.trim();
             if (!message) return;
 
+            chatIsSending = true;
             const body = document.getElementById('chatBody');
             const time = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
 
-            // Add user message
+            // Hiện tin nhắn của user
             body.innerHTML += `
                 <div class="chat-message user">
                     <div class="chat-avatar user"><i class="bi bi-person"></i></div>
@@ -460,35 +537,63 @@
                     </div>
                 </div>
             `;
-
             input.value = '';
+            input.disabled = true;
+            document.querySelector('.live-chat-send').disabled = true;
             body.scrollTop = body.scrollHeight;
 
-            // Simulate auto-reply
-            setTimeout(() => {
-                const replies = [
-                    'Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm nhất.',
-                    'Bạn có thể gọi hotline 1900 xxxx để được hỗ trợ nhanh hơn.',
-                    'Dạ, em hiểu. Để em kiểm tra và báo lại ạ.',
-                    'Sản phẩm này đang có sẵn tại cửa hàng ạ.'
-                ];
-                const reply = replies[Math.floor(Math.random() * replies.length)];
+            // Lưu vào history
+            chatHistory.push({ role: 'user', content: message });
 
+            // Hiện typing indicator
+            addTypingIndicator();
+
+            try {
+                const res = await fetch(BASE_PATH + 'api/chat.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message, history: chatHistory.slice(-20) })
+                });
+                const data = await res.json();
+                const reply = data.reply || 'Xin lỗi, em không hiểu ý bạn. Bạn có thể nói rõ hơn không ạ? 😊';
+
+                removeTypingIndicator();
+                const replyTime = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
                 body.innerHTML += `
                     <div class="chat-message">
-                        <div class="chat-avatar"><i class="bi bi-headset"></i></div>
+                        <div class="chat-avatar"><i class="bi bi-robot"></i></div>
                         <div>
-                            <div class="chat-bubble">${reply}</div>
+                            <div class="chat-bubble">${escapeHtml(reply)}</div>
+                            <div class="chat-time">${replyTime}</div>
+                        </div>
+                    </div>
+                `;
+                // Lưu reply vào history
+                chatHistory.push({ role: 'assistant', content: reply });
+            } catch (err) {
+                removeTypingIndicator();
+                body.innerHTML += `
+                    <div class="chat-message">
+                        <div class="chat-avatar"><i class="bi bi-robot"></i></div>
+                        <div>
+                            <div class="chat-bubble">Mất kết nối, vui lòng thử lại sau ạ! 🙏</div>
                             <div class="chat-time">Vừa xong</div>
                         </div>
                     </div>
                 `;
+                // Xóa tin nhắn lỗi khỏi history
+                chatHistory.pop();
+            } finally {
+                chatIsSending = false;
+                input.disabled = false;
+                document.querySelector('.live-chat-send').disabled = false;
                 body.scrollTop = body.scrollHeight;
-            }, 1000 + Math.random() * 2000);
+                input.focus();
+            }
         }
 
         function handleChatKeypress(e) {
-            if (e.key === 'Enter') sendChatMessage();
+            if (e.key === 'Enter' && !e.shiftKey) sendChatMessage();
         }
 
         function escapeHtml(text) {
@@ -497,12 +602,24 @@
             return div.innerHTML;
         }
 
-        // Simulate new message notification after 30 seconds
+        // CSS animation cho typing dots
+        (function() {
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes typingDot {
+                    0%, 60%, 100% { opacity: 0.2; transform: scale(0.8); }
+                    30% { opacity: 1; transform: scale(1); }
+                }
+            `;
+            document.head.appendChild(style);
+        })();
+
+        // Thông báo mới sau 20 giây
         setTimeout(() => {
             if (!chatOpen) {
                 document.getElementById('liveChatBtn').classList.add('has-new');
             }
-        }, 30000);
+        }, 20000);
 
         // Recently Viewed Products
         function addToRecentlyViewed(product) {
@@ -536,5 +653,8 @@
         // Render recently viewed on page load
         renderRecentlyViewed();
     </script>
+
+    <!-- Debug Cart Script (Temporary) -->
+    <script src="assets/js/debug-cart.js"></script>
 </body>
 </html>

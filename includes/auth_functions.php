@@ -12,7 +12,8 @@
 
 // Đảm bảo session luôn được khởi tạo với cấu hình bảo mật cao
 if (session_status() === PHP_SESSION_NONE) {
-    // Cấu hình Session bảo mật
+    // Cấu hình Session cho Render (dùng /tmp)
+    ini_set('session.save_path', '/tmp');
     ini_set('session.gc_maxlifetime', 604800);
     ini_set('session.use_strict_mode', 1);
     ini_set('session.use_only_cookies', 1);
@@ -24,7 +25,7 @@ if (session_status() === PHP_SESSION_NONE) {
         'domain' => '',
         'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
         'httponly' => true,
-        'samesite' => 'Strict'
+        'samesite' => 'Lax' // Thay đổi từ Strict sang Lax cho redirect
     ]);
     session_start();
 

@@ -27,22 +27,23 @@ function syncCartWithDatabase($pdo) {
     $isAdmin = isset($_SESSION['admin_id']);
     $sessionId = session_id();
 
-    // Nếu chưa đăng nhập, chỉ dùng session (không load từ DB)
-    if (!$userId && !$isAdmin) {
+    // Admin: chỉ dùng session cart, KHÔNG sync DB (admin_id không phải FK hợp lệ trong users)
+    if ($isAdmin && !$userId) {
+        if (!isset($_SESSION['cart'])) {
+            $_SESSION['cart'] = [];
+        }
+        return;
+    }
+
+    // Guest (chưa đăng nhập): chỉ dùng session
+    if (!$userId) {
         if (!isset($_SESSION['cart'])) {
             $_SESSION['cart'] = [];
         }
         return;
     }
     
-    // Đối với admin, sử dụng admin_id như user_id tạm thời
-    $effectiveUserId = $userId ?? ($isAdmin ? ($_SESSION['admin_id'] ?? null) : null);
-    if (!$effectiveUserId) {
-        if (!isset($_SESSION['cart'])) {
-            $_SESSION['cart'] = [];
-        }
-        return;
-    }
+    $effectiveUserId = $userId;
     
     // TRƯỜNG HỢP 1: Session rỗng -> Nạp giỏ hàng từ DB theo user_id
     if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
@@ -86,12 +87,12 @@ function syncCartWithDatabase($pdo) {
             // Lưu/Update từng sản phẩm xuống DB
             foreach ($_SESSION['cart'] as $pid => $item) {
                 $stmt = $pdo->prepare("
-                    INSERT INTO cart_items (user_id, product_id, quantity, session_id) 
-                    VALUES (?, ?, ?, ?)
+                    INSERT INTO cart_items (user_id, product_id, quantity) 
+                    VALUES (?, ?, ?)
                     ON CONFLICT (user_id, product_id) 
-                    DO UPDATE SET quantity = EXCLUDED.quantity, session_id = EXCLUDED.session_id
+                    DO UPDATE SET quantity = EXCLUDED.quantity
                 ");
-                $stmt->execute([$effectiveUserId, $pid, (int)$item['qty'], $sessionId]);
+                $stmt->execute([$effectiveUserId, $pid, (int)$item['qty']]);
             }
         } catch (Exception $e) {
             error_log("[Cart] Error syncing cart to DB: " . $e->getMessage());
@@ -109,14 +110,15 @@ function removeFromCartDB($pdo, $pid) {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
-    $userId = $_SESSION['user_id'] ?? null;
+    $userId  = $_SESSION['user_id'] ?? null;
     $isAdmin = isset($_SESSION['admin_id']);
-    
-    // Hỗ trợ cả admin và user thường
-    $effectiveUserId = $userId ?? ($isAdmin ? ($_SESSION['admin_id'] ?? null) : null);
-    if ($effectiveUserId) {
+
+    // Admin cart chỉ tồn tại trong session → không cần xóa DB
+    if ($isAdmin && !$userId) return;
+
+    if ($userId) {
         $stmt = $pdo->prepare("DELETE FROM cart_items WHERE user_id = ? AND product_id = ?");
-        $stmt->execute([$effectiveUserId, $pid]);
+        $stmt->execute([$userId, $pid]);
     }
 }
 ?>

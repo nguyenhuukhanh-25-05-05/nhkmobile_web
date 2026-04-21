@@ -13,13 +13,13 @@
 
 require_once __DIR__ . '/functions.php';
 
-// 1. Cấu hình kết nối - SỬ DỤNG TRANSACTION POOLER (CỔNG 6543) ĐỂ ỔN ĐỊNH TRÊN RENDER
-$databaseUrl = 'postgresql://postgres.qfaslglevzkujkmylxfx:' . rawurlencode('@Khanh2006') . '@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres';
+// 1. Cấu hình kết nối - ƯU TIÊN DATABASE_URL TỪ RENDER
+// Render sẽ tự động set biến môi trường DATABASE_URL
+$databaseUrl = getenv('DATABASE_URL') ?: ($_ENV['DATABASE_URL'] ?? $_SERVER['DATABASE_URL'] ?? null);
 
-// Nếu có biến môi trường từ Render và không phải database cũ, mới ghi đè
-$envUrl = getenv('DATABASE_URL') ?: ($_ENV['DATABASE_URL'] ?? $_SERVER['DATABASE_URL'] ?? null);
-if ($envUrl && strpos($envUrl, 'render.com') === false) {
-    $databaseUrl = $envUrl;
+// Fallback: Nếu không có DATABASE_URL, dùng Supabase (cho local dev)
+if (!$databaseUrl) {
+    $databaseUrl = 'postgresql://postgres.qfaslglevzkujkmylxfx:' . rawurlencode('@Khanh2006') . '@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres';
 }
 
 $connected = false;
