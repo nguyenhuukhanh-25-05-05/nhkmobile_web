@@ -2,7 +2,7 @@
 /**
  * NHK Mobile - AI Chat API Endpoint
  * 
- * Gọi xAI Grok API để hỗ trợ chat khách hàng.
+ * Gọi Google Gemini API để hỗ trợ chat khách hàng.
  * Key được giữ ở server, không lộ ra frontend.
  * 
  * Author: NguyenHuuKhanh
@@ -49,8 +49,7 @@ if (empty($xaiApiKey)) {
     exit;
 }
 define('NHK_CHAT_BOT', $xaiApiKey);
-define('XAI_API_URL', 'https://api.x.ai/v1/chat/completions');
-define('XAI_MODEL', 'grok-3-mini');
+define('GEMINI_API_URL', 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' . NHK_CHAT_BOT);
 
 // Đọc input
 $input = json_decode(file_get_contents('php://input'), true);
@@ -174,38 +173,48 @@ Lưu ý: Phải đăng nhập mới được thêm vào giỏ hàng và thanh to
 - Nếu không chắc thông tin cụ thể (giá sản phẩm, tồn kho), hướng khách xem trực tiếp trên web hoặc gọi hotline
 EOT;
 
-// Xây dựng messages cho API
-$messages = [['role' => 'system', 'content' => $systemPrompt]];
+// Xây dựng payload cho Gemini API
+$contents = [];
 
 // Thêm lịch sử chat (tối đa 10 tin gần nhất)
 $recentHistory = array_slice($history, -10);
 foreach ($recentHistory as $msg) {
     if (isset($msg['role'], $msg['content'])) {
-        $role = $msg['role'] === 'user' ? 'user' : 'assistant';
-        $messages[] = ['role' => $role, 'content' => mb_substr($msg['content'], 0, 500)];
+        $role = $msg['role'] === 'user' ? 'user' : 'model';
+        $contents[] = [
+            'role' => $role,
+            'parts' => [['text' => mb_substr($msg['content'], 0, 500)]]
+        ];
     }
 }
 
 // Thêm tin nhắn hiện tại
-$messages[] = ['role' => 'user', 'content' => $userMessage];
+$contents[] = [
+    'role' => 'user',
+    'parts' => [['text' => $userMessage]]
+];
 
-// Gọi xAI API
-$payload = json_encode([
-    'model' => XAI_MODEL,
-    'messages' => $messages,
-    'max_tokens' => 300,
-    'temperature' => 0.7,
-    'stream' => false,
-]);
+// Cấu trúc request cho Gemini
+$payloadData = [
+    'system_instruction' => [
+        'parts' => [['text' => $systemPrompt]]
+    ],
+    'contents' => $contents,
+    'generationConfig' => [
+        'temperature' => 0.7,
+        'maxOutputTokens' => 300,
+    ]
+];
 
-$ch = curl_init(XAI_API_URL);
+$payload = json_encode($payloadData);
+
+$ch = curl_init(GEMINI_API_URL);
 curl_setopt_array($ch, [
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_POST => true,
     CURLOPT_POSTFIELDS => $payload,
     CURLOPT_HTTPHEADER => [
-        'Content-Type: application/json',
-        'Authorization: Bearer ' . NHK_CHAT_BOT,
+        'Content-Type: application/json'
     ],
     CURLOPT_TIMEOUT => 15,
     CURLOPT_SSL_VERIFYPEER => true,
@@ -223,15 +232,15 @@ if ($curlError) {
     exit;
 }
 
-// Xử lý response từ xAI
+// Xử lý response từ Gemini
 $data = json_decode($response, true);
 
-if ($httpCode !== 200 || !isset($data['choices'][0]['message']['content'])) {
-    error_log('[NHK Chat] xAI API error ' . $httpCode . ': ' . $response);
+if ($httpCode !== 200 || !isset($data['candidates'][0]['content']['parts'][0]['text'])) {
+    error_log('[NHK Chat] Gemini API error ' . $httpCode . ': ' . $response);
     echo json_encode(['reply' => 'Xin lỗi, em gặp lỗi kỹ thuật. Bạn vui lòng gọi hotline để được hỗ trợ ngay nhé! 📞']);
     exit;
 }
 
-$reply = trim($data['choices'][0]['message']['content']);
+$reply = trim($data['candidates'][0]['content']['parts'][0]['text']);
 
 echo json_encode(['reply' => $reply], JSON_UNESCAPED_UNICODE);
