@@ -18,9 +18,9 @@ set /p commit_msg="Nhap noi dung commit (Nhan Enter de dung mac dinh la 'Update 
 if "%commit_msg%"=="" set commit_msg=Update code
 git commit -m "%commit_msg%"
 
-echo Dang push len branch main...
+echo Dang push len branch main (Force Push) ...
 git branch -M main
-git push -u origin main
+git push -u origin main --force
 
 echo.
 echo Hoan thanh!
