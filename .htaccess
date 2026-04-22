@@ -16,12 +16,10 @@ ServerSignature Off
 
 # Chặn truy cập trực tiếp vào file .env, .git, composer, v.v.
 <FilesMatch "^(\.env|\.git|composer\.json|composer\.lock|package\.json|package-lock\.json|deploy\.bat|nixpacks\.toml|railpack\.json|.*\.md|.*\.sql|.*\.log)$">
-    Order deny,allow
-    Deny from all
+    Require all denied
 </FilesMatch>
 
 # Chặn truy cập các file PHP backup/debug
 <FilesMatch "\.(bak|backup|old|tmp|temp|swp|orig)$">
-    Order deny,allow
-    Deny from all
+    Require all denied
 </FilesMatch>

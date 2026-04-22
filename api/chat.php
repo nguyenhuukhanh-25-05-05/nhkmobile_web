@@ -22,9 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // ===============================
-// XAI API KEY
+// NHK CHAT BOT KEY
 // ===============================
-$xaiApiKey = getenv('XAI_API_KEY') ?: '';
+$xaiApiKey = getenv('NHK_CHAT_BOT') ?: '';
 
 if (empty($xaiApiKey)) {
     // Cách 1: Load _secret.php cùng thư mục (local dev)
@@ -33,14 +33,14 @@ if (empty($xaiApiKey)) {
         require_once $secretFile;
     }
     // Cách 2: Load config.local.php từ thư mục gốc
-    if (!defined('XAI_API_KEY_VALUE')) {
+    if (!defined('NHK_CHAT_BOT_VALUE')) {
         $rootConfig = dirname(__DIR__) . '/config.local.php';
         if (file_exists($rootConfig)) {
             require_once $rootConfig;
         }
     }
-    if (defined('XAI_API_KEY_VALUE')) {
-        $xaiApiKey = XAI_API_KEY_VALUE;
+    if (defined('NHK_CHAT_BOT_VALUE')) {
+        $xaiApiKey = NHK_CHAT_BOT_VALUE;
     }
 }
 
@@ -48,14 +48,14 @@ if (empty($xaiApiKey)) {
     echo json_encode(['reply' => 'Hệ thống chat đang được cấu hình, vui lòng thử lại sau ạ!']);
     exit;
 }
-define('XAI_API_KEY', $xaiApiKey);
+define('NHK_CHAT_BOT', $xaiApiKey);
 define('XAI_API_URL', 'https://api.x.ai/v1/chat/completions');
-define('XAI_MODEL',   'grok-3-mini');
+define('XAI_MODEL', 'grok-3-mini');
 
 // Đọc input
 $input = json_decode(file_get_contents('php://input'), true);
 $userMessage = trim($input['message'] ?? '');
-$history     = $input['history'] ?? [];
+$history = $input['history'] ?? [];
 
 if (empty($userMessage)) {
     http_response_code(400);
@@ -191,23 +191,23 @@ $messages[] = ['role' => 'user', 'content' => $userMessage];
 
 // Gọi xAI API
 $payload = json_encode([
-    'model'      => XAI_MODEL,
-    'messages'   => $messages,
+    'model' => XAI_MODEL,
+    'messages' => $messages,
     'max_tokens' => 300,
-    'temperature'=> 0.7,
-    'stream'     => false,
+    'temperature' => 0.7,
+    'stream' => false,
 ]);
 
 $ch = curl_init(XAI_API_URL);
 curl_setopt_array($ch, [
     CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_POST           => true,
-    CURLOPT_POSTFIELDS     => $payload,
-    CURLOPT_HTTPHEADER     => [
+    CURLOPT_POST => true,
+    CURLOPT_POSTFIELDS => $payload,
+    CURLOPT_HTTPHEADER => [
         'Content-Type: application/json',
-        'Authorization: Bearer ' . XAI_API_KEY,
+        'Authorization: Bearer ' . NHK_CHAT_BOT,
     ],
-    CURLOPT_TIMEOUT        => 15,
+    CURLOPT_TIMEOUT => 15,
     CURLOPT_SSL_VERIFYPEER => true,
 ]);
 
