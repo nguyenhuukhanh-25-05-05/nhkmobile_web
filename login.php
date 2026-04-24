@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Vui lòng nhập đầy đủ tài khoản và mật khẩu.";
     } else {
         // Try to find user by email OR username
-        $stmt = $pdo->prepare("SELECT id, fullname, email, password, status FROM users WHERE email = ? OR fullname = ?");
+        $stmt = $pdo->prepare("SELECT id, fullname, email, password, status, role FROM users WHERE email = ? OR fullname = ?");
         $stmt->execute([$email_or_user, $email_or_user]);
         $user = $stmt->fetch();
 
@@ -59,16 +59,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Regenerate session ID to prevent session fixation
                 session_regenerate_id(true);
                 
-                // Xóa session admin nếu có (không để cả 2 vào cùng lúc)
-                unset($_SESSION['admin_id'], $_SESSION['admin_user']);
-                $_SESSION['user_id']       = $user['id'];
-                $_SESSION['user_fullname'] = $user['fullname'];
-                $_SESSION['user_email']    = $user['email'];
-                $_SESSION['last_activity'] = time();
-                
-                log_auth_attempt('login', $email_or_user, true, 'User login successful');
-                header("Location: " . $redirect);
-                exit;
+                if (isset($user['role']) && $user['role'] === 'admin') {
+                    // Cấp quyền Admin
+                    unset($_SESSION['user_id'], $_SESSION['user_fullname'], $_SESSION['user_email']);
+                    $_SESSION['admin_id']   = $user['id'];
+                    $_SESSION['admin_user'] = $user['fullname'];
+                    $_SESSION['last_activity'] = time();
+                    
+                    $adminUrl = rtrim(dirname($_SERVER['PHP_SELF']), '/\\') === ''
+                        ? '/admin/dashboard.php'
+                        : 'admin/dashboard.php';
+                    log_auth_attempt('login', $email_or_user, true, 'Admin login successful via role');
+                    header("Location: " . $adminUrl);
+                    exit;
+                } else {
+                    // Xóa session admin nếu có (không để cả 2 vào cùng lúc)
+                    unset($_SESSION['admin_id'], $_SESSION['admin_user']);
+                    $_SESSION['user_id']       = $user['id'];
+                    $_SESSION['user_fullname'] = $user['fullname'];
+                    $_SESSION['user_email']    = $user['email'];
+                    $_SESSION['last_activity'] = time();
+                    
+                    log_auth_attempt('login', $email_or_user, true, 'User login successful');
+                    header("Location: " . $redirect);
+                    exit;
+                }
             }
         } else {
             $stmtAdmin = $pdo->prepare("SELECT id, username, password FROM admins WHERE username = ?");

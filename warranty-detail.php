@@ -8,7 +8,7 @@
  * Version: 1.0
  * Date: 2026-04-14
  */
-session_start();
+require_once 'includes/auth_functions.php';
 require_once 'includes/db.php';
 
 $imei = trim($_GET['imei'] ?? '');

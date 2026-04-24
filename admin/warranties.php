@@ -108,13 +108,21 @@ if (isset($_GET['edit'])) {
 }
 
 // Lấy danh sách bảo hành kèm tên sản phẩm
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $sql = "
     SELECT w.*, p.name as product_name 
     FROM warranties w 
     LEFT JOIN products p ON w.product_id = p.id 
-    ORDER BY w.created_at DESC
 ";
-$stmt = $pdo->query($sql);
+$params = [];
+if ($search !== '') {
+    $sql .= " WHERE w.imei LIKE ?";
+    $params[] = "%$search%";
+}
+$sql .= " ORDER BY w.created_at DESC";
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
 $warranties = $stmt->fetchAll();
 
 // Lấy danh sách sản phẩm để cho vào dropdown
@@ -135,6 +143,16 @@ include 'includes/admin_header.php';
                 <i class="bi bi-plus-lg me-2"></i> Kích hoạt IMEI mới
             </button>
         </header>
+
+        <div class="d-flex mb-4">
+            <form action="" method="GET" class="d-flex w-100" style="max-width: 400px;">
+                <input type="text" name="search" class="form-control me-2 rounded-pill" placeholder="Tìm kiếm theo mã IMEI..." value="<?php echo htmlspecialchars($search ?? ''); ?>">
+                <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm"><i class="bi bi-search"></i></button>
+                <?php if (!empty($search)): ?>
+                    <a href="warranties.php" class="btn btn-outline-secondary rounded-pill px-3 ms-2 shadow-sm d-flex align-items-center">Xóa</a>
+                <?php endif; ?>
+            </form>
+        </div>
 
         <div class="content-card shadow-sm border-0 rounded-4 p-4 bg-white">
             <?php if (isset($_GET['msg'])): ?>

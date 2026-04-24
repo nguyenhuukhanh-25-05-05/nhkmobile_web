@@ -9,7 +9,7 @@
  * Version: 2.1
  * Date: 2026-04-08
  */
-session_start();
+require_once 'includes/auth_functions.php';
 require_once 'includes/db.php';
 $pageTitle = "Chính sách Bảo hành | NHK Mobile";
 $basePath = "";

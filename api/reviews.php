@@ -1,7 +1,7 @@
 <?php
 // Khởi động session trước khi include (auth_functions.php dùng session_status nên an toàn)
 if (session_status() === PHP_SESSION_NONE)
-    session_start();
+    require_once '../includes/auth_functions.php';
 require_once '../includes/db.php';
 require_once '../includes/auth_functions.php';
 

@@ -6,8 +6,54 @@ require_once 'admin_auth.php';
 require_once '../includes/db.php';
 
 /**
- * 1. XỬ LÝ CẬP NHẬT TRẠNG THÁI USER (Ban / Unban)
+ * 1. XỬ LÝ CẬP NHẬT TRẠNG THÁI USER VÀ CRUD
  */
+if (isset($_POST['save_user'])) {
+    $id = $_POST['id'] ?? null;
+    $fullname = trim($_POST['fullname']);
+    $email = trim($_POST['email']);
+    $phone = trim($_POST['phone']);
+    $address = trim($_POST['address']);
+    $status = $_POST['status'];
+    $role = $_POST['role'] ?? 'user';
+    $password = $_POST['password'];
+
+    try {
+        if ($id) {
+            if (!empty($password)) {
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                $sql = "UPDATE users SET fullname = ?, email = ?, phone = ?, address = ?, status = ?, role = ?, password = ? WHERE id = ?";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([$fullname, $email, $phone, $address, $status, $role, $hashed_password, $id]);
+            } else {
+                $sql = "UPDATE users SET fullname = ?, email = ?, phone = ?, address = ?, status = ?, role = ? WHERE id = ?";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([$fullname, $email, $phone, $address, $status, $role, $id]);
+            }
+            $msg = "Cập nhật thông tin khách hàng thành công!";
+        } else {
+            if (empty($password)) {
+                $password = '123456';
+            }
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+            $sql = "INSERT INTO users (fullname, email, phone, address, status, role, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$fullname, $email, $phone, $address, $status, $role, $hashed_password]);
+            $msg = "Thêm khách hàng mới thành công!";
+        }
+        header("Location: users.php?msg=" . urlencode($msg));
+        exit;
+    } catch (PDOException $e) {
+        if ($e->getCode() == '23505') {
+            header("Location: users.php?error=" . urlencode("Email đã tồn tại trong hệ thống!"));
+            exit;
+        } else {
+            header("Location: users.php?error=" . urlencode("Có lỗi xảy ra: " . $e->getMessage()));
+            exit;
+        }
+    }
+}
+
 if (isset($_POST['update_status'])) {
     $id = $_POST['id'];
     $status = $_POST['status'];
@@ -24,8 +70,30 @@ if (isset($_POST['update_status'])) {
 /**
  * 2. TRUY VẤN DANH SÁCH USER
  */
-$stmt = $pdo->query("SELECT * FROM users ORDER BY created_at DESC");
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$role_filter = isset($_GET['role_filter']) ? trim($_GET['role_filter']) : '';
+
+$sql = "SELECT * FROM users WHERE 1=1";
+$params = [];
+if ($search !== '') {
+    $sql .= " AND phone LIKE ?";
+    $params[] = "%$search%";
+}
+if ($role_filter !== '') {
+    $sql .= " AND role = ?";
+    $params[] = $role_filter;
+}
+$sql .= " ORDER BY created_at DESC";
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
 $users = $stmt->fetchAll();
+
+$editData = null;
+if (isset($_GET['edit'])) {
+    $stmtEdit = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+    $stmtEdit->execute([$_GET['edit']]);
+    $editData = $stmtEdit->fetch() ?: null;
+}
 
 $pageTitle = "Quản lý Người dùng | Admin NHK Mobile";
 $basePath = "../";
@@ -37,7 +105,31 @@ include 'includes/admin_header.php';
                  <h2 class="fw-bold mb-1">Quản lý Khách hàng</h2>
                  <p class="text-secondary small mb-0">Xem danh sách đăng ký và khóa tài khoản vi phạm.</p>
             </div>
+            <button class="btn btn-primary shadow-sm px-4 py-2 rounded-3" data-bs-toggle="modal" data-bs-target="#userModal">
+                <i class="bi bi-person-plus me-2"></i> Thêm Khách hàng
+            </button>
         </header>
+
+        <div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white">
+            <form action="" method="GET" class="row g-2 align-items-center">
+                <div class="col-md-4">
+                    <input type="text" name="search" class="form-control bg-light border-0" placeholder="Tìm theo số điện thoại..." value="<?php echo htmlspecialchars($search ?? ''); ?>">
+                </div>
+                <div class="col-md-4">
+                    <select name="role_filter" class="form-select bg-light border-0">
+                        <option value="">Tất cả vai trò</option>
+                        <option value="user" <?php echo ($role_filter == 'user') ? 'selected' : ''; ?>>Khách hàng</option>
+                        <option value="admin" <?php echo ($role_filter == 'admin') ? 'selected' : ''; ?>>Quản trị viên</option>
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary px-4 shadow-sm"><i class="bi bi-funnel"></i> Lọc</button>
+                    <?php if ($search || $role_filter): ?>
+                        <a href="users.php" class="btn btn-outline-secondary px-3 shadow-sm">Xóa</a>
+                    <?php endif; ?>
+                </div>
+            </form>
+        </div>
 
         <div class="content-card shadow-sm border-0 rounded-4 p-4 bg-white">
             <!-- Hiển thị thông báo khi cập nhật thành công -->
@@ -47,15 +139,22 @@ include 'includes/admin_header.php';
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             <?php endif; ?>
+            <?php if (isset($_GET['error'])): ?>
+                <div class="alert alert-danger alert-dismissible fade show mb-4 border-0 rounded-3" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> <?php echo htmlspecialchars($_GET['error']); ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <?php endif; ?>
 
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
                     <thead>
                         <tr class="small text-uppercase text-secondary">
                             <th>ID</th>
-                            <th>Khách hàng</th>
+                            <th>Người dùng</th>
                             <th>Liên hệ</th>
                             <th>Ngày tham gia</th>
+                            <th>Vai trò</th>
                             <th>Trạng thái</th>
                             <th class="text-end">Hành động</th>
                         </tr>
@@ -96,6 +195,13 @@ include 'includes/admin_header.php';
                             </td>
                             <td class="small text-secondary"><?php echo date('d/m/Y H:i', strtotime($u['created_at'])); ?></td>
                             <td>
+                                <?php if (isset($u['role']) && $u['role'] === 'admin'): ?>
+                                    <span class="badge bg-primary-subtle text-primary border fw-normal px-2 rounded-pill"><i class="bi bi-shield-check me-1"></i> Admin</span>
+                                <?php else: ?>
+                                    <span class="badge bg-secondary-subtle text-secondary border fw-normal px-2 rounded-pill"><i class="bi bi-person me-1"></i> Khách</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
                                 <?php if ($u['status'] === 'active' || empty($u['status'])): ?>
                                     <span class="badge bg-success-subtle text-success border fw-normal px-2 rounded-pill">Hoạt động</span>
                                 <?php else: ?>
@@ -122,18 +228,82 @@ include 'includes/admin_header.php';
                                         </button>
                                     <?php endif; ?>
                                 </form>
+                                <a href="users.php?edit=<?php echo $u['id']; ?>" class="btn btn-sm btn-light border p-2 ms-1 rounded-pill" title="Sửa thông tin"><i class="bi bi-pencil text-primary"></i></a>
                             </td>
                         </tr>
                         <?php endforeach; ?>
                         
                         <?php if (count($users) === 0): ?>
                         <tr>
-                            <td colspan="6" class="text-center py-4 text-secondary">Chưa có khách hàng nào đăng ký.</td>
+                            <td colspan="7" class="text-center py-4 text-secondary">Chưa có người dùng nào.</td>
                         </tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
             </div>
         </div>
+    </main>
+
+    <!-- MODAL THÊM / SỬA KHÁCH HÀNG -->
+    <div class="modal fade <?php echo $editData ? 'show' : ''; ?>" id="userModal" tabindex="-1" <?php echo $editData ? 'style="display: block; background: rgba(0,0,0,0.5)"' : ''; ?>>
+        <div class="modal-dialog border-0">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <form action="users.php" method="POST">
+                    <div class="modal-header border-bottom-0 pb-0 px-4 pt-4">
+                        <h5 class="fw-bold mb-0"><?php echo $editData ? 'Sửa thông tin Khách hàng' : 'Thêm Khách hàng mới'; ?></h5>
+                        <a href="users.php" class="btn-close"></a>
+                    </div>
+                    <div class="modal-body px-4 py-4">
+                        <input type="hidden" name="id" value="<?php echo $editData['id'] ?? ''; ?>">
+                        
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Họ và tên *</label>
+                            <input type="text" name="fullname" class="form-control bg-light border-0" value="<?php echo htmlspecialchars($editData['fullname'] ?? ''); ?>" required placeholder="Nguyễn Văn A">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Email *</label>
+                            <input type="email" name="email" class="form-control bg-light border-0" value="<?php echo htmlspecialchars($editData['email'] ?? ''); ?>" required placeholder="email@example.com">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-4 mb-3">
+                                <label class="form-label small fw-bold">Số điện thoại</label>
+                                <input type="text" name="phone" class="form-control bg-light border-0" value="<?php echo htmlspecialchars($editData['phone'] ?? ''); ?>" placeholder="0901234567">
+                            </div>
+                            <div class="col-4 mb-3">
+                                <label class="form-label small fw-bold">Trạng thái *</label>
+                                <select name="status" class="form-select bg-light border-0" required>
+                                    <option value="active" <?php echo (isset($editData['status']) && $editData['status'] == 'active') ? 'selected' : ''; ?>>Hoạt động</option>
+                                    <option value="banned" <?php echo (isset($editData['status']) && $editData['status'] == 'banned') ? 'selected' : ''; ?>>Đã khóa</option>
+                                </select>
+                            </div>
+                            <div class="col-4 mb-3">
+                                <label class="form-label small fw-bold">Vai trò *</label>
+                                <select name="role" class="form-select bg-light border-0" required>
+                                    <option value="user" <?php echo (!isset($editData['role']) || $editData['role'] == 'user') ? 'selected' : ''; ?>>Khách hàng</option>
+                                    <option value="admin" <?php echo (isset($editData['role']) && $editData['role'] == 'admin') ? 'selected' : ''; ?>>Admin</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Địa chỉ</label>
+                            <textarea name="address" class="form-control bg-light border-0" rows="2" placeholder="Địa chỉ giao hàng..."><?php echo htmlspecialchars($editData['address'] ?? ''); ?></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Mật khẩu <?php echo $editData ? '(Để trống nếu không đổi)' : '*'; ?></label>
+                            <input type="password" name="password" class="form-control bg-light border-0" placeholder="Nhập mật khẩu..." <?php echo !$editData ? 'required' : ''; ?>>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top-0 px-4 pb-4">
+                        <a href="users.php" class="btn btn-light px-4 rounded-pill">Hủy bỏ</a>
+                        <button type="submit" name="save_user" class="btn btn-primary px-4 rounded-pill shadow-sm">Lưu dữ liệu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 <?php include 'includes/admin_footer.php'; ?>

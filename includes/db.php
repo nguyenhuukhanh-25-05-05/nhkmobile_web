@@ -194,6 +194,8 @@ try {
     // Bổ sung các cột bị thiếu do nâng cấp hệ thống (is_installment, rating, vv...)
     try { $pdo->exec("ALTER TABLE reviews ADD COLUMN IF NOT EXISTS image VARCHAR(255);"); } catch (\PDOException $e) {}
     try { $pdo->exec("ALTER TABLE news ADD COLUMN IF NOT EXISTS tags VARCHAR(255);"); } catch (\PDOException $e) {}
+    try { $pdo->exec("ALTER TABLE news ADD COLUMN IF NOT EXISTS category VARCHAR(100) DEFAULT 'Technology';"); } catch (\PDOException $e) {}
+    try { $pdo->exec("ALTER TABLE news ADD COLUMN IF NOT EXISTS excerpt TEXT;"); } catch (\PDOException $e) {}
     try { $pdo->exec("ALTER TABLE products ADD COLUMN IF NOT EXISTS rating DECIMAL(3,2) DEFAULT 0.00;"); } catch (\PDOException $e) {}
     try { $pdo->exec("ALTER TABLE products ADD COLUMN IF NOT EXISTS review_count INT DEFAULT 0;"); } catch (\PDOException $e) {}
     try { $pdo->exec("ALTER TABLE products ADD COLUMN IF NOT EXISTS specs TEXT;"); } catch (\PDOException $e) {}
@@ -268,6 +270,7 @@ try {
     // Bổ sung cột hồ sơ người dùng (profile)
     try { $pdo->exec("ALTER TABLE users ADD COLUMN IF NOT EXISTS phone   VARCHAR(20);");  } catch (\PDOException $e) {}
     try { $pdo->exec("ALTER TABLE users ADD COLUMN IF NOT EXISTS address TEXT;");         } catch (\PDOException $e) {}
+    try { $pdo->exec("ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(20) DEFAULT 'user';"); } catch (\PDOException $e) {}
 
     // Đảm bảo có bảng Danh sách Yêu thích (Wishlists)
     try { $pdo->exec("

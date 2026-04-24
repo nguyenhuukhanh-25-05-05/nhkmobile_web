@@ -57,7 +57,16 @@ if (isset($_GET['delete'])) {
  * 2. LẤY DỮ LIỆU HIỂN THỊ
  */
 
-$stmt = $pdo->query("SELECT * FROM news ORDER BY created_at DESC");
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$sql = "SELECT * FROM news";
+$params = [];
+if ($search !== '') {
+    $sql .= " WHERE title ILIKE ?";
+    $params[] = "%$search%";
+}
+$sql .= " ORDER BY created_at DESC";
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
 $newsList = $stmt->fetchAll();
 
 // Xử lý bật Modal Sửa tự động nếu có biến GET edit
@@ -82,6 +91,16 @@ include 'includes/admin_header.php';
             </button>
         </header>
 
+        <div class="d-flex mb-4">
+            <form action="" method="GET" class="d-flex w-100" style="max-width: 400px;">
+                <input type="text" name="search" class="form-control me-2 rounded-pill" placeholder="Tìm kiếm theo tiêu đề bài viết..." value="<?php echo htmlspecialchars($search ?? ''); ?>">
+                <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm"><i class="bi bi-search"></i></button>
+                <?php if (!empty($search)): ?>
+                    <a href="news.php" class="btn btn-outline-secondary rounded-pill px-3 ms-2 shadow-sm d-flex align-items-center">Xóa</a>
+                <?php endif; ?>
+            </form>
+        </div>
+
         <div class="content-card shadow-sm border-0 rounded-4 p-4 bg-white">
             <?php if (isset($_GET['msg'])): ?>
                 <div class="alert alert-success alert-dismissible fade show mb-4 border-0 rounded-3" role="alert">
@@ -105,7 +124,7 @@ include 'includes/admin_header.php';
                         <tr>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <img src="../assets/images/<?php echo $n['image']; ?>" class="rounded-3 me-3" style="width: 60px; height: 60px; object-fit: cover;" onerror="this.src='https://placehold.co/60'">
+                                    <img src="<?php echo !empty($n['image']) && $n['image'] !== 'placeholder.png' ? '../assets/images/' . $n['image'] : 'https://placehold.co/600x400/f5f5f7/1d1d1f?text=News'; ?>" class="rounded-3 me-3" style="width: 60px; height: 60px; object-fit: cover;" onerror="this.src='https://placehold.co/60'">
                                     <div>
                                         <div class="fw-bold mb-1 text-dark" style="max-width: 400px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?php echo htmlspecialchars($n['title']); ?></div>
                                         <div class="small text-secondary" style="max-width: 400px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?php echo htmlspecialchars($n['excerpt']); ?></div>
@@ -172,7 +191,7 @@ include 'includes/admin_header.php';
 
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Ảnh bài viết</label>
-                            <?php if (!empty($editData['image'])): ?>
+                            <?php if (!empty($editData['image']) && $editData['image'] !== 'placeholder.png'): ?>
                             <div class="mb-2 d-flex align-items-center gap-3">
                                 <img src="../assets/images/<?php echo $editData['image']; ?>" style="width:80px;height:60px;object-fit:cover;" class="rounded-3 border" onerror="this.src='https://placehold.co/80x60'">
                                 <span class="small text-secondary">Ảnh hiện tại. Chọn file mới để thay thế.</span>

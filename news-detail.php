@@ -9,7 +9,7 @@
  * Version: 2.1
  * Date: 2026-04-08
  */
-session_start();
+require_once 'includes/auth_functions.php';
 require_once 'includes/db.php';
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
@@ -53,7 +53,7 @@ include 'includes/header.php';
                     </div>
                     
                     <div class="mb-5 text-center">
-                        <img src="assets/images/<?php echo htmlspecialchars($article['image']); ?>" class="img-fluid rounded-4 object-fit-cover w-100 shadow-sm" alt="<?php echo htmlspecialchars($article['title']); ?>" style="max-height: 500px;" onerror="this.src='https://placehold.co/1200x600/f5f5f7/1d1d1f?text=Tech+News'">
+                        <img src="<?php echo !empty($article['image']) && $article['image'] !== 'placeholder.png' ? 'assets/images/' . htmlspecialchars($article['image']) : 'https://placehold.co/1200x600/f5f5f7/1d1d1f?text=Tech+News'; ?>" class="img-fluid rounded-4 object-fit-cover w-100 shadow-sm" alt="<?php echo htmlspecialchars($article['title']); ?>" style="max-height: 500px;" onerror="this.src='https://placehold.co/1200x600/f5f5f7/1d1d1f?text=Tech+News'">
                     </div>
                     
                     <div class="news-content fs-5 leading-relaxed text-dark" style="line-height: 1.8;">

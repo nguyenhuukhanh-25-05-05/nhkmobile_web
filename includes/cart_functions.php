@@ -20,7 +20,7 @@
  */
 function syncCartWithDatabase($pdo) {
     if (session_status() === PHP_SESSION_NONE) {
-        session_start();
+        require_once __DIR__ . '/auth_functions.php';
     }
     
     $userId = $_SESSION['user_id'] ?? null;
@@ -108,7 +108,7 @@ function syncCartWithDatabase($pdo) {
  */
 function removeFromCartDB($pdo, $pid) {
     if (session_status() === PHP_SESSION_NONE) {
-        session_start();
+        require_once __DIR__ . '/auth_functions.php';
     }
     $userId  = $_SESSION['user_id'] ?? null;
     $isAdmin = isset($_SESSION['admin_id']);

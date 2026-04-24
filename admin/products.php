@@ -147,7 +147,16 @@ if (isset($_GET['toggle_featured'])) {
  */
 
 // Lấy toàn bộ danh sách sản phẩm để hiện ra bảng (sắp xếp mới nhất lên đầu)
-$stmt = $pdo->query("SELECT * FROM products ORDER BY created_at DESC");
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$sql = "SELECT * FROM products";
+$params = [];
+if ($search !== '') {
+    $sql .= " WHERE name ILIKE ?";
+    $params[] = "%$search%";
+}
+$sql .= " ORDER BY created_at DESC";
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
 $products = $stmt->fetchAll();
 
 // KIỂM TRA NẾU ĐANG TRONG CHẾ ĐỘ SỬA (Lấy data sản phẩm cũ đổ vào Modal)
@@ -178,6 +187,16 @@ include 'includes/admin_header.php';
                 </button>
             </div>
         </header>
+
+        <div class="d-flex mb-4">
+            <form action="" method="GET" class="d-flex w-100" style="max-width: 400px;">
+                <input type="text" name="search" class="form-control me-2 rounded-pill" placeholder="Tìm kiếm theo tên sản phẩm..." value="<?php echo htmlspecialchars($search ?? ''); ?>">
+                <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm"><i class="bi bi-search"></i></button>
+                <?php if (!empty($search)): ?>
+                    <a href="products.php" class="btn btn-outline-secondary rounded-pill px-3 ms-2 shadow-sm d-flex align-items-center">Xóa</a>
+                <?php endif; ?>
+            </form>
+        </div>
 
         <div class="content-card shadow-sm border-0 rounded-4 p-4">
             <!-- Hiển thị thông báo thành công nếu có -->

@@ -9,7 +9,7 @@
  * Version: 2.2
  * Date: 2026-04-08
  */
-session_start();
+require_once 'includes/auth_functions.php';
 require_once 'includes/db.php';
 
 // Fetch all news articles (with graceful error handling)
@@ -84,7 +84,7 @@ include 'includes/header.php';
                     <div class="col-md-6 col-lg-4 animate-reveal" style="animation-delay: <?php echo $index * 0.1; ?>s">
                         <article class="card-glass-product h-100 p-0 overflow-hidden border-0 shadow-sm transition-all hover-lift">
                             <div class="position-relative">
-                                <img src="assets/images/<?php echo $a['image']; ?>" class="card-img-top object-fit-cover" alt="<?php echo $a['title']; ?>" style="height: 240px;" onerror="this.src='https://placehold.co/600x400/f5f5f7/1d1d1f?text=Tech+News'">
+                                <img src="<?php echo !empty($a['image']) && $a['image'] !== 'placeholder.png' ? 'assets/images/' . $a['image'] : 'https://placehold.co/600x400/f5f5f7/1d1d1f?text=Tech+News'; ?>" class="card-img-top object-fit-cover" alt="<?php echo $a['title']; ?>" style="height: 240px;" onerror="this.src='https://placehold.co/600x400/f5f5f7/1d1d1f?text=Tech+News'">
                                 <div class="position-absolute top-0 start-0 m-3">
                                     <?php if (!empty($a['category'] ?? '')): ?>
                                     <span class="badge bg-primary rounded-pill px-3 py-2"><?php echo htmlspecialchars($a['category'] ?? ''); ?></span>

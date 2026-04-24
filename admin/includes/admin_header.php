@@ -37,16 +37,9 @@ $current_page = basename($_SERVER['PHP_SELF']);
             </div>
         </div>
         <div class="header-actions">
-            <a href="check.php" class="app-icon-btn"><i class="bi bi-clipboard-check"></i></a>
-            <div class="dropdown">
-                <button class="app-icon-btn" data-bs-toggle="dropdown">
-                    <i class="bi bi-person-circle"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end app-dropdown">
-                    <li><a class="dropdown-item" href="<?php echo $basePath; ?>index.php"><i class="bi bi-globe me-2"></i>Xem Website</a></li>
-                    <li><a class="dropdown-item" href="logout.php"><i class="bi bi-box-arrow-right me-2"></i>Đăng xuất</a></li>
-                </ul>
-            </div>
+            <a href="check.php" class="app-icon-btn" title="Kiểm tra hệ thống"><i class="bi bi-clipboard-check"></i></a>
+            <a href="<?php echo $basePath; ?>index.php" class="app-icon-btn" title="Xem Website"><i class="bi bi-globe"></i></a>
+            <a href="<?php echo $basePath; ?>logout.php" class="app-icon-btn text-danger" title="Đăng xuất"><i class="bi bi-box-arrow-right"></i></a>
         </div>
     </header>
 

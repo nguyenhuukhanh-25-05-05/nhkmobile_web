@@ -26,7 +26,34 @@ if (isset($_POST['update_status'])) {
  * 2. TRUY VẤN DANH SÁCH ĐƠN HÀNG
  */
 // Lấy toàn bộ đơn hàng, ưu tiên những đơn mới nhất xếp trên (DESC)
-$stmt = $pdo->query("SELECT * FROM orders ORDER BY created_at DESC");
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$status_filter = isset($_GET['status_filter']) ? trim($_GET['status_filter']) : '';
+$start_date = isset($_GET['start_date']) ? trim($_GET['start_date']) : '';
+$end_date = isset($_GET['end_date']) ? trim($_GET['end_date']) : '';
+
+$sql = "SELECT * FROM orders WHERE 1=1";
+$params = [];
+
+if ($search !== '') {
+    $sql .= " AND customer_phone LIKE ?";
+    $params[] = "%$search%";
+}
+if ($status_filter !== '') {
+    $sql .= " AND status = ?";
+    $params[] = $status_filter;
+}
+if ($start_date !== '') {
+    $sql .= " AND DATE(created_at) >= ?";
+    $params[] = $start_date;
+}
+if ($end_date !== '') {
+    $sql .= " AND DATE(created_at) <= ?";
+    $params[] = $end_date;
+}
+
+$sql .= " ORDER BY created_at DESC";
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
 $orders = $stmt->fetchAll();
 
 $pageTitle = "Quản lý đơn hàng | Admin NHK Mobile";
@@ -40,6 +67,36 @@ include 'includes/admin_header.php';
                  <p class="text-secondary small mb-0">Quản lý và cập nhật trạng thái giao dịch khách hàng.</p>
             </div>
         </header>
+
+        <div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white">
+            <form action="" method="GET" class="row g-2 align-items-center">
+                <div class="col-md-3">
+                    <input type="text" name="search" class="form-control bg-light border-0" placeholder="Số điện thoại..." value="<?php echo htmlspecialchars($search); ?>">
+                </div>
+                <div class="col-md-2">
+                    <select name="status_filter" class="form-select bg-light border-0">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="Chờ duyệt" <?php echo ($status_filter == 'Chờ duyệt') ? 'selected' : ''; ?>>Chờ duyệt</option>
+                        <option value="Đã duyệt" <?php echo ($status_filter == 'Đã duyệt') ? 'selected' : ''; ?>>Đã duyệt</option>
+                        <option value="Đang giao" <?php echo ($status_filter == 'Đang giao') ? 'selected' : ''; ?>>Đang giao</option>
+                        <option value="Hoàn thành" <?php echo ($status_filter == 'Hoàn thành') ? 'selected' : ''; ?>>Hoàn thành</option>
+                        <option value="Đã hủy" <?php echo ($status_filter == 'Đã hủy') ? 'selected' : ''; ?>>Đã hủy</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input type="date" name="start_date" class="form-control bg-light border-0" value="<?php echo htmlspecialchars($start_date); ?>" title="Từ ngày">
+                </div>
+                <div class="col-md-2">
+                    <input type="date" name="end_date" class="form-control bg-light border-0" value="<?php echo htmlspecialchars($end_date); ?>" title="Đến ngày">
+                </div>
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary px-3 shadow-sm w-100"><i class="bi bi-funnel"></i> Lọc</button>
+                    <?php if ($search || $status_filter || $start_date || $end_date): ?>
+                        <a href="orders.php" class="btn btn-outline-secondary px-3 shadow-sm">Xóa</a>
+                    <?php endif; ?>
+                </div>
+            </form>
+        </div>
 
         <div class="content-card shadow-sm border-0 rounded-4 p-4 bg-white">
             <!-- Hiển thị thông báo khi cập nhật thành công -->
@@ -57,6 +114,7 @@ include 'includes/admin_header.php';
                             <th>Mã đơn</th>
                             <th>Khách hàng</th>
                             <th>Số tiền</th>
+                            <th>Ngày đặt</th>
                             <th>Thanh toán</th>
                             <th>Trạng thái</th>
                             <th class="text-end">Tiếp nhận</th>
@@ -87,6 +145,10 @@ include 'includes/admin_header.php';
                                  </div>
                             </td>
                             <td class="fw-bold text-primary"><?php echo number_format($o['total_price'], 0, ',', '.'); ?>₫</td>
+                            <td class="small text-secondary">
+                                <?php echo date('d/m/Y', strtotime($o['created_at'])); ?>
+                                <br><span class="text-muted" style="font-size: 0.75rem;"><?php echo date('H:i', strtotime($o['created_at'])); ?></span>
+                            </td>
                             <td>
                                 <span class="badge bg-light text-dark border fw-normal px-2"><?php echo $o['payment_method']; ?></span>
                                 <?php if(isset($o['is_installment']) && $o['is_installment']): ?>

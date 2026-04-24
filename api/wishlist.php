@@ -3,7 +3,7 @@
  * NHK Mobile - Wishlist API
  * POST { product_id } → toggle yêu thích, trả JSON { status, count, product_id }
  */
-session_start();
+require_once '../includes/auth_functions.php';
 require_once '../includes/db.php';
 
 header('Content-Type: application/json');
