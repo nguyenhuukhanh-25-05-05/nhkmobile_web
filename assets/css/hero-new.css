@@ -6,7 +6,7 @@
 .hero-carousel-section {
     position: relative;
     overflow: hidden;
-    /* section just wraps the wrapper — no extra height logic here */
+    padding: 0; /* Remove general section padding to eliminate white gaps */
 }
 
 /* ── Progress bar (top) ── */
@@ -285,18 +285,25 @@
 /* ── Responsive ── */
 @media (max-width: 992px) {
     .hero-carousel-section { min-height: auto; }
+    .hero-slides-wrapper {
+        height: 90vh;
+        min-height: 800px;
+    }
     .hero-slide { min-height: auto; }
-    .hero-slide-content { padding: 110px 0 80px; }
+    .hero-slide-content { 
+        padding: 130px 0 80px; 
+        align-items: flex-start; /* Start content below navbar/disclaimer instead of centering */
+    }
 
     .hero-grid {
         grid-template-columns: 1fr;
-        gap: 40px;
-        padding: 0; /* Reset padding for mobile since arrows are hidden */
+        gap: 30px;
+        padding: 0;
     }
 
     .hero-text { text-align: center; order: 2; }
     .hero-image-container { order: 1; }
-    .hero-image-new { max-height: 380px; }
+    .hero-image-new { max-height: 340px; }
 
     .hero-quick-stats { justify-content: center; }
     .d-flex.gap-3 { justify-content: center; }
@@ -305,17 +312,40 @@
 }
 
 @media (max-width: 576px) {
-    .hero-slide-content { padding: 90px 0 70px; }
-    .display-hero { font-size: 2rem; }
-    .hero-image-new { max-height: 280px; }
-    .hero-quick-stats { flex-direction: column; gap: 14px; }
-    .hero-glow { width: 240px; height: 240px; }
+    .hero-slides-wrapper {
+        height: 95vh;
+        min-height: 760px; /* Ensure wrapper height is sufficient for all stacked elements */
+    }
+    .hero-slide-content { 
+        padding: 115px 0 70px; 
+        align-items: flex-start; /* Prevent top cropping of phone image */
+    }
+    .display-hero { font-size: 1.85rem; }
+    .hero-image-new { max-height: 240px; }
+    
+    /* Optimize stats layout into a compact 3-column grid instead of a tall vertical column */
+    .hero-quick-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        padding: 10px 12px;
+        margin-top: 20px;
+        width: 100%;
+    }
+    .hero-quick-stat-value {
+        font-size: 1.1rem;
+    }
+    .hero-quick-stat-label {
+        font-size: 0.72rem;
+        margin-top: 2px;
+    }
+    .hero-glow { width: 200px; height: 200px; }
 }
 
 /* ── Educational Disclaimer Badge ── */
 .hero-disclaimer-container {
     position: absolute;
-    top: 96px; /* Align below the fixed desktop navbar (72px) with spacing */
+    top: 84px; /* Moved up closer to navbar (72px) */
     left: 50%;
     transform: translateX(-50%);
     z-index: 101; /* Layer above slides but below header (1000) */
@@ -388,10 +418,9 @@
     to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
-/* Responsive styling */
 @media (max-width: 992px) {
     .hero-disclaimer-container {
-        top: 80px; /* Align below mobile navbar (64px) */
+        top: 72px; /* Moved up below mobile navbar (64px) */
     }
     .hero-disclaimer-badge {
         padding: 6px 16px;
@@ -402,7 +431,7 @@
 
 @media (max-width: 576px) {
     .hero-disclaimer-container {
-        top: 72px; /* Align below extra small mobile navbar (60px) */
+        top: 66px; /* Moved up below extra small mobile navbar (60px) */
         width: 100%;
         padding: 0 16px;
     }
