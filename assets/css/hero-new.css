@@ -27,32 +27,37 @@
     border-radius: 0 2px 2px 0;
 }
 
+
+
 /* ── Slides wrapper ── */
 .hero-slides-wrapper {
     position: relative;
-    /* Fixed height = arrows never jump */
     height: 85vh;
-    min-height: 680px; /* Increased to fit tall text */
+    min-height: 680px;
     max-height: 900px;
     overflow: hidden;
 }
 
 /* ── Individual slide (ALL strictly absolute, wrapper owns the height) ── */
 .hero-slide {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    opacity: 0;
-    pointer-events: none;
-    overflow: hidden;
-    transition: opacity 0.05s;
+    position: absolute !important;
+    inset: 0 !important;
+    height: 100% !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    overflow: hidden !important;
+    transition: opacity 0.5s ease, visibility 0.5s ease !important;
 }
 
 .hero-slide.active {
-    opacity: 1;
-    pointer-events: auto;
-    /* deliberately left as absolute — wrapper’s fixed height provides layout */
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    position: absolute !important;
 }
 
 /* Slide background layer */
@@ -282,70 +287,83 @@
     50% { opacity: 0.75; transform: translate(-50%, -50%) scale(1.1); }
 }
 
-/* ── Responsive ── */
+/* ── Responsive & Overrides ── */
 @media (max-width: 992px) {
-    .hero-carousel-section { min-height: auto; }
+    .hero-carousel-section { min-height: auto !important; padding: 0 !important; }
     .hero-slides-wrapper {
-        height: 90vh;
-        min-height: 800px;
+        height: 640px !important;
+        min-height: 640px !important;
+        max-height: 640px !important;
     }
-    .hero-slide { min-height: auto; }
+    .hero-slide { min-height: auto !important; }
     .hero-slide-content { 
-        padding: 130px 0 80px; 
-        align-items: flex-start; /* Start content below navbar/disclaimer instead of centering */
+        padding: 120px 0 50px !important; 
+        align-items: flex-start !important;
     }
 
     .hero-grid {
-        grid-template-columns: 1fr;
-        gap: 30px;
-        padding: 0;
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+        padding: 0 24px !important;
     }
 
-    .hero-text { text-align: center; order: 2; }
-    .hero-image-container { order: 1; }
-    .hero-image-new { max-height: 340px; }
+    .hero-text { text-align: center !important; order: 2 !important; display: flex !important; flex-direction: column !important; align-items: center !important; }
+    .hero-image-container { order: 1 !important; }
+    .hero-image-new { max-height: 210px !important; }
 
-    .hero-quick-stats { justify-content: center; }
-    .d-flex.gap-3 { justify-content: center; }
+    /* Hide stats box on mobile/tablet to prevent layout overflow and vertical scrolling */
+    .hero-quick-stats { display: none !important; }
+    
+    /* Make buttons side-by-side on mobile/tablet to save 60px height */
+    #heroCarousel .d-flex.gap-3 {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        gap: 12px !important;
+        width: 100% !important;
+        max-width: 380px !important;
+        justify-content: center !important;
+        margin-top: 15px !important;
+    }
+    #heroCarousel .btn-main {
+        flex: 1 !important;
+        width: auto !important;
+        padding: 12px 20px !important;
+        font-size: 0.82rem !important;
+        white-space: nowrap !important;
+        border-radius: 12px !important;
+    }
 
-    .hero-arrow { display: none; }
+    .hero-arrow { display: none !important; }
 }
 
 @media (max-width: 576px) {
     .hero-slides-wrapper {
-        height: 95vh;
-        min-height: 760px; /* Ensure wrapper height is sufficient for all stacked elements */
+        height: 540px !important;
+        min-height: 540px !important;
+        max-height: 540px !important;
     }
     .hero-slide-content { 
-        padding: 115px 0 70px; 
-        align-items: flex-start; /* Prevent top cropping of phone image */
+        padding: 115px 0 40px !important; 
     }
-    .display-hero { font-size: 1.85rem; }
-    .hero-image-new { max-height: 240px; }
+    .display-hero { font-size: 1.6rem !important; margin-bottom: 10px !important; }
+    .hero-image-new { max-height: 160px !important; }
+    .hero-desc { font-size: 0.85rem !important; margin: 10px 0 !important; max-width: 320px !important; line-height: 1.4 !important; }
     
-    /* Optimize stats layout into a compact 3-column grid instead of a tall vertical column */
-    .hero-quick-stats {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-        padding: 10px 12px;
-        margin-top: 20px;
-        width: 100%;
+    #heroCarousel .d-flex.gap-3 {
+        max-width: 290px !important;
     }
-    .hero-quick-stat-value {
-        font-size: 1.1rem;
+    #heroCarousel .btn-main {
+        padding: 10px 14px !important;
+        font-size: 0.78rem !important;
     }
-    .hero-quick-stat-label {
-        font-size: 0.72rem;
-        margin-top: 2px;
-    }
-    .hero-glow { width: 200px; height: 200px; }
+    .hero-glow { width: 160px !important; height: 160px !important; }
+    .hero-dots { bottom: 16px !important; }
 }
 
 /* ── Educational Disclaimer Badge ── */
 .hero-disclaimer-container {
     position: absolute;
-    top: 84px; /* Moved up closer to navbar (72px) */
+    top: 84px; /* Align below the fixed desktop navbar (72px) with spacing */
     left: 50%;
     transform: translateX(-50%);
     z-index: 101; /* Layer above slides but below header (1000) */
@@ -359,31 +377,33 @@
 .hero-disclaimer-badge {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    padding: 8px 20px;
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.6);
+    gap: 12px;
+    padding: 10px 26px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 2px solid rgba(0, 122, 255, 0.5); /* Glowing accent border */
     border-radius: 50px;
-    font-size: 0.82rem;
-    font-weight: 700;
+    font-size: 1.02rem; /* Larger font size as requested */
+    font-weight: 800; /* Bolder font weight */
+    text-transform: uppercase; /* Uppercase for maximum prominence */
     color: #1d1d1f;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04),
-                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    box-shadow: 0 10px 30px rgba(0, 122, 255, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
     pointer-events: auto;
     animation: fadeInDisclaimer 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
-    letter-spacing: -0.01em;
+    letter-spacing: 0.03em;
 }
 
 /* Pulse animation dot */
 .hero-disclaimer-badge .pulse-dot {
-    width: 6px;
-    height: 6px;
+    width: 8px; /* Bigger dot */
+    height: 8px;
     background-color: var(--primary, #007AFF);
     border-radius: 50%;
     display: inline-block;
     position: relative;
+    flex-shrink: 0;
 }
 
 .hero-disclaimer-badge .pulse-dot::after {
@@ -397,9 +417,10 @@
 
 .hero-disclaimer-badge i {
     color: var(--primary, #007AFF);
-    font-size: 1rem;
+    font-size: 1.15rem;
     display: flex;
     align-items: center;
+    flex-shrink: 0;
 }
 
 @keyframes disclaimerPulseDot {
@@ -408,48 +429,47 @@
 }
 
 @keyframes fadeInDisclaimer {
-    from { opacity: 0; transform: translate3d(-50%, -12px, 0); }
-    to { opacity: 1; transform: translate3d(-50%, 0, 0); }
-}
-
-/* Override fade-in transform because container is already translated X */
-@keyframes fadeInDisclaimer {
     from { opacity: 0; transform: translate3d(0, -12px, 0); }
     to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
 @media (max-width: 992px) {
     .hero-disclaimer-container {
-        top: 72px; /* Moved up below mobile navbar (64px) */
+        top: 72px; /* Align below mobile navbar (64px) */
     }
     .hero-disclaimer-badge {
-        padding: 6px 16px;
-        font-size: 0.76rem;
-        gap: 8px;
+        padding: 8px 20px;
+        font-size: 0.88rem;
+        gap: 10px;
     }
 }
 
 @media (max-width: 576px) {
     .hero-disclaimer-container {
-        top: 66px; /* Moved up below extra small mobile navbar (60px) */
+        top: 64px; /* Align below extra small mobile navbar (60px) */
         width: 100%;
         padding: 0 16px;
     }
     .hero-disclaimer-badge {
-        width: 100%;
+        width: auto;
+        max-width: 100%;
+        border-radius: 16px; /* Card style instead of pill to look beautiful when wrapped */
+        padding: 8px 16px;
+        font-size: 0.8rem;
+        line-height: 1.35;
+        flex-wrap: wrap; /* Allow wrapping to prevent screen clipping */
         justify-content: center;
         text-align: center;
-        padding: 6px 12px;
-        font-size: 0.72rem;
+        gap: 8px;
     }
 }
 
 /* Dark Mode Overrides */
 body.dark-mode .hero-disclaimer-badge {
-    background: rgba(28, 28, 30, 0.8);
-    border-color: rgba(255, 255, 255, 0.08);
-    color: #f5f5f7;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25),
+    background: rgba(28, 28, 30, 0.95);
+    border-color: rgba(100, 220, 255, 0.5); /* Cyan glow in dark mode */
+    color: #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 122, 255, 0.35),
                 inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
@@ -464,4 +484,5 @@ body.dark-mode .hero-disclaimer-badge .pulse-dot::after {
 body.dark-mode .hero-disclaimer-badge i {
     color: #64dcff;
 }
+
 
